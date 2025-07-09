@@ -2,13 +2,14 @@ library(dplyr)
 library(tidyverse)
 library(stringr)
 
-remotes::install_github("Nicolas-Schmidt/puy")
+#remotes::install_github("Nicolas-Schmidt/puy")
 
 library(puy)
 
 data("politicos")
 data("legislaturas")
 
+# LIMPIO APELLIDOS COMPUESTOS (PROCESO DE ESTANDARIZACIÓN)
 
 nrow(politicos %>% distinct())
 
@@ -58,13 +59,18 @@ df_corregido <- df_limpio %>%
   )
 
 
-nrow(base) # 1.689.972
+# Levanto base de  
+
+
+
+
+
+# 1.689.972
 base_fecha_nac <- base %>% filter(!is.na(fecha_nacimiento))
 
 base_fecha_nac <- base_fecha_nac %>% group_by_all() %>% count()
 
 
-write.csv(base_fecha_nac, 'base_fecha_nac.csv', index = FALSE)
 
 nrow(base_fecha_nac %>% distinct()) # 1.689.749
 nrow(df_corregido) # 5.437
