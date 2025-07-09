@@ -13,7 +13,7 @@ data("legislaturas")
 
 nrow(politicos %>% distinct())
 
-df <- politicos %>% distinct(politico)
+df <- politicos %>% distinct(politico, partido)
 
 df_limpio <- df %>%
   # 1. Separar por coma en apellido / nombre
@@ -44,7 +44,7 @@ apellidos_compuestos <- c("LEON", "LOS SANTOS", "LA SERNA", "LA SIERRA", "ACHA",
                           "COLL", "EACHEN", "ALLISTER", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
                           "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA")
 
-df_corregido <- df_limpio %>%
+df_limpio <- df_limpio %>%
   mutate(
     primer_apellido = case_when(
       primer_apellido %in% c("DE", "DEL", "DI", "DA", "MAC") & segundo_apellido %in% apellidos_compuestos ~ 
@@ -59,12 +59,20 @@ df_corregido <- df_limpio %>%
   )
 
 
-# Levanto base de  
+# Agregar segundos nombres y segundos apellidos manualmente a los politicos (asi luego)
+# pegan mejor con los datos de fechas de nacimiento
+
+df_limpio <- df_limpio %>% arrange((primer_apellido))
+
+write.csv(df_limpio, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/df_limpio.csv')
 
 
 
 
+-------------------------------------------------------------------------------------------------------
 
+# PEGADO DE FECHAS DE NACIMIENTO  
+  
 # 1.689.972
 base_fecha_nac <- base %>% filter(!is.na(fecha_nacimiento))
 
