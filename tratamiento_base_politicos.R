@@ -26,6 +26,8 @@ df_limpio <- df %>%
   separate(apellidos, into = c("primer_apellido", "segundo_apellido"), sep = " ", extra = "merge")
 
 df_limpio$nombres <- str_squish(df_limpio$nombres)
+df_limpio$partido <- str_squish(df_limpio$partido)
+df_limpio$legislatura <- str_squish(df_limpio$legislatura)
 
 df_limpio <- df_limpio %>%
   separate(nombres, into = c("primer_nombre", "segundo_nombre"), sep = " ", fill = "right")
@@ -62,12 +64,22 @@ df_limpio <- df_limpio %>%
   )
 
 
+df_limpio <- df_limpio %>% arrange((primer_apellido))
+
+# ESTANDARIZACION DE PARTIDOS
+
+df_limpio$partido <- gsub('Partido Frente Amplio', 'Frente Amplio', df_limpio$partido)
+df_limpio$partido <- gsub('Frente Ampilio', 'Frente Amplio', df_limpio$partido)
+df_limpio$partido <- gsub('Partido Ecologista Radical Intransigene', 'Partido Ecologista Radical Intransigente', df_limpio$partido)
+df_limpio$partido <- gsub('Partido Frente Izquierda de Liberacion', 'Frente Izquierda de Liberacion', df_limpio$partido)
+
+partidos_unicos <- df_limpio %>% group_by(partido) %>% count()
+
+#write.csv(df_limpio, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/df_limpio.csv')
+
 # Agregar segundos nombres y segundos apellidos manualmente a los politicos (asi luego)
 # pegan mejor con los datos de fechas de nacimiento
 
-df_limpio <- df_limpio %>% arrange((primer_apellido))
-
-#write.csv(df_limpio, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/df_limpio.csv')
 
 -------------------------------------------------------------------------------------------------------
 
@@ -82,6 +94,7 @@ df_1 <- df_limpio %>%
 -------------------------------------------------------------------------------------------------------
 
 # MATCHING PROBABILISTICO (DEDUPLICACION)
+
 library(fastLink)
 library(RecordLinkage)
 
@@ -122,16 +135,32 @@ for(i in seq_len(nrow(matched_pairs))) {
 }
 
 # Paso 6: Asignar los clusters al dataframe original
-df_with_ids <- df_limpio %>%
+df_con_ids <- df_limpio %>%
   mutate(cluster_id = cluster_map$cluster_id)
 
 
 # Busqueda de falsos negativos
 
+falsos_negativos <- df_con_ids %>% group_by(primer_nombre, primer_apellido) %>%
+  filter(n_distinct(cluster_id) > 1)
+
+df_con_ids <- df_con_ids %>% group_by(primer_nombre, primer_apellido) %>%
+  filter(n_distinct(cluster_id) <= 1)
+
+falsos_negativos <- falsos_negativos %>%
+  group_by(primer_nombre, primer_apellido) %>%
+  mutate(id_unificado = min(cluster_id, na.rm = TRUE)) %>%
+  ungroup()
+
+falsos_negativos_1 <- falsos_negativos %>% filter(partido %in%c('Frente Amplio', 'Partido Socialista', 'Partido Comunista
+                                          del Uruguay', 'Frente Izquierda de Liberacion','Nuevo Espacio'
+                                          ))
 
 
+falsos_negativos %>% 
 
-  write.csv()
+
+write.csv(falsos_negativos, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos.csv', row.names = FALSE)
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
