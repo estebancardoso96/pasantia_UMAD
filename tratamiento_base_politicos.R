@@ -1,13 +1,16 @@
 library(dplyr)
 library(tidyverse)
 library(stringr)
-
+library(fastLink)
 #remotes::install_github("Nicolas-Schmidt/puy")
-
 library(puy)
 
 data("politicos")
 data("legislaturas")
+
+# CORTE TEMPORAL: PRIMERA LEGISLATURA QUE COMIENZA EN EL SIGLO XX: LEGISLATURA NÚMERO 21
+
+politicos <- politicos %>% filter(legislatura >= 21)
 
 # LIMPIO APELLIDOS COMPUESTOS (PROCESO DE ESTANDARIZACIÓN)
 
@@ -64,10 +67,25 @@ df_limpio <- df_limpio %>%
 
 df_limpio <- df_limpio %>% arrange((primer_apellido))
 
-write.csv(df_limpio, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/df_limpio.csv')
+#write.csv(df_limpio, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/df_limpio.csv')
+
+-------------------------------------------------------------------------------------------------------
+
+# GENERACION DEL ID PARA CADA POLITICO
+
+# Comienzo con opcion robusta, para ir deduplicando
+
+df_1 <- df_limpio %>%
+  group_by(primer_apellido, segundo_apellido, primer_nombre, segundo_nombre) %>%
+  mutate(id = cur_group_id())
+
+##################################################################################################
+
+# MATCHING PROBABILISTICO (DEDUPLICACION)
 
 
-politicos %>% filter(status == 'Suplente' & is.na(fecha_inicio) & is.na(fecha_fin)) 
+
+
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
