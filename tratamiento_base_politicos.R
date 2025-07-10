@@ -79,7 +79,7 @@ df_1 <- df_limpio %>%
   group_by(primer_apellido, segundo_apellido, primer_nombre, segundo_nombre) %>%
   mutate(id = cur_group_id())
 
-##################################################################################################
+-------------------------------------------------------------------------------------------------------
 
 # MATCHING PROBABILISTICO (DEDUPLICACION)
 library(fastLink)
@@ -127,6 +127,8 @@ df_with_ids <- df_limpio %>%
 
 
 # Busqueda de falsos negativos
+
+
 
 
   write.csv()
