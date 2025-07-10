@@ -82,10 +82,54 @@ df_1 <- df_limpio %>%
 ##################################################################################################
 
 # MATCHING PROBABILISTICO (DEDUPLICACION)
+library(fastLink)
+library(RecordLinkage)
+
+df_limpio <- df_limpio %>%
+  mutate(across(everything(), ~ifelse(is.na(.), "", .)))
 
 
+pairs <- compare.dedup(
+  df_limpio,
+  blockfld = list(c(1, 3,5)),  # Bloquear por primer_nombre (col 1) y primer_apellido (col 3)
+  strcmp = c(TRUE, TRUE, TRUE, TRUE),  # Usar comparación de strings para todos los campos
+  exclude = c("legislatura")  # Excluir columnas no relevantes para el matching
+)
+
+# Calcular pesos (probabilidades)
+pairs <- epiWeights(pairs)
+
+# Obtener pares coincidentes
+results <- epiClassify(pairs, threshold.upper = 0.85)
 
 
+# Paso 5: Extraer y asignar clusters CORRECTAMENTE
+# Necesitamos usar la función getPairs() para obtener los matches
+matched_pairs <- getPairs(results, single.rows = TRUE)
+
+# Crear un mapeo de IDs
+cluster_map <- data.frame(
+  id = seq_len(nrow(df_limpio)),
+  cluster_id = seq_len(nrow(df_limpio))  # Inicialmente cada registro es su propio cluster
+)
+
+# Actualizar clusters basado en los matches
+for(i in seq_len(nrow(matched_pairs))) {
+  id1 <- matched_pairs$id1[i]
+  id2 <- matched_pairs$id2[i]
+  current_cluster <- min(cluster_map$cluster_id[id1], cluster_map$cluster_id[id2])
+  cluster_map$cluster_id[cluster_map$id %in% c(id1, id2)] <- current_cluster
+}
+
+# Paso 6: Asignar los clusters al dataframe original
+df_with_ids <- df_limpio %>%
+  mutate(cluster_id = cluster_map$cluster_id)
+
+
+# Busqueda de falsos negativos
+
+
+  write.csv()
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
