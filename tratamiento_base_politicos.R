@@ -153,11 +153,10 @@ falsos_negativos <- falsos_negativos %>%
   ungroup()
 
 falsos_negativos_1 <- falsos_negativos %>% filter(partido %in%c('Frente Amplio', 'Partido Socialista', 'Partido Comunista
-                                          del Uruguay', 'Frente Izquierda de Liberacion','Nuevo Espacio'
-                                          ))
+                                          del Uruguay', 'Frente Izquierda de Liberacion','Nuevo Espacio', 'Coalicion Liberal',
+                                          'Union Popular'))
 
-
-falsos_negativos %>% 
+falsos_negativos_1 %>% select(-cluster_id) %>% rename(cluster_id=id_unificado)
 
 
 write.csv(falsos_negativos, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos.csv', row.names = FALSE)
