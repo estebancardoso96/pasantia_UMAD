@@ -180,10 +180,16 @@ falsos_negativos_2_1 %>% select(-cluster_id) %>% rename(cluster_id=id_unificado)
 falsos_negativos_2_2 <- falsos_negativos_2 %>% filter(!partido %in%c('Partido Nacional', 'Partido Nacional Independiente',
                                                                      'Partido General Aparicio Saravia', 'Partido Blanco'))
 
+falsos_negativos_1
 
 
+rbdin(falsos_negativos_2
 
-write.csv(falsos_negativos, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos.csv', row.names = FALSE)
+# chequeo a mano izquierda
+write.csv(falsos_negativos_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv', row.names = FALSE)
+
+# chequeo a mano derecha (partido nacional)
+write.csv(falsos_negativos_2_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv', row.names = FALSE)
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
