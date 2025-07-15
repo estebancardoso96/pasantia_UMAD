@@ -47,7 +47,7 @@ apellidos_compuestos <- c("LEON", "LOS SANTOS", "LA SERNA", "LA SIERRA", "ACHA",
                           "CAMPO", "MARTINI", "VALLE", "CARLOS", "FUENTES", "AMORES", "ARMAS", "MEDINA", "BOISMENU",
                           "LA HOZ", "ALCANTARA", "LIMA", "ARRASCAETA", "ENRIQUEZ", "TORO", "CANDIA", "TRANO", 
                           "COLL", "EACHEN", "ALLISTER", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
-                          "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA")
+                          "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA", 'ARTEAGA')
   
 df_limpio <- df_limpio %>%
   mutate(
@@ -152,11 +152,35 @@ falsos_negativos <- falsos_negativos %>%
   mutate(id_unificado = min(cluster_id, na.rm = TRUE)) %>%
   ungroup()
 
+# ESPECTRO IZQUIERDA
 falsos_negativos_1 <- falsos_negativos %>% filter(partido %in%c('Frente Amplio', 'Partido Socialista', 'Partido Comunista
                                           del Uruguay', 'Frente Izquierda de Liberacion','Nuevo Espacio', 'Coalicion Liberal',
                                           'Union Popular'))
 
 falsos_negativos_1 %>% select(-cluster_id) %>% rename(cluster_id=id_unificado)
+
+
+# ESPECTRO NO IZQUIERDA
+# parece razonable quedarme con el id unificado, borrando el cluster id
+
+falsos_negativos_2 <- falsos_negativos %>% filter(!partido %in%c('Frente Amplio', 'Partido Socialista', 'Partido Comunista
+                                          del Uruguay', 'Frente Izquierda de Liberacion','Nuevo Espacio', 'Coalicion Liberal',
+                                                                'Union Popular'))
+
+## PARTIDO NACIONAL/ PARTIDO NACIONAL INDEPENDIENTE
+
+falsos_negativos_2_1 <- falsos_negativos_2 %>% filter(partido %in%c('Partido Nacional', 'Partido Nacional Independiente',
+                                                                    'Partido General Aparicio Saravia', 'Partido Blanco'))
+
+# parece razonable quedarme con el id unificado, borrando el cluster id
+falsos_negativos_2_1 %>% select(-cluster_id) %>% rename(cluster_id=id_unificado)
+
+## PARTIDO COLORADO
+
+falsos_negativos_2_2 <- falsos_negativos_2 %>% filter(!partido %in%c('Partido Nacional', 'Partido Nacional Independiente',
+                                                                     'Partido General Aparicio Saravia', 'Partido Blanco'))
+
+
 
 
 write.csv(falsos_negativos, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos.csv', row.names = FALSE)
