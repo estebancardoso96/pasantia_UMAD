@@ -201,6 +201,58 @@ falsos_negativos_2_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasanti
 
 # HAGO LOS CAMBIOS CON CODIGO (DADO QUE POR ALGUNA RAZON NO SE GUARDAN)
 
+## FALSOS NEGATIVOS 2_1
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
+                       falsos_negativos_2_1$segundo_nombre == 'JOSE'
+                     & falsos_negativos_2_1$primer_apellido == 'LOPEZ', "id_unificado"] <- 8072
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
+                       falsos_negativos_2_1$primer_apellido == 'LOPEZ' &
+                      falsos_negativos_2_1$legislatura == 37, "id_unificado"] <- 8073
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'ANGEL' &
+                       falsos_negativos_2_1$primer_apellido == 'NUÑEZ'
+                     & falsos_negativos_2_1$segundo_apellido == 'COLL', "id_unificado"] <- 8077
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
+                       falsos_negativos_2_1$segundo_nombre == 'MARTIN'
+                     & falsos_negativos_2_1$primer_apellido == 'RODRIGUEZ', "id_unificado"] <- 8078
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
+                       falsos_negativos_2_1$segundo_nombre == 'C.'
+                     & falsos_negativos_2_1$primer_apellido == 'RODRIGUEZ', "id_unificado"] <- 8079
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'HUGO' &
+                       falsos_negativos_2_1$primer_apellido == 'RODRIGUEZ'
+                     & falsos_negativos_2_1$legislatura == 48, "id_unificado"] <- 8080
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'HUGO' &
+                       falsos_negativos_2_1$primer_apellido == 'RODRIGUEZ'
+                     & falsos_negativos_2_1$legislatura == 47, "id_unificado"] <- 8080
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'PEDRO' &
+                       falsos_negativos_2_1$primer_apellido == 'SUAREZ'
+                     & falsos_negativos_2_1$legislatura == 47, "id_unificado"] <- 8081
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
+                       falsos_negativos_2_1$primer_apellido == 'SUAREZ'
+                     & falsos_negativos_2_1$legislatura == 48, "id_unificado"] <- 8082
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'RUBEN' &
+                       falsos_negativos_2_1$primer_apellido == 'MARTINEZ'
+                     & falsos_negativos_2_1$legislatura == 48, "id_unificado"] <- 8083
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JAVIER' &
+                       falsos_negativos_2_1$primer_apellido == 'BARRIOS'
+                     & falsos_negativos_2_1$segundo_apellido == 'ANZA', "id_unificado"] <- 8891
+
+## FALSOS NEGATIVOS 2_2
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_2$primer_apellido == 'AROCENA'
+                     & falsos_negativos_2_2$partido == 'Partido Independiente', "id_unificado"] <- 557
+
 falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'HUGO' &
                        falsos_negativos_2_2$primer_apellido == 'FERNANDEZ'
                      & falsos_negativos_2_2$segundo_apellido == 'BRITOS', "id_unificado"] <- 8084
