@@ -183,13 +183,55 @@ falsos_negativos_2_2 <- falsos_negativos_2 %>% filter(!partido %in%c('Partido Na
 falsos_negativos_1
 
 
-rbdin(falsos_negativos_2
-
 # chequeo a mano izquierda
 write.csv(falsos_negativos_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv', row.names = FALSE)
 
 # chequeo a mano derecha (partido nacional)
 write.csv(falsos_negativos_2_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv', row.names = FALSE)
+
+# chequeo a mano derecha (partido nacional)
+write.csv(falsos_negativos_2_2, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_2.csv', row.names = FALSE)
+
+
+---------------------------------------------------- # PEGADO DE BASES CORREGIDAS MANUALMENTE ------
+
+falsos_negativos_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv')
+falsos_negativos_2_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv')  
+
+
+# HAGO LOS CAMBIOS CON CODIGO (DADO QUE POR ALGUNA RAZON NO SE GUARDAN)
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'HUGO' &
+                       falsos_negativos_2_2$primer_apellido == 'FERNANDEZ'
+                     & falsos_negativos_2_2$segundo_apellido == 'BRITOS', "id_unificado"] <- 8084
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_2$primer_apellido == 'LOPEZ'
+                     & falsos_negativos_2_2$segundo_apellido == 'RAMOS', "id_unificado"] <- 8085
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_2$primer_apellido == 'LOPEZ'
+                     & falsos_negativos_2_2$segundo_apellido == 'LAPHITZ', "id_unificado"] <- 8086
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_2$segundo_nombre == 'PEDRO'
+                     & falsos_negativos_2_2$primer_apellido == 'MASSERA', "id_unificado"] <- 8087
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'ANTONIO' &
+                       falsos_negativos_2_2$primer_apellido == 'RODRIGUEZ'
+                     & falsos_negativos_2_2$segundo_apellido == 'CORREA', "id_unificado"] <- 8088
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JORGE' &
+                       falsos_negativos_2_2$primer_apellido == 'SILVA'
+                     & falsos_negativos_2_2$segundo_apellido == 'ROTTA', "id_unificado"] <- 8889
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JORGE' &
+                       falsos_negativos_2_2$primer_apellido == 'SILVA'
+                     & falsos_negativos_2_2$partido == 'Partido Democratico Unido',"id_unificado"] <- 8890
+
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'ENRIQUE' &
+                       falsos_negativos_2_2$primer_apellido == 'RODRIGUEZ'
+                     & falsos_negativos_2_2$partido == 'Partido Comunista del Uruguay',"id_unificado"] <- 8891
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
