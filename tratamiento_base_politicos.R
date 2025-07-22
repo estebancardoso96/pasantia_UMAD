@@ -222,6 +222,14 @@ falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JUAN'
 
 ## FALSOS NEGATIVOS 2_1
 
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'WASHINGTON' &
+                       falsos_negativos_2_1$primer_apellido == 'BELTRAN'
+                     & falsos_negativos_2_1$legislatura %in%c(25,26,27), "segundo_apellido"] <- 'MULLIN'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'WASHINGTON' &
+                       falsos_negativos_2_1$primer_apellido == 'BELTRAN'
+                     & falsos_negativos_2_1$legislatura %in%c(25,26,27), "id_unificado"] <- 965
+
 falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
                        falsos_negativos_2_1$segundo_nombre == 'JOSE'
                      & falsos_negativos_2_1$primer_apellido == 'LOPEZ', "id_unificado"] <- 8072
@@ -314,6 +322,16 @@ falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
                        falsos_negativos_2_1$primer_apellido == 'NUÑEZ',
                      "segundo_apellido"] <- ''
 
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'HORACIO' &
+                       falsos_negativos_2_1$primer_apellido == 'ABADIE' &
+                     falsos_negativos_2_1$segundo_apellido == 'PEREZ',
+                     "id_unificado"] <- 8893
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'HORACIO' &
+                       falsos_negativos_2_1$primer_apellido == 'ABADIE' &
+                       falsos_negativos_2_1$legislatura == 43,
+                     "id_unificado"] <- 8893
+
 ## FALSOS NEGATIVOS 2_2
 
 falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
@@ -352,10 +370,18 @@ falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'ENRIQUE' &
                        falsos_negativos_2_2$primer_apellido == 'RODRIGUEZ'
                      & falsos_negativos_2_2$partido == 'Partido Comunista del Uruguay',"id_unificado"] <- 8891
 
------------------------------------- # union de los DF con los ids corregidos  ----------------------------
+falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'HORACIO' &
+                       falsos_negativos_2_2$primer_apellido == 'ABADIE' &
+                     falsos_negativos_2_2$segundo_apellido == 'SANTOS' 
+                     & falsos_negativos_2_2$legislatura == 40,"id_unificado"] <- 8892
 
 
-rbind(falsos)
+# ------------------------------------ # union de los DF con los ids corregidos #  ----------------------------
+
+
+df_con_ids_1 <- rbind(falsos_negativos_1, falsos_negativos_2_1, falsos_negativos_2_2)
+
+df_con_ids_1 <- df_con_ids_1 %>% arrange(primer_apellido)
 
 
 -------------------------------------------------------------------------------------------------------
