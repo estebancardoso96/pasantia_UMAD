@@ -201,6 +201,25 @@ falsos_negativos_2_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasanti
 
 # HAGO LOS CAMBIOS CON CODIGO (DADO QUE POR ALGUNA RAZON NO SE GUARDAN)
 
+## FALSOS NEGATIVOS 1
+
+falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JOSE' &
+                     falsos_negativos_1$segundo_apellido == 'LANGORTA'
+                     & falsos_negativos_1$primer_apellido == 'LUIS', "primer_apellido"] <- 'LANGORTA'
+
+falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JOSE' &
+                   falsos_negativos_1$primer_apellido == 'LANGORTA', "segundo_nombre"] <- 'LUIS'
+
+falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JUAN'
+                   & falsos_negativos_1$primer_apellido == 'JOSE', "primer_apellido"] <- 'FIGUEROA'
+
+falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JUAN'
+                   & falsos_negativos_1$primer_apellido == 'FIGUEROA', "segundo_nombre"] <- 'JOSE'
+
+falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JUAN'
+                   & falsos_negativos_1$primer_apellido == 'FIGUEROA', "segundo_apellido"] <- ''
+
+
 ## FALSOS NEGATIVOS 2_1
 
 falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JUAN' &
@@ -247,6 +266,54 @@ falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JAVIER' &
                        falsos_negativos_2_1$primer_apellido == 'BARRIOS'
                      & falsos_negativos_2_1$segundo_apellido == 'ANZA', "id_unificado"] <- 8891
 
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'LUIS'
+                     & falsos_negativos_2_1$segundo_apellido == 'REDES', "primer_apellido"] <- 'REDES'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'REDES',
+                       "segundo_nombre"] <- 'LUIS'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'REDES',
+                     "id_unificado"] <- 8074
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'REDES',
+                     "segundo_apellido"] <- ''
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'LUIS'
+                     & falsos_negativos_2_1$segundo_apellido == 'CUELLO', "primer_apellido"] <- 'CUELLO'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'CUELLO',
+                     "segundo_nombre"] <- 'LUIS'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'CUELLO',
+                     "id_unificado"] <- 8075
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'CUELLO',
+                     "segundo_apellido"] <- ''
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'LUIS'
+                     & falsos_negativos_2_1$segundo_apellido == 'NUÑEZ', "primer_apellido"] <- 'NUÑEZ'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'NUÑEZ',
+                     "segundo_nombre"] <- 'LUIS'
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'NUÑEZ',
+                     "id_unificado"] <- 8076
+
+falsos_negativos_2_1[falsos_negativos_2_1$primer_nombre == 'JOSE' &
+                       falsos_negativos_2_1$primer_apellido == 'NUÑEZ',
+                     "segundo_apellido"] <- ''
+
 ## FALSOS NEGATIVOS 2_2
 
 falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JOSE' &
@@ -284,6 +351,12 @@ falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'JORGE' &
 falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'ENRIQUE' &
                        falsos_negativos_2_2$primer_apellido == 'RODRIGUEZ'
                      & falsos_negativos_2_2$partido == 'Partido Comunista del Uruguay',"id_unificado"] <- 8891
+
+------------------------------------ # union de los DF con los ids corregidos  ----------------------------
+
+
+rbind(falsos)
+
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
