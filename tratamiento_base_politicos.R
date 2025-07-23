@@ -375,7 +375,6 @@ falsos_negativos_2_2[falsos_negativos_2_2$primer_nombre == 'HORACIO' &
                      falsos_negativos_2_2$segundo_apellido == 'SANTOS' 
                      & falsos_negativos_2_2$legislatura == 40,"id_unificado"] <- 8892
 
-
 # ------------------------------------ # union de los DF con los ids corregidos #  ----------------------------
 
 
@@ -383,6 +382,76 @@ df_con_ids_1 <- rbind(falsos_negativos_1, falsos_negativos_2_1, falsos_negativos
 
 df_con_ids_1 <- df_con_ids_1 %>% arrange(primer_apellido)
 
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'ABDALA' &
+               df_con_ids_1$partido == 'Partido Nacional' 
+                     ,"id_unificado"] <- 13
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'ABDALA' &
+               df_con_ids_1$partido == 'Partido Colorado' 
+                     ,"id_unificado"] <- 18
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'ABDALA' &
+               df_con_ids_1$partido == 'Partido Colorado' 
+                     ,"id_unificado"] <- 18
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'EDUARDO' &
+               df_con_ids_1$primer_apellido == 'ACEVEDO' &
+               df_con_ids_1$segundo_apellido == 'DIAZ' &
+               df_con_ids_1$partido == 'Partido Nacional' 
+             ,"id_unificado"] <- 62
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'ALVAREZ' &
+               df_con_ids_1$segundo_nombre == 'C.' &
+               df_con_ids_1$legislatura == 39 
+             ,"id_unificado"] <- 265
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'ARIAS' &
+               df_con_ids_1$partido == 'Partido Nacional' &
+               df_con_ids_1$legislatura == 40 
+             ,"id_unificado"] <- 522
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'ARRILLAGA' &
+               df_con_ids_1$segundo_nombre == 'SERVANDO'
+             ,"id_unificado"] <- 608
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+             df_con_ids_1$primer_apellido == 'BENTANCOUR' &
+             df_con_ids_1$segundo_nombre == 'JOSE' &
+             df_con_ids_1$legislatura == 45 
+             ,"id_unificado"] <- 8894
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'BENTANCOUR' &
+               df_con_ids_1$segundo_apellido == 'FERREIRA' &
+               df_con_ids_1$legislatura == 42 
+             ,"id_unificado"] <- 8895
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'LUIS' &
+               df_con_ids_1$primer_apellido == 'BIANCHI' &
+               df_con_ids_1$segundo_nombre == 'A.' &
+               df_con_ids_1$legislatura == 48
+             ,"id_unificado"] <- 1148
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'RAUL' &
+               df_con_ids_1$primer_apellido == 'BOGLIACCINI' &
+               df_con_ids_1$segundo_nombre == 'F.' &
+               df_con_ids_1$legislatura == 29
+             ,"id_unificado"] <- 1203
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'SERGIO' &
+               df_con_ids_1$primer_apellido == 'BOTANA',
+             "partido"] <- 'Partido Nacional'
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARMELO' &
+               df_con_ids_1$primer_apellido == 'CABRERA' &
+               df_con_ids_1$legislatura == 41,
+              "id_unificado"] <- 1462
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
