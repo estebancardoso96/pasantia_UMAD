@@ -81,18 +81,17 @@ partidos_unicos <- df_limpio %>% group_by(partido) %>% count()
 # pegan mejor con los datos de fechas de nacimiento
 
 
--------------------------------------------------------------------------------------------------------
+####################################################################################################
 
 # GENERACION DEL ID PARA CADA POLITICO
 
 # Comienzo con opcion robusta, para ir deduplicando
 
-df_1 <- df_limpio %>%
-  group_by(primer_apellido, segundo_apellido, primer_nombre, segundo_nombre) %>%
-  mutate(id = cur_group_id())
+#df_1 <- df_limpio %>%
+#  group_by(primer_apellido, segundo_apellido, primer_nombre, segundo_nombre) %>%
+#  mutate(id = cur_group_id())
 
--------------------------------------------------------------------------------------------------------
-
+###################################################################################################
 # MATCHING PROBABILISTICO (DEDUPLICACION)
 
 library(fastLink)
@@ -184,20 +183,16 @@ falsos_negativos_1
 
 
 # chequeo a mano izquierda
-write.csv(falsos_negativos_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv', row.names = FALSE)
+#write.csv(falsos_negativos_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv', row.names = FALSE)
 
 # chequeo a mano derecha (partido nacional)
-write.csv(falsos_negativos_2_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv', row.names = FALSE)
+#write.csv(falsos_negativos_2_1, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv', row.names = FALSE)
 
 # chequeo a mano derecha (partido nacional)
-write.csv(falsos_negativos_2_2, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_2.csv', row.names = FALSE)
+#write.csv(falsos_negativos_2_2, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_2.csv', row.names = FALSE)
 
 
 ---------------------------------------------------- # PEGADO DE BASES CORREGIDAS MANUALMENTE ------
-
-falsos_negativos_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_1.csv')
-falsos_negativos_2_1_limpio <- read.csv('C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_1.csv')  
-
 
 # HAGO LOS CAMBIOS CON CODIGO (DADO QUE POR ALGUNA RAZON NO SE GUARDAN)
 
@@ -452,6 +447,274 @@ df_con_ids_1[df_con_ids_1$primer_nombre == 'CARMELO' &
                df_con_ids_1$primer_apellido == 'CABRERA' &
                df_con_ids_1$legislatura == 41,
               "id_unificado"] <- 1462
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'CARDOSO' &
+               df_con_ids_1$segundo_nombre == 'CARLOS' &
+               df_con_ids_1$legislatura %in%c(47,48),
+               "id_unificado"] <- 1663
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'HUMBERTO' &
+               df_con_ids_1$primer_apellido == 'CASTELLI' &
+               df_con_ids_1$legislatura %in%c(31,29),
+               "id_unificado"] <- 1776
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'CASTRO' &
+               df_con_ids_1$partido == 'Frente Amplio' &
+               df_con_ids_1$legislatura %in%c(48),
+             "id_unificado"] <- 1806
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'DIAZ' &
+               df_con_ids_1$segundo_nombre == 'RAMON' &
+               df_con_ids_1$legislatura %in%c(38),
+             "id_unificado"] <- 2466
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'DIAZ' &
+               df_con_ids_1$segundo_apellido == '(H)',
+             "id_unificado"] <- 2493
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'RAMON' &
+               df_con_ids_1$primer_apellido == 'DIAZ' &
+               df_con_ids_1$partido == 'Partido Liberal',
+             "id_unificado"] <- 2489
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'OMAR' &
+               df_con_ids_1$primer_apellido == 'CASTRO' &
+               df_con_ids_1$segundo_apellido == 'BIANCHINO',
+              "id_unificado"] <- 1809
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'EDUARDO' &
+               df_con_ids_1$primer_apellido == 'CASTRO' &
+               df_con_ids_1$legislatura %in%c(47,48),
+               "id_unificado"] <- 1804
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ALEJANDRO' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$partido == 'Frente Amplio' &
+               df_con_ids_1$legislatura %in%c(48),
+                "id_unificado"] <- 2935
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$partido == 'Frente Amplio' &
+               df_con_ids_1$legislatura %in%c(45),
+             "id_unificado"] <- 2914
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'PEDRO' &
+               df_con_ids_1$primer_apellido == 'ETCHEGARAY' &
+               df_con_ids_1$partido == 'Partido Colorado' &
+               df_con_ids_1$legislatura %in%c(46,48),
+             "id_unificado"] <- 2739
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'ETCHEVERRY' &
+               df_con_ids_1$partido == 'Frente Amplio' &
+               df_con_ids_1$legislatura %in%c(43),
+             "id_unificado"] <- 2763
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$segundo_apellido == 'SALDAÑA' &
+               df_con_ids_1$legislatura %in%c(23),
+             "id_unificado"] <- 2880
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'DANIEL' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$segundo_apellido == 'FRANCA' &
+               df_con_ids_1$legislatura %in%c(42),
+             "id_unificado"] <- 2889
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'WASHINGTON' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$segundo_apellido == 'MARIN' &
+               df_con_ids_1$legislatura %in%c(38),
+             "id_unificado"] <- 2954
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JULIO' &
+               df_con_ids_1$primer_apellido == 'FERNANDEZ' &
+               df_con_ids_1$partido == 'Partido Colorado' &
+               df_con_ids_1$legislatura %in%c(47),
+             "id_unificado"] <- 2916
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'GUILLERMO' &
+               df_con_ids_1$primer_apellido == 'GARCIA' &
+               df_con_ids_1$segundo_nombre == 'L.',
+             "id_unificado"] <- 3340
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ALFREDO' &
+               df_con_ids_1$primer_apellido == 'GARCIA' &
+               df_con_ids_1$partido == 'Frente Amplio',
+             "id_unificado"] <- 3371
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ORLANDO' &
+               df_con_ids_1$primer_apellido == 'GIL' &
+               df_con_ids_1$partido == 'Frente Amplio',
+             "id_unificado"] <- 3486
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'FRANCISCO' &
+               df_con_ids_1$primer_apellido == 'GOMEZ' &
+               df_con_ids_1$segundo_nombre == 'LARRIERA',
+             "id_unificado"] <- 3561
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'HUGO' &
+               df_con_ids_1$primer_apellido == 'GONZALEZ' &
+               df_con_ids_1$partido == 'Partido Nacional',
+             "id_unificado"] <- 3644
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'GONZALEZ' &
+               df_con_ids_1$partido == 'Partido Colorado' &
+               df_con_ids_1$legislatura == 35,
+             "id_unificado"] <- 3651
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ALBERTO' &
+               df_con_ids_1$primer_apellido == 'GONZALEZ' &
+               df_con_ids_1$partido == 'Frente Amplio',
+             "id_unificado"] <- 3636
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CESAR' &
+               df_con_ids_1$primer_apellido == 'GUTIERREZ' &
+               df_con_ids_1$segundo_nombre == 'G.',
+             "id_unificado"] <- 3811
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ALBERTO' &
+               df_con_ids_1$primer_apellido == 'IGLESIAS' &
+               df_con_ids_1$segundo_apellido == 'PUIG',
+             "id_unificado"] <- 3998
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'LOPEZ' &
+               df_con_ids_1$segundo_apellido == 'GUTIERREZ',
+             "id_unificado"] <- 4420
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'MARTINEZ' &
+               df_con_ids_1$legislatura %in%c (47,41),
+             "id_unificado"] <- 4709
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JORGE' &
+               df_con_ids_1$primer_apellido == 'MARTINEZ' &
+               df_con_ids_1$legislatura %in%c (47),
+             "id_unificado"] <- 4753
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'MORENO' &
+               df_con_ids_1$segundo_nombre == 'B.' &
+               df_con_ids_1$legislatura %in%c (35, 36,37),
+             "id_unificado"] <- 5172
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'MARIA' &
+               df_con_ids_1$primer_apellido == 'MUNIZ' &
+               df_con_ids_1$partido == 'Partido Nacional',
+             "id_unificado"] <- 5206
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ADOLFO' &
+               df_con_ids_1$primer_apellido == 'PEREZ' &
+               df_con_ids_1$segundo_apellido == 'PIERA',
+             "id_unificado"] <- 5875
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ADOLFO' &
+               df_con_ids_1$primer_apellido == 'PEREZ' &
+               df_con_ids_1$segundo_apellido == 'SANCHEZ' &
+               df_con_ids_1$legislatura %in%c (32),
+             "id_unificado"] <- 8894
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ADOLFO' &
+               df_con_ids_1$primer_apellido == 'PEREZ' &
+               df_con_ids_1$segundo_apellido == 'SANDE',
+             "id_unificado"] <- 8895
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'LUIS' &
+               df_con_ids_1$primer_apellido == 'PONCE' &
+               df_con_ids_1$legislatura == 37,
+             "id_unificado"] <- 6060
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$segundo_apellido == 'ALVEZ',
+             "id_unificado"] <- 6550
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+             df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+             df_con_ids_1$segundo_apellido == 'LABRUNA' &
+             df_con_ids_1$legislatura %in%c (40,41,42),
+             "id_unificado"] <- 8896
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$segundo_apellido == 'CAL' &
+               df_con_ids_1$legislatura %in%c (39,41,40),
+             "id_unificado"] <- 8897
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'HUGO' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$segundo_apellido == 'CARRASCO' &
+               df_con_ids_1$legislatura %in%c (39,41,39),
+             "id_unificado"] <- 6535
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$segundo_apellido == 'CORREA' &
+               df_con_ids_1$legislatura %in%c (36,37,38,35),
+             "id_unificado"] <- 6457
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'RAMON' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$partido == 'Partido Colorado' &
+               df_con_ids_1$legislatura %in%c (48),
+             "id_unificado"] <- 6595
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ENRIQUE' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$partido %in%c ('Frente Izquierda de Liberacion','Frente Amplio'),
+             "id_unificado"] <- 8891
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JOSE' &
+               df_con_ids_1$segundo_nombre == 'LUIS' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$legislatura == 41 &
+               df_con_ids_1$partido %in%c ('Partido Nacional'),
+             "id_unificado"] <- 6544
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$segundo_nombre == 'CARLOS' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$legislatura %in%c (43,44) &
+               df_con_ids_1$partido %in%c ('Partido Colorado'),
+             "id_unificado"] <- 8898
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ANTONIO' &
+               df_con_ids_1$segundo_nombre == 'J.' &
+               df_con_ids_1$primer_apellido == 'RODRIGUEZ' &
+               df_con_ids_1$legislatura %in%c (29) &
+               df_con_ids_1$partido %in%c ('Partido Nacional'),
+             "id_unificado"] <- 6499
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'MARIO' &
+               df_con_ids_1$primer_apellido == 'ROSSI' &
+               df_con_ids_1$partido %in%c ('Partido Comuna'),
+             "id_unificado"] <- 6713
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'ALEJANDRO' &
+               df_con_ids_1$primer_apellido == 'SANCHEZ' &
+               df_con_ids_1$partido %in%c ('Partido cuatro puntos cardinales'),
+             "id_unificado"] <- 6879
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'JUAN' &
+               df_con_ids_1$segundo_nombre == 'PEDRO' &
+               df_con_ids_1$primer_apellido == 'SUAREZ' &
+               df_con_ids_1$legislatura %in%c (29,30,31,32) &
+               df_con_ids_1$partido %in%c ('Partido Nacional'),
+             "id_unificado"] <- 7363
+
+df_con_ids_1[df_con_ids_1$primer_nombre == 'CARLOS' &
+               df_con_ids_1$segundo_nombre == 'MARIA' &
+               df_con_ids_1$primer_apellido == 'URIARTE' &
+               df_con_ids_1$partido %in%c ('Partido Colorado'),
+             "id_unificado"] <- 7632
 
 -------------------------------------------------------------------------------------------------------
 # PEGADO DE FECHAS DE NACIMIENTO  
