@@ -758,7 +758,11 @@ df_con_ids_1[df_con_ids_1$primer_nombre == 'OSCAR' &
              "id_unificado"] <- 5847
 
 
-perez <- df_con_ids_1 %>% filter(primer_apellido == 'PEREZ') %>% select(-cluster_id)
+######## UNION DE AMBOS DF
+
+df_junto <- rbind(df_con_ids, df_con_ids_1) %>% arrange(primer_apellido) %>%
+  mutate(id = if_else(is.na(id_unificado), cluster_id, id_unificado)) %>%
+  select(-c(id_unificado, cluster_id))
 
 
 -------------------------------------------------------------------------------------------------------
