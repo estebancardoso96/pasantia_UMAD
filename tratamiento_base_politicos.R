@@ -12,13 +12,51 @@ data("legislaturas")
 
 politicos <- politicos %>% filter(legislatura >= 21)
 
+library(fastLink)
+library(RecordLinkage)
+
+pairs <- compare.dedup(
+  politicos,
+  blockfld = list(c(1)),  # Bloquear por primer_nombre (col 1) y primer_apellido (col 3)
+  strcmp = c(TRUE, TRUE, TRUE, TRUE),  # Usar comparación de strings para todos los campos
+  exclude = c("legislatura", "partido", "fecha_fin", "fecha_inicio","cargo","circunscripcion")  # Excluir columnas no relevantes para el matching
+)
+
+# Calcular pesos (probabilidades)
+pairs <- epiWeights(pairs)
+
+# Obtener pares coincidentes
+results <- epiClassify(pairs, threshold.upper = 0.85)
+
+
+# Paso 5: Extraer y asignar clusters CORRECTAMENTE
+# Necesitamos usar la función getPairs() para obtener los matches
+matched_pairs <- getPairs(results, single.rows = TRUE)
+
+# Crear un mapeo de IDs
+cluster_map <- data.frame(
+  id = seq_len(nrow(politicos)),
+  cluster_id = seq_len(nrow(politicos))  # Inicialmente cada registro es su propio cluster
+)
+
+# Actualizar clusters basado en los matches
+for(i in seq_len(nrow(matched_pairs))) {
+  id1 <- matched_pairs$id1[i]
+  id2 <- matched_pairs$id2[i]
+  current_cluster <- min(cluster_map$cluster_id[id1], cluster_map$cluster_id[id2])
+  cluster_map$cluster_id[cluster_map$id %in% c(id1, id2)] <- current_cluster
+}
+
+# Paso 6: Asignar los clusters al dataframe original
+politicos <- politicos %>%
+  mutate(cluster_id = cluster_map$cluster_id)
+
 # LIMPIO APELLIDOS COMPUESTOS (PROCESO DE ESTANDARIZACIÓN)
 
-nrow(politicos %>% distinct())
+politicos <- politicos %>%
+  select(1, cluster_id, everything()) 
 
-df <- politicos %>% distinct(politico, partido, legislatura)
-
-df_limpio <- df %>%
+df_limpio <- politicos %>%
   # 1. Separar por coma en apellido / nombre
   separate(politico, into = c("apellidos", "nombres"), sep = ",") %>%
   
@@ -103,7 +141,7 @@ df_limpio <- df_limpio %>%
 
 pairs <- compare.dedup(
   df_limpio,
-  blockfld = list(c(1, 3,5)),  # Bloquear por primer_nombre (col 1) y primer_apellido (col 3)
+  blockfld = list(c(1,3,5)),  # Bloquear por primer_nombre (col 1) y primer_apellido (col 3)
   strcmp = c(TRUE, TRUE, TRUE, TRUE),  # Usar comparación de strings para todos los campos
   exclude = c("legislatura")  # Excluir columnas no relevantes para el matching
 )
@@ -192,15 +230,15 @@ falsos_negativos_1
 #write.csv(falsos_negativos_2_2, 'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/falsos_negativos_2_2.csv', row.names = FALSE)
 
 
----------------------------------------------------- # PEGADO DE BASES CORREGIDAS MANUALMENTE ------
+################################ PEGADO DE BASES CORREGIDAS MANUALMENTE ###
 
 # HAGO LOS CAMBIOS CON CODIGO (DADO QUE POR ALGUNA RAZON NO SE GUARDAN)
 
 ## FALSOS NEGATIVOS 1
 
 falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JOSE' &
-                     falsos_negativos_1$segundo_apellido == 'LANGORTA'
-                     & falsos_negativos_1$primer_apellido == 'LUIS', "primer_apellido"] <- 'LANGORTA'
+                     falsos_negativos_1$segundo_apellido == 'LANGORTA', 
+                     "primer_apellido"] <- 'LANGORTA'
 
 falsos_negativos_1[falsos_negativos_1$primer_nombre == 'JOSE' &
                    falsos_negativos_1$primer_apellido == 'LANGORTA', "segundo_nombre"] <- 'LUIS'
@@ -757,39 +795,36 @@ df_con_ids_1[df_con_ids_1$primer_nombre == 'OSCAR' &
                df_con_ids_1$legislatura %in%c (42,43),
              "id_unificado"] <- 5847
 
+df_con_ids[df_con_ids$primer_nombre %in%c ('JULIO','GUILLERMO') &
+             df_con_ids$primer_apellido == 'BESOZZI' &
+             df_con_ids$partido == 'Partido Nacional',
+             "cluster_id"] <- 1118
+
+df_con_ids[df_con_ids$primer_nombre %in%c ('LUIS','SERGIO') &
+             df_con_ids$primer_apellido == 'BOTANA' &
+             df_con_ids$partido == 'Partido Nacional',
+           "cluster_id"] <- 1294
 
 ######## UNION DE AMBOS DF
+
+### corregir ids LACALLE POU, HIERRO, BATLLE
+
+df_con_ids_0 <- df_con_ids %>%
+  filter(!is.na(primer_nombre) & primer_nombre != "",
+         !is.na(primer_apellido) & primer_apellido != "",
+         !is.na(segundo_apellido) & segundo_apellido != "") %>% group_by(primer_nombre, primer_apellido) %>% 
+  filter(n()>1)
+
 
 df_junto <- rbind(df_con_ids, df_con_ids_1) %>% arrange(primer_apellido) %>%
   mutate(id = if_else(is.na(id_unificado), cluster_id, id_unificado)) %>%
   select(-c(id_unificado, cluster_id))
 
 
--------------------------------------------------------------------------------------------------------
+########################################################################################
+
 # PEGADO DE FECHAS DE NACIMIENTO  
+
   
-# 1.689.972
-base_fecha_nac <- base %>% filter(!is.na(fecha_nacimiento))
 
-base_fecha_nac <- base_fecha_nac %>% group_by_all() %>% count()
-
-
-
-nrow(base_fecha_nac %>% distinct()) # 1.689.749
-nrow(df_corregido) # 5.437
-
-df_1 <- df_corregido %>% filter(!is.na(primer_nombre) & !is.na(segundo_nombre) & !is.na(primer_apellido)
-                        & !is.na(segundo_apellido))
-
-
-df_2 <- base_fecha_nac %>% filter(!is.na(primer_nombre) & !is.na(segundo_nombre) & !is.na(primer_apellido)
-                                & !is.na(segundo_apellido))
-
-df_1_2 <- df_1 %>% left_join(df_2, by =c("primer_nombre","primer_apellido", "segundo_apellido"))
-
-nrow(df_1_2 %>% filter(!is.na(fecha_nacimiento))) # solamente 8 pude pegar fecha
-
----------------------------------------------------------------------------------------------------------------------
-
-df_2 <- df_corregido %>% filter(!is.na(primer_nombre) & !is.na(segundo_nombre) & !is.na(primer_apellido)
-                                  & !is.na(segundo_apellido))
+  
