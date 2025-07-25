@@ -216,7 +216,7 @@ campos_comparar$cluster_id <- cluster_map$cluster_id
 
 # Paso 6: Agregar `cluster_id` al data frame original
 falsos_negativos <- falsos_negativos %>%
-  bind_cols(cluster_id_nuevo = campos_comparar$cluster_id + 8678 - 1)
+  bind_cols(cluster_id_nuevo = campos_comparar$cluster_id + 8677 - 1)
 
 falsos_negativos <- falsos_negativos %>% select(5, cluster_id_nuevo, everything())
 
@@ -246,23 +246,24 @@ falsos_negativos[falsos_negativos$primer_nombre == 'HORACIO' &
                  falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
 
 falsos_negativos[falsos_negativos$primer_nombre == 'HORACIO' &
-                   falsos_negativos$primer_apellido == 'ABADIE' &
-                   falsos_negativos$segundo_apellido == 'SANTOS' &
-                   falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
+                 falsos_negativos$primer_apellido == 'ABADIE' &
+                 falsos_negativos$segundo_apellido == 'SANTOS' &
+                 falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
 
 falsos_negativos[falsos_negativos$primer_nombre == 'ADOLFO' &
                  falsos_negativos$primer_apellido == 'PEREZ' &
                  falsos_negativos$segundo_apellido == 'SANDE'
-                 ,"cluster_id_nuevo"] <- 8682
+                 ,"cluster_id_nuevo"] <- 10281
 
 ###### UNION DE LAS BASES ######
 
-
-falsos_negativos_1 <- falsos_negativos %>% filter(primer_apellido == "LACALLE" | primer_apellido == "FLORES"
-                            & primer_nombre == 'MANUEL') %>% select(-c(cluster_id_nuevo))
+falsos_negativos_1 <- falsos_negativos %>% filter(primer_apellido == "LACALLE" | (primer_apellido == "FLORES"
+                      & primer_nombre == 'MANUEL' | primer_nombre == 'LUIS' & primer_apellido == 'HIERRO')) %>%
+                      select(-c(cluster_id_nuevo))
 
 falsos_negativos <- falsos_negativos %>% filter(primer_apellido != "LACALLE" & (primer_apellido != "FLORES"
-                                                                 | primer_nombre != 'MANUEL'))
+                                                | primer_nombre != 'MANUEL') & (primer_apellido != "HIERRO"
+                                                                                | primer_nombre != 'LUIS'))
 
 falsos_negativos_1 <- falsos_negativos_1 %>%
   mutate(across(where(is.character), ~na_if(., "")))
@@ -276,6 +277,47 @@ falsos_negativos <- falsos_negativos %>%
 politicos_id <- rbind(df_limpio_1, falsos_negativos_1, falsos_negativos) %>%
   rename(id_politico=cluster_id)
 
+politicos_id[politicos_id$primer_nombre == 'ADOLFO' &
+             politicos_id$primer_apellido == 'PEREZ' &
+             politicos_id$segundo_apellido == 'SANCHEZ'
+            ,"id_politico"] <- 10282
+
+politicos_id[politicos_id$primer_nombre == 'JULIO' &
+             politicos_id$primer_apellido == 'BESOZZI'
+            ,"id_politico"] <- 5556
+
+politicos_id[which(politicos_id$primer_nombre == 'JOSE' &
+             politicos_id$primer_apellido == 'LOPEZ' &
+             politicos_id$segundo_apellido == 'LAPHITZ')
+             ,"id_politico"] <- 10283
+
+politicos_id[which(politicos_id$primer_nombre == 'PEDRO' &
+             politicos_id$primer_apellido == 'ETCHEGARAY' &
+             politicos_id$partido == 'Partido Colorado')
+             ,"id_politico"] <- 10284
+
+politicos_id[which(politicos_id$primer_nombre == 'LUIS' &
+             politicos_id$primer_apellido == 'BOTANA')
+             ,"id_politico"] <- 590
+
+politicos_id[which(politicos_id$primer_nombre == 'RENAN' &
+             politicos_id$primer_apellido == 'RODRIGUEZ' &
+             politicos_id$segundo_apellido == 'SANTURIO')
+             ,"id_politico"] <- 10285
+
+politicos_id[which(politicos_id$primer_nombre == 'HUMBERTO' &
+             politicos_id$primer_apellido == 'CASTELLI' &
+             politicos_id$legislatura == 31)
+             ,"id_politico"] <- 9021
+
+politicos_id[which(politicos_id$primer_nombre == 'JUAN' &
+             politicos_id$primer_apellido == 'BORDABERRY')
+             ,"id_politico"] <- 8931
+
 politicos_id %>% distinct(id_politico) %>% count() 
+
+
+
+
 
 
