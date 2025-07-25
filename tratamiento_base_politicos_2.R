@@ -171,13 +171,13 @@ partidos_unicos <- df_limpio %>% group_by(partido) %>% count()
 # Busqueda de falsos negativos
 
 falsos_negativos <- df_limpio %>% group_by(primer_nombre, primer_apellido) %>%
-  filter(n_distinct(cluster_id) > 1)
+  filter(n_distinct(cluster_id) > 1) %>% ungroup()
 
 df_limpio_1 <- df_limpio %>% group_by(primer_nombre, primer_apellido) %>%
-  filter(n_distinct(cluster_id) <= 1)
+  filter(n_distinct(cluster_id) <= 1) %>% ungroup()
 
-falsos_negativos <- falsos_negativos %>% select(-c(fecha_inicio, fecha_fin)) %>% 
-  mutate(across(everything(), ~ifelse(is.na(.), "", .)))
+falsos_negativos <- falsos_negativos %>% 
+  mutate(across(where(is.character), ~ ifelse(is.na(.), "", .)))
 
 campos_comparar <- falsos_negativos[c("primer_nombre", "primer_apellido", "segundo_apellido",
 "partido")]
@@ -220,7 +220,43 @@ falsos_negativos <- falsos_negativos %>%
 
 falsos_negativos <- falsos_negativos %>% select(5, cluster_id_nuevo, everything())
 
+## CORRECIONES EN DF LIMPIO Y EN LOS FALSOS NEGATIVOS
 
-## CORRECIONES EN LOS FALSOS NEGATIVOS
+df_limpio_1[which(df_limpio_1$primer_apellido == 'BELTRAN' &
+            df_limpio_1$segundo_apellido == 'MULLIN'),
+            "cluster_id"] <- 474
+
+df_limpio_1[which(df_limpio_1$primer_apellido == 'BELTRAN' &
+            df_limpio_1$segundo_apellido == 'BARBAT'),
+            "cluster_id"] <- 8679
+
+falsos_negativos[falsos_negativos$primer_nombre == 'HORACIO' &
+                 falsos_negativos$primer_apellido == 'ABADIE' &
+                 falsos_negativos$segundo_apellido == 'SANTOS' &
+                 falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
+
+
+###### UNION DE LAS BASES ######
+
+
+falsos_negativos_1 <- falsos_negativos %>% filter(primer_apellido == "LACALLE" | primer_apellido == "FLORES"
+                            & primer_nombre == 'MANUEL') %>% select(-c(cluster_id_nuevo))
+
+falsos_negativos <- falsos_negativos %>% filter(primer_apellido != "LACALLE" & (primer_apellido != "FLORES"
+                                                                 | primer_nombre != 'MANUEL'))
+
+falsos_negativos_1 <- falsos_negativos_1 %>%
+  mutate(across(where(is.character), ~na_if(., "")))
+
+falsos_negativos <- falsos_negativos %>%
+  mutate(across(where(is.character), ~na_if(., ""))) %>% select(-cluster_id) %>%
+  rename(cluster_id=cluster_id_nuevo)
+
+## uno este df con df_limpio_1
+
+politicos_id <- rbind(df_limpio_1, falsos_negativos_1, falsos_negativos) %>%
+  rename(id_politico=cluster_id)
+
+politicos_id %>% distinct(id_politico) %>% count() 
 
 
