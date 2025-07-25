@@ -216,7 +216,7 @@ campos_comparar$cluster_id <- cluster_map$cluster_id
 
 # Paso 6: Agregar `cluster_id` al data frame original
 falsos_negativos <- falsos_negativos %>%
-  bind_cols(cluster_id_nuevo = campos_comparar$cluster_id)
+  bind_cols(cluster_id_nuevo = campos_comparar$cluster_id + 8678 - 1)
 
 falsos_negativos <- falsos_negativos %>% select(5, cluster_id_nuevo, everything())
 
@@ -230,11 +230,30 @@ df_limpio_1[which(df_limpio_1$primer_apellido == 'BELTRAN' &
             df_limpio_1$segundo_apellido == 'BARBAT'),
             "cluster_id"] <- 8679
 
+df_limpio_1[which(df_limpio_1$primer_nombre == 'ALEJANDRO' &
+                  df_limpio_1$primer_apellido == 'SANCHEZ' &
+                  df_limpio_1$partido == 'Partido cuatro puntos cardinales'),
+                  "cluster_id"] <- 8680
+
+df_limpio_1[which(df_limpio_1$primer_nombre == 'MARIO' &
+                  df_limpio_1$primer_apellido == 'ROSSI' &
+                  df_limpio_1$partido == 'Partido Comuna'),
+                  "cluster_id"] <- 8681
+
 falsos_negativos[falsos_negativos$primer_nombre == 'HORACIO' &
                  falsos_negativos$primer_apellido == 'ABADIE' &
                  falsos_negativos$segundo_apellido == 'SANTOS' &
                  falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
 
+falsos_negativos[falsos_negativos$primer_nombre == 'HORACIO' &
+                   falsos_negativos$primer_apellido == 'ABADIE' &
+                   falsos_negativos$segundo_apellido == 'SANTOS' &
+                   falsos_negativos$legislatura == 40,"cluster_id_nuevo"] <- 8678
+
+falsos_negativos[falsos_negativos$primer_nombre == 'ADOLFO' &
+                 falsos_negativos$primer_apellido == 'PEREZ' &
+                 falsos_negativos$segundo_apellido == 'SANDE'
+                 ,"cluster_id_nuevo"] <- 8682
 
 ###### UNION DE LAS BASES ######
 
