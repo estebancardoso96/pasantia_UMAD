@@ -134,6 +134,34 @@ df_limpio[df_limpio$primer_nombre == 'WASHINGTON' &
             df_limpio$primer_apellido == 'BELTRAN'
           & df_limpio$legislatura %in%c(35,36,37,38,39,40,41), "segundo_apellido"] <- 'MULLIN'
 
+df_limpio[df_limpio$primer_nombre == 'WASHINGTON' &
+            df_limpio$primer_apellido == 'BELTRAN'
+          & df_limpio$legislatura %in%c(35,36,37,38,39,40,41), "segundo_apellido"] <- 'MULLIN'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'LUIS'
+          & df_limpio$cluster_id == 6503, "primer_apellido"] <- 'CUELLO'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'CUELLO'
+          & df_limpio$cluster_id == 6503, "segundo_nombre"] <- 'LUIS'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'LUIS'
+          & df_limpio$cluster_id == 6333, "primer_apellido"] <- 'REDES'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'REDES'
+          & df_limpio$cluster_id == 6333, "segundo_nombre"] <- 'LUIS'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'LUIS'
+          & df_limpio$cluster_id == 7191, "primer_apellido"] <- 'NUÑEZ'
+
+df_limpio[df_limpio$primer_nombre == 'JOSE'
+          & df_limpio$primer_apellido == 'NUÑEZ'
+          & df_limpio$cluster_id == 7191, "primer_apellido"] <- 'LUIS'
+
 partidos_unicos <- df_limpio %>% group_by(partido) %>% count()
 
 ####################################################################################################
@@ -191,4 +219,8 @@ falsos_negativos <- falsos_negativos %>%
   bind_cols(cluster_id_nuevo = campos_comparar$cluster_id)
 
 falsos_negativos <- falsos_negativos %>% select(5, cluster_id_nuevo, everything())
+
+
+## CORRECIONES EN LOS FALSOS NEGATIVOS
+
 
