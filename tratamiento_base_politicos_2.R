@@ -83,8 +83,9 @@ apellidos_compuestos <- c("LEON", "LOS SANTOS", "LA SERNA", "LA SIERRA", "ACHA",
                           "RIOS", "TORRES WILSON", "SIERRA", "CARLO", "SILVA", "DOVITTIS", "GREGORIO", "HAEDO",
                           "CAMPO", "MARTINI", "VALLE", "CARLOS", "FUENTES", "AMORES", "ARMAS", "MEDINA", "BOISMENU",
                           "LA HOZ", "ALCANTARA", "LIMA", "ARRASCAETA", "ENRIQUEZ", "TORO", "CANDIA", "TRANO", 
-                          "COLL", "EACHEN", "ALLISTER", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
-                          "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA", 'ARTEAGA')
+                          "COLL", "EACHEN", "ALLISTER GREEN", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
+                          "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA", 'ARTEAGA','AMORES', 'PAZOS','HAEDO HARLEY',
+                          'BRUM CARBAJAL','CARLOS PINTOS','CASTRO PEREZ','POSADAS BELGRANO','VEGA')
 
 df_limpio <- df_limpio %>%
   mutate(
@@ -316,8 +317,8 @@ politicos_id[which(politicos_id$primer_nombre == 'JUAN' &
 
 politicos_id %>% distinct(id_politico) %>% count() 
 
-
-
+politicos_id <-  politicos_id %>%
+  mutate(id_politico = dense_rank(id_politico))
 
 
 
