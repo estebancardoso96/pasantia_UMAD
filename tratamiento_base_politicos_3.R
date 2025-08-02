@@ -156,6 +156,9 @@ falsos_negativos <- falsos_negativos %>%
 
 campos_comparar <- falsos_negativos[c("primer_nombre", "primer_apellido", "segundo_apellido",
                                       "partido")]
+library(fastLink)
+library(RecordLinkage)
+
 rpairs <- compare.dedup(
   campos_comparar,
   strcmp = c(TRUE, TRUE, TRUE,TRUE),  # compara strings para los 3 campos
@@ -295,7 +298,54 @@ politicos_id %>% distinct(id_politico) %>% count()
 politicos_id <-  politicos_id %>%
   mutate(id_politico = dense_rank(id_politico))
 
+###################################### FECHA DE NACIMIENTO ####################################
+
+library(arrow)
+
+df_nac <- read_parquet("df_nac.parquet")
+
+base <- read.csv("base_fecha_nac.csv")
 
 
+apellidos <- politicos_id %>% distinct(id_politico, primer_apellido) %>%
+  group_by(primer_apellido) %>% count() %>% arrange(desc(n))
 
+
+apellidos_1 <- apellidos %>% filter(n == 1)
+
+apellidos_1 <- politicos_id %>%
+  filter(primer_apellido %in% apellidos_1$primer_apellido)
+
+ids <-apellidos_1 %>%
+  select(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico, fecha_inicio) %>%
+  distinct() %>%
+  group_by(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico) %>%
+  slice_max(order_by = fecha_inicio, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+base <- base %>% select(-c(id_politico, fecha_inicio))
+
+politicos_id_1 <-politicos_id %>% inner_join(base, by=c("primer_apellido", "segundo_apellido", "segundo_nombre",
+                                      "primer_nombre"))%>%select(-ends_with(".y"))  
+
+politicos_id_1 <- politicos_id_1 %>%
+  mutate(
+    fecha_nac = if_else(
+      !is.na(fecha_nac) & nchar(as.character(fecha_nac)) == 4,  # Si es solo año
+      as.Date(paste0(fecha_nac, "-06-01")),
+      as.Date(fecha_nac)
+    )
+  )
+
+politicos_id_1$fecha_nac <- as.Date(politicos_id_1$fecha_nac)
+
+politicos_id_1 <- politicos_id_1 %>%
+  group_by(id_politico) %>%
+  mutate(
+    fecha_nac = coalesce(
+      fecha_nac,
+      if (all(is.na(fecha_nac))) NA_Date_ else max(fecha_nac, na.rm = TRUE)
+    )
+  ) %>%
+  ungroup()
 
