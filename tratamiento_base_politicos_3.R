@@ -298,6 +298,9 @@ politicos_id %>% distinct(id_politico) %>% count()
 politicos_id <-  politicos_id %>%
   mutate(id_politico = dense_rank(id_politico))
 
+politicos_id %>% distinct(id_politico) %>% count() # 4130 ids
+
+
 ###################################### FECHA DE NACIMIENTO ####################################
 
 library(arrow)
@@ -305,28 +308,30 @@ library(arrow)
 df_nac <- read_parquet("df_nac.parquet")
 
 base <- read.csv("base_fecha_nac.csv")
+base %>% distinct(id_politico) %>% count()
+
+base2 <- read.csv("base_fecha_nac_2.csv")
+base2 %>% distinct(id_politico) %>% count()
 
 
-apellidos <- politicos_id %>% distinct(id_politico, primer_apellido) %>%
-  group_by(primer_apellido) %>% count() %>% arrange(desc(n))
+base_final <- rbind(base, base2)
+
+# 3268
+base_final %>% distinct(id_politico) %>% count()
+
+# por que no tengo todos los id politico?? 4130
+politicos_id %>% distinct(id_politico) %>% count()
 
 
-apellidos_1 <- apellidos %>% filter(n == 1)
+### Comenzamos con el pegado de las fechas de nacimiento con la base por los nombres y apellidos
+### que no se repiten
 
-apellidos_1 <- politicos_id %>%
-  filter(primer_apellido %in% apellidos_1$primer_apellido)
+base[base == ""] <- NA
+base <- base %>% select(-(id_politico))
+politicos_id <- politicos_id %>% select(-(politico_norm))
 
-ids <-apellidos_1 %>%
-  select(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico, fecha_inicio) %>%
-  distinct() %>%
-  group_by(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico) %>%
-  slice_max(order_by = fecha_inicio, n = 1, with_ties = FALSE) %>%
-  ungroup()
-
-base <- base %>% select(-c(id_politico, fecha_inicio))
-
-politicos_id_1 <-politicos_id %>% inner_join(base, by=c("primer_apellido", "segundo_apellido", "segundo_nombre",
-                                      "primer_nombre"))%>%select(-ends_with(".y"))  
+politicos_id_1 <- politicos_id %>% left_join(base, by=c("primer_apellido", "segundo_apellido", "segundo_nombre",
+                                                         "primer_nombre"))%>%select(-ends_with(".y"))  
 
 politicos_id_1 <- politicos_id_1 %>%
   mutate(
@@ -348,4 +353,43 @@ politicos_id_1 <- politicos_id_1 %>%
     )
   ) %>%
   ungroup()
+
+
+
+
+
+
+
+
+#########################################################################################################
+
+
+
+apellidos <- politicos_id %>% distinct(id_politico, primer_apellido) %>%
+  group_by(primer_apellido) %>% count() %>% arrange(desc(n))
+
+## apellidos unicos
+apellidos_1 <- apellidos %>% filter(n == 1)
+
+apellidos_1 <- politicos_id %>%
+  filter(primer_apellido %in% apellidos_1$primer_apellido)
+
+## apellidos repetidos
+apellidos_2 <- apellidos %>% filter(n > 1)
+
+apellidos_2 <- politicos_id %>%
+  filter(primer_apellido %in% apellidos_2$primer_apellido)
+
+ids <- apellidos_2 %>%
+  select(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico, fecha_inicio) %>%
+  distinct() %>%
+  group_by(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico) %>%
+  slice_max(order_by = fecha_inicio, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+
+#write.csv(ids, row.names=FALSE,'base_fecha_nac_2.csv')
+
+base <- base %>% select(-c(id_politico, fecha_inicio))
+
 
