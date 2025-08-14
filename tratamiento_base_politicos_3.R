@@ -66,7 +66,7 @@ apellidos_compuestos <- c("LEON", "LOS SANTOS", "LA SERNA", "LA SIERRA", "ACHA",
                           "LA HOZ", "ALCANTARA", "LIMA", "ARRASCAETA", "ENRIQUEZ", "TORO", "CANDIA", "TRANO", 
                           "COLL", "EACHEN", "ALLISTER GREEN", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
                           "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA", 'ARTEAGA','AMORES', 'PAZOS','HAEDO HARLEY',
-                          'BRUM CARBAJAL','CARLOS PINTOS','CASTRO PEREZ','POSADAS BELGRANO','VEGA')
+                          'BRUM CARBAJAL','CARLOS PINTOS','CASTRO PEREZ','POSADAS BELGRANO','VEGA', 'ROSA VAZQUEZ')
 
 df_limpio <- df_limpio %>%
   mutate(
@@ -257,41 +257,42 @@ politicos_id <- rbind(df_limpio_1, falsos_negativos_1, falsos_negativos) %>%
 
 
 politicos_id[politicos_id$primer_nombre == 'ADOLFO' &
-               politicos_id$primer_apellido == 'PEREZ' &
-               politicos_id$segundo_apellido == 'SANCHEZ'
+             politicos_id$primer_apellido == 'PEREZ' &
+             politicos_id$segundo_apellido == 'SANCHEZ'
              ,"id_politico"] <- 10282
 
-politicos_id[politicos_id$primer_nombre == 'JULIO' &
-               politicos_id$primer_apellido == 'BESOZZI'
-             ,"id_politico"] <- 5556
-
 politicos_id[which(politicos_id$primer_nombre == 'JOSE' &
-                     politicos_id$primer_apellido == 'LOPEZ' &
-                     politicos_id$segundo_apellido == 'LAPHITZ')
-             ,"id_politico"] <- 10283
+                   politicos_id$primer_apellido == 'LOPEZ' &
+                   politicos_id$segundo_apellido == 'LAPHITZ')
+                   ,"id_politico"] <- 10283
 
 politicos_id[which(politicos_id$primer_nombre == 'PEDRO' &
-                     politicos_id$primer_apellido == 'ETCHEGARAY' &
-                     politicos_id$partido == 'Partido Colorado')
-             ,"id_politico"] <- 10284
+                   politicos_id$primer_apellido == 'ETCHEGARAY' &
+                   politicos_id$partido == 'Partido Colorado')
+                   ,"id_politico"] <- 10284
 
 politicos_id[which(politicos_id$primer_nombre == 'LUIS' &
-                     politicos_id$primer_apellido == 'BOTANA')
-             ,"id_politico"] <- 590
+                   politicos_id$primer_apellido == 'BOTANA')
+                   ,"id_politico"] <- 590
 
 politicos_id[which(politicos_id$primer_nombre == 'RENAN' &
-                     politicos_id$primer_apellido == 'RODRIGUEZ' &
-                     politicos_id$segundo_apellido == 'SANTURIO')
-             ,"id_politico"] <- 10285
+                   politicos_id$primer_apellido == 'RODRIGUEZ' &
+                   politicos_id$segundo_apellido == 'SANTURIO')
+                   ,"id_politico"] <- 10285
 
 politicos_id[which(politicos_id$primer_nombre == 'HUMBERTO' &
-                     politicos_id$primer_apellido == 'CASTELLI' &
-                     politicos_id$legislatura == 31)
-             ,"id_politico"] <- 9021
+                   politicos_id$primer_apellido == 'CASTELLI' &
+                   politicos_id$legislatura == 31)
+                   ,"id_politico"] <- 9021
+
+politicos_id[which(politicos_id$primer_nombre == 'HUMBERTO' &
+                   politicos_id$primer_apellido == 'CASTELLI' &
+                   politicos_id$legislatura == 29)
+                   ,"id_politico"] <- 9021
 
 politicos_id[which(politicos_id$primer_nombre == 'JUAN' &
-                     politicos_id$primer_apellido == 'BORDABERRY')
-             ,"id_politico"] <- 8931
+                   politicos_id$primer_apellido == 'BORDABERRY')
+                   ,"id_politico"] <- 8931
 
 politicos_id %>% distinct(id_politico) %>% count() 
 
@@ -381,12 +382,140 @@ politicos_id_1 <- politicos_id_1 %>%
     fuente = coalesce(fuente.x, fuente.y)
   ) %>% select(-c(fuente.y, fuente.x)) 
 
+ids_cambio <- politicos_id_1 %>% group_by(id_politico) %>% 
+  filter(n_distinct(fecha_nac, na.rm = TRUE) > 1) %>% ungroup()
+  
+politicos_id_1 <- politicos_id_1 %>% anti_join(ids_cambio, by = 'id_politico')
+
+### Matcheo probabilistico para este conjunto de casos
+
+nombres_completos <- paste(ids_cambio$primer_nombre, ids_cambio$primer_apellido, ids_cambio$segundo_apellido)
+dist_mat <- stringdistmatrix(nombres_completos, nombres_completos, method = "lv")
+
+# Clustering jerárquico (agrupa nombres parecidos)
+hc <- hclust(as.dist(dist_mat), method = "average")
+
+# Cortamos el árbol en un umbral de distancia máxima aceptable
+clusters <- cutree(hc, h = 1)  # 3 caracteres de diferencia como máximo
+
+# Asignamos el ID de grupo
+ids_cambio$id_match <- clusters
+
+ids_cambio <- ids_cambio %>%
+  select(1, id_match, everything()) 
+
+ids_cambio <- ids_cambio %>% select(-id_politico) 
+ids_cambio <- ids_cambio %>% rename(id_politico=id_match)
+ids_cambio <- ids_cambio %>%
+  mutate(id_politico = dense_rank(id_politico) + 4132 - 1)
+
+### Genero nuevos ids para politicos_id_1 (4131 el id mas alto)
+
+#### FALSOS NEGATIVOS
+
+politicos_id_1[politicos_id_1$primer_nombre == 'JULIO' &
+               politicos_id_1$primer_apellido == 'BESOZZI'
+               ,"id_politico"] <- 2417
+
+politicos_id_1[politicos_id_1$primer_nombre == 'ANIBAL' &
+               politicos_id_1$primer_apellido == 'PEREIRA'
+               ,"id_politico"] <- 4020
+
+politicos_id_1[politicos_id_1$primer_nombre == 'ALTIVO' &
+               politicos_id_1$primer_apellido == 'ESTEVEZ'
+               ,"id_politico"] <- 505
+
+politicos_id_1[politicos_id_1$primer_nombre == 'ALFREDO' &
+               politicos_id_1$primer_apellido == 'GARCIA' &
+               politicos_id_1$partido == 'Partido Nacional Independiente'    
+               ,"id_politico"] <- 3915
+
+politicos_id_1[politicos_id_1$primer_nombre == 'CHRISTIAN' &
+               politicos_id_1$primer_apellido == 'MOREL'
+               ,"id_politico"] <- 2429
+
+politicos_id_1[politicos_id_1$primer_nombre == 'DANIEL' &
+               politicos_id_1$primer_apellido == 'PEÑA'  &
+               politicos_id_1$partido == 'Partido de la Gente'
+               ,"id_politico"] <- 4028
+
+politicos_id_1[politicos_id_1$primer_nombre == 'EBER' &
+               politicos_id_1$primer_apellido == 'DA ROSA'  &
+               politicos_id_1$partido == 'Partido Nacional'
+               ,"id_politico"] <- 398
+
+politicos_id_1[politicos_id_1$primer_nombre == 'EBER' &
+               politicos_id_1$primer_apellido == 'DA ROSA'  &
+               politicos_id_1$partido == 'Partido Nacional'
+               ,"id_politico"] <- 398
+
+politicos_id_1[politicos_id_1$primer_nombre == 'ENRIQUE' &
+               politicos_id_1$primer_apellido == 'RODRIGUEZ'  &
+               politicos_id_1$partido == 'Frente Izquierda de Liberacion'
+               ,"id_politico"] <- 4062
+
+politicos_id_1[politicos_id_1$primer_nombre == 'HERIBERTO' &
+               politicos_id_1$id_politico == 4096 &
+               politicos_id_1$partido == 'Partido por el Gobierno del Pueblo'   
+               ,"id_politico"] <- 4095
+
+politicos_id_1[politicos_id_1$primer_apellido == 'CARDOSO' &
+               politicos_id_1$id_politico == 3855 &
+               politicos_id_1$partido == 'Frente Amplio'   
+               ,"id_politico"] <- 3854
+
+politicos_id_1[politicos_id_1$primer_apellido == 'ZABALZA' &
+               politicos_id_1$id_politico == 4125 &
+               politicos_id_1$partido == 'Partido Blanco'   
+               ,"id_politico"] <- 4124
+
+politicos_id_1[politicos_id_1$primer_apellido == 'GARDIOL' &
+               politicos_id_1$id_politico == 3775 &
+               politicos_id_1$primer_nombre == 'NAPOLEON'   
+               ,"id_politico"] <- 1804
+
+
+#### FALSOS POSITIVOS
+
+politicos_id_1[which(politicos_id_1$segundo_apellido == 'PARSONS'
+               & politicos_id_1$primer_apellido == 'MOREIRA')
+               , "id_politico"] <- 4132
+
+politicos_id_1[which(politicos_id_1$primer_apellido == 'VIDAL'
+               & politicos_id_1$id_politico == 2516)
+               , "id_politico"] <- 4133
+
+politicos_id_1[which(politicos_id_1$primer_apellido == 'VIERA'
+               & politicos_id_1$id_politico == 2516)
+               , "id_politico"] <- 4134
+
+politicos_id_1[which(politicos_id_1$primer_apellido == 'VIVIAN'
+               & politicos_id_1$id_politico == 2688)
+               , "id_politico"] <- 4135
+
+politicos_id_1[which(politicos_id_1$primer_apellido == 'PEREZ'
+               & politicos_id_1$primer_nombre == 'MARIO'
+               & politicos_id_1$id_politico == 1077)
+               , "id_politico"] <- 4136
+
+politicos_id_1[which(politicos_id_1$primer_nombre == 'ENRIQUE'
+               & politicos_id_1$primer_apellido == 'COSTA'
+               & politicos_id_1$id_politico == 379)
+               , "id_politico"] <- 4137
+
+politicos_id_1[which(politicos_id_1$primer_nombre == 'ENRIQUE'
+               & politicos_id_1$primer_apellido == 'SOUTO'
+               & politicos_id_1$id_politico == 379)
+               , "id_politico"] <- 4138
+
+politicos_id_1[which(politicos_id_1$primer_nombre == 'FRANCISCO'
+               & politicos_id_1$primer_apellido == 'FRANCO'
+               & politicos_id_1$id_politico == 1786)
+               , "id_politico"] <- 4139
 
 
 
 
-
-### Genero nuevos ids para politicos_id_1_0 y politicos_id_1 (4131 el id mas alto)
 
 politicos_id_1_0[which(politicos_id_1_0$primer_nombre == 'ADRIANA' &
                        politicos_id_1_0$id_politico == 1058 )
