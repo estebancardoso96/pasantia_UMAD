@@ -122,27 +122,27 @@ df_limpio[df_limpio$primer_nombre == 'WASHINGTON' &
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'LUIS'
-          & df_limpio$id_match == 6503, "primer_apellido"] <- 'CUELLO'
+          & df_limpio$id_match == 3130, "primer_apellido"] <- 'CUELLO'
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'CUELLO'
-          & df_limpio$id_match == 6503, "segundo_nombre"] <- 'LUIS'
+          & df_limpio$id_match == 3130, "segundo_nombre"] <- 'LUIS'
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'LUIS'
-          & df_limpio$id_match == 6333, "primer_apellido"] <- 'REDES'
+          & df_limpio$id_match == 2995, "primer_apellido"] <- 'REDES'
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'REDES'
-          & df_limpio$id_match == 6333, "segundo_nombre"] <- 'LUIS'
+          & df_limpio$id_match == 2995, "segundo_nombre"] <- 'LUIS'
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'LUIS'
-          & df_limpio$id_match == 7191, "primer_apellido"] <- 'NUÑEZ'
+          & df_limpio$id_match == 3604, "primer_apellido"] <- 'NUÑEZ'
 
 df_limpio[df_limpio$primer_nombre == 'JOSE'
           & df_limpio$primer_apellido == 'NUÑEZ'
-          & df_limpio$id_match == 7191, "primer_apellido"] <- 'LUIS'
+          & df_limpio$id_match == 3604, "primer_apellido"] <- 'LUIS'
 
 
 falsos_negativos <- df_limpio %>% group_by(primer_nombre, primer_apellido) %>%
@@ -477,6 +477,59 @@ politicos_id_1[politicos_id_1$primer_apellido == 'GARDIOL' &
 
 #### FALSOS POSITIVOS
 
+ids_a_filtrar <- c(
+  2516, 2688, 1077, 379, 1786, 3369,
+  1350, 2400, 2319, 2078, 3962, 2737, 1783, 10, 3959,
+  1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826,
+  4010, 3841, 3819, 3820, 2519, 4037, 1748, 3985,
+  258, 513, 3900, 762, 3908, 3827, 4097, 4099,
+  3935, 1190, 3902, 997, 3281
+)
+
+# Filtrar el data frame excluyendo esos IDs
+politicos_id_filtrado <- politicos_id_1 %>%
+  filter(id_politico %in% ids_a_filtrar)
+
+
+### a partir de 4256
+
+nombres_completos <- paste(politicos_id_filtrado$primer_nombre, politicos_id_filtrado$primer_apellido,
+                           politicos_id_filtrado$partido)
+dist_mat <- stringdistmatrix(nombres_completos, nombres_completos, method = "lv")
+
+# Clustering jerárquico (agrupa nombres parecidos)
+hc <- hclust(as.dist(dist_mat), method = "average")
+
+# Cortamos el árbol en un umbral de distancia máxima aceptable
+clusters <- cutree(hc, h = 1)  # 3 caracteres de diferencia como máximo
+
+# Asignamos el ID de grupo
+politicos_id_filtrado$id_match <- clusters
+
+politicos_id_filtrado <- politicos_id_filtrado %>%
+  select(1, id_match, everything()) 
+
+politicos_id_filtrado <- politicos_id_filtrado %>% select(-id_politico) 
+politicos_id_filtrado <- politicos_id_filtrado %>% rename(id_politico=id_match)
+politicos_id_filtrado <- politicos_id_filtrado %>%
+  mutate(id_politico = dense_rank(id_politico) + 4256 - 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 politicos_id_1[which(politicos_id_1$segundo_apellido == 'PARSONS'
                & politicos_id_1$primer_apellido == 'MOREIRA')
                , "id_politico"] <- 4132
@@ -513,9 +566,10 @@ politicos_id_1[which(politicos_id_1$primer_nombre == 'FRANCISCO'
                & politicos_id_1$id_politico == 1786)
                , "id_politico"] <- 4139
 
-
-
-
+politicos_id_1[which(politicos_id_1$primer_nombre == 'FRANCISCO'
+               & politicos_id_1$primer_apellido == 'MARIÑO'
+               & politicos_id_1$id_politico == 3369)
+               , "id_politico"] <- 4140
 
 politicos_id_1_0[which(politicos_id_1_0$primer_nombre == 'ADRIANA' &
                        politicos_id_1_0$id_politico == 1058 )
@@ -528,13 +582,6 @@ politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
 politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
                        politicos_id_1_0$id_politico == 3818 )
                        ,"id_politico"] <- 4133
-
-
-
-
-
-
-
 
 
 
