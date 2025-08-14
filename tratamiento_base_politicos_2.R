@@ -12,6 +12,7 @@ data("legislaturas")
 
 politicos <- politicos %>% filter(legislatura >= 21)
 
+
 # GENERACION DEL ID PRIMER PASO: TOMANDO EL NOMBRE COMPLETO
 
 library(fastLink)
@@ -22,6 +23,7 @@ rpairs <- compare.dedup(
   strcmp = TRUE,
   blockfld = 1  # Bloquea por la columna 1 del data frame (en este caso, 'politico')
 )
+
 
 # Paso 2: Calcular los pesos (similaridad)
 rpairs <- epiWeights(rpairs)
@@ -53,7 +55,7 @@ politicos <- politicos %>%
 # LIMPIO APELLIDOS COMPUESTOS (PROCESO DE ESTANDARIZACIÓN)
 
 politicos <- politicos %>%
-  select(1, cluster_id, everything()) 
+  select(1, id_match, everything()) 
 
 df_limpio <- politicos %>%
   # 1. Separar por coma en apellido / nombre
@@ -193,7 +195,7 @@ rpairs <- compare.dedup(
 rpairs <- epiWeights(rpairs)
 
 # Paso 3: Clasificar pares con umbral más permisivo
-results <- epiClassify(rpairs, threshold.upper = 0.95)
+results <- epiClassify(rpairs, threshold.upper = 0.70)
 
 # Paso 4: Extraer los matches
 matched_pairs <- getPairs(results, single.rows = TRUE)
@@ -321,4 +323,38 @@ politicos_id <-  politicos_id %>%
   mutate(id_politico = dense_rank(id_politico))
 
 
+###################################### FECHA DE NACIMIENTO ####################################
+
+library(arrow)
+
+df_nac <- read_parquet("df_nac.parquet")
+
+prueba <- apellidos_1 %>% inner_join(df_nac, by =c('primer_nombre','primer_apellido'))
+
+prueba <- ids %>%
+  inner_join(df_nac, by =c('primer_nombre','primer_apellido','segundo_nombre','segundo_apellido'))
+
+
+######################################################
+apellidos <- politicos_id %>% distinct(id_politico, primer_apellido) %>%
+group_by(primer_apellido) %>% count() %>% arrange(desc(n))
+
+
+apellidos_1 <- apellidos %>% filter(n == 1)
+
+apellidos_1 <- politicos_id %>%
+  filter(primer_apellido %in% apellidos_1$primer_apellido)
+
+
+
+ids <-apellidos_1 %>%
+  select(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico, fecha_inicio) %>%
+  distinct() %>%
+  group_by(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico) %>%
+  slice_max(order_by = fecha_inicio, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+write.csv(ids,row.names = FALSE,"base_fecha_nac.csv")
+
+base <- read.csv("base_fecha_nac.csv")
 

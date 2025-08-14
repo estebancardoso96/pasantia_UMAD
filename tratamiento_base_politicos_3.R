@@ -201,7 +201,7 @@ falsos_negativos <- falsos_negativos %>% select(5, cluster_id_nuevo, everything(
 
 df_limpio_1[which(df_limpio_1$primer_apellido == 'BELTRAN' &
                   df_limpio_1$segundo_apellido == 'MULLIN'),
-                  "id_match"] <- 474
+                  "id_match"] <- 8699
 
 df_limpio_1[which(df_limpio_1$primer_apellido == 'BELTRAN' &
                   df_limpio_1$segundo_apellido == 'BARBAT'),
@@ -313,12 +313,9 @@ base %>% distinct(id_politico) %>% count()
 base2 <- read.csv("base_fecha_nac_2.csv")
 base2 %>% distinct(id_politico) %>% count()
 
-
 base_final <- rbind(base, base2)
-
 # 3268
 base_final %>% distinct(id_politico) %>% count()
-
 # por que no tengo todos los id politico?? 4130
 politicos_id %>% distinct(id_politico) %>% count()
 
@@ -328,11 +325,13 @@ politicos_id %>% distinct(id_politico) %>% count()
 
 base[base == ""] <- NA
 base <- base %>% select(-(id_politico))
+base <- base %>% filter(!is.na(fecha_nac))
+
 politicos_id <- politicos_id %>% select(-(politico_norm))
+politicos_id[politicos_id == '']<- NA
 
-politicos_id_1 <- politicos_id %>% left_join(base, by=c("primer_apellido", "segundo_apellido", "segundo_nombre",
+politicos_id_1 <- politicos_id %>% left_join(base, by=c("primer_apellido",'segundo_nombre','segundo_apellido',
                                                          "primer_nombre"))%>%select(-ends_with(".y"))  
-
 politicos_id_1 <- politicos_id_1 %>%
   mutate(
     fecha_nac = if_else(
@@ -344,22 +343,84 @@ politicos_id_1 <- politicos_id_1 %>%
 
 politicos_id_1$fecha_nac <- as.Date(politicos_id_1$fecha_nac)
 
-politicos_id_1 <- politicos_id_1 %>%
-  group_by(id_politico) %>%
+
+### segundo pegado con base2 (lo hago con los nombres y la fecha de inicio de la legislatura)
+
+base2[base2 == '']<- NA
+base2 <- base2 %>% filter(!is.na(fecha_nac))
+
+base2 <- base2 %>%
   mutate(
-    fecha_nac = coalesce(
-      fecha_nac,
-      if (all(is.na(fecha_nac))) NA_Date_ else max(fecha_nac, na.rm = TRUE)
+    fecha_nac = if_else(
+      !is.na(fecha_nac) & nchar(as.character(fecha_nac)) == 4,  # Si es solo año
+      as.Date(paste0(fecha_nac, "-06-01")),
+      as.Date(fecha_nac)
     )
-  ) %>%
+  )
+
+base2$fecha_nac <- as.Date(base2$fecha_nac)
+
+
+base2_00<- base2 %>% distinct(primer_nombre, segundo_nombre, primer_nombre, primer_apellido,segundo_apellido,fecha_inicio,
+                              fecha_nac, fuente)
+
+base2_00$fecha_inicio <-as.Date(base2_00$fecha_inicio)
+
+politicos_id_1 <- politicos_id_1 %>% rename('fecha_inicio'='fecha_inicio.x')
+
+politicos_id_1 <- politicos_id_1 %>% left_join(base2_00, by =c('primer_nombre', 'segundo_nombre',
+                                                               'primer_apellido', 'segundo_apellido',
+                                                               'fecha_inicio')) # revisar por que pega mal
+
+politicos_id_1 <- politicos_id_1 %>% mutate(fuente.y = as.character(fuente.y))
+
+politicos_id_1 <- politicos_id_1 %>%
+  mutate(
+    fecha_nac = coalesce(fecha_nac.x, fecha_nac.y)
+  ) %>% select(-c(fecha_nac.x, fecha_nac.y)) %>% mutate(
+    fuente = coalesce(fuente.x, fuente.y)
+  ) %>% select(-c(fuente.y, fuente.x)) 
+
+
+
+
+
+
+### Genero nuevos ids para politicos_id_1_0 y politicos_id_1 (4131 el id mas alto)
+
+politicos_id_1_0[which(politicos_id_1_0$primer_nombre == 'ADRIANA' &
+                       politicos_id_1_0$id_politico == 1058 )
+                       ,"id_politico"] <- 4132
+
+politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
+                       politicos_id_1_0$id_politico == 3818 )
+                       ,"id_politico"] <- 4133
+
+politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
+                       politicos_id_1_0$id_politico == 3818 )
+                       ,"id_politico"] <- 4133
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### pegado de los id con mas de una fecha de nacimiento
+base2_1_0 <- base2_1 %>%
+  group_by(id_politico) %>%
+  filter(fecha_nac == min(fecha_nac, na.rm = TRUE)) %>%
+  distinct(id_politico, .keep_all = TRUE) %>%
   ungroup()
 
-
-
-
-
-
-
+politicos_id_1 <- politicos_id_1 %>% left_join(base2_1_0, by =c('id_politico'))
 
 #########################################################################################################
 
