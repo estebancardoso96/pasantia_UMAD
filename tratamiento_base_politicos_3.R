@@ -483,7 +483,7 @@ ids_a_filtrar <- c(
   1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826,
   4010, 3841, 3819, 3820, 2519, 4037, 1748, 3985,
   258, 513, 3900, 762, 3908, 3827, 4097, 4099,
-  3935, 1190, 3902, 997, 3281
+  3935, 1190, 3902, 997, 3281, 960
 )
 
 # Filtrar el data frame excluyendo esos IDs
@@ -495,6 +495,7 @@ politicos_id_filtrado <- politicos_id_1 %>%
 
 nombres_completos <- paste(politicos_id_filtrado$primer_nombre, politicos_id_filtrado$primer_apellido,
                            politicos_id_filtrado$partido)
+
 dist_mat <- stringdistmatrix(nombres_completos, nombres_completos, method = "lv")
 
 # Clustering jerárquico (agrupa nombres parecidos)
@@ -514,37 +515,38 @@ politicos_id_filtrado <- politicos_id_filtrado %>% rename(id_politico=id_match)
 politicos_id_filtrado <- politicos_id_filtrado %>%
   mutate(id_politico = dense_rank(id_politico) + 4256 - 1)
 
+# asigno a jose espalter el id anterior
+
+politicos_id_filtrado[politicos_id_filtrado$primer_nombre == 'JOSE' &
+                      politicos_id_filtrado$primer_apellido == 'ESPALTER'
+                      ,"id_politico"] <- 3889
+
+
+max(politicos_id_filtrado$id_politico)
+
+politicos_id_1[politicos_id_1$primer_nombre == 'LUIS' &
+               politicos_id_1$primer_apellido == 'HIERRO' &
+               politicos_id_1$legislatura %in%c(27, 34)  
+               ,"id_politico"] <- 4312
+
+politicos_id_1[politicos_id_1$primer_nombre == 'ANTONIO' &
+               politicos_id_1$primer_apellido == 'CHIESA' &
+               politicos_id_1$segundo_apellido == 'BRUNO' & 
+               politicos_id_1$legislatura %in%c(47)  
+               ,"id_politico"] <- 4313
+
+politicos_id_1[politicos_id_1$primer_nombre == 'MIGUEL' &
+               politicos_id_1$primer_apellido == 'DUBRA' &
+               politicos_id_1$legislatura %in%c(43)  
+               ,"id_politico"] <- 4314
+
+politicos_id_1[politicos_id_1$primer_apellido == 'MOREIRA' &
+               politicos_id_1$primer_nombre == 'CARLOS' & 
+               politicos_id_1$legislatura %in%c (41,42)
+               ,"id_politico"] <- 4315
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-politicos_id_1[which(politicos_id_1$segundo_apellido == 'PARSONS'
-               & politicos_id_1$primer_apellido == 'MOREIRA')
-               , "id_politico"] <- 4132
-
-politicos_id_1[which(politicos_id_1$primer_apellido == 'VIDAL'
-               & politicos_id_1$id_politico == 2516)
-               , "id_politico"] <- 4133
-
-politicos_id_1[which(politicos_id_1$primer_apellido == 'VIERA'
-               & politicos_id_1$id_politico == 2516)
-               , "id_politico"] <- 4134
-
-politicos_id_1[which(politicos_id_1$primer_apellido == 'VIVIAN'
-               & politicos_id_1$id_politico == 2688)
-               , "id_politico"] <- 4135
 
 politicos_id_1[which(politicos_id_1$primer_apellido == 'PEREZ'
                & politicos_id_1$primer_nombre == 'MARIO'
