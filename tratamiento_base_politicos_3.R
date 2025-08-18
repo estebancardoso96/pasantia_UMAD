@@ -409,6 +409,20 @@ ids_cambio <- ids_cambio %>% rename(id_politico=id_match)
 ids_cambio <- ids_cambio %>%
   mutate(id_politico = dense_rank(id_politico) + 4132 - 1)
 
+# correcciones ad hoc en ids cambio
+
+ids_cambio[ids_cambio$primer_nombre == 'JULIO' &
+           ids_cambio$segundo_nombre == 'LUIS' &
+           ids_cambio$primer_apellido == 'SANGUINETTI'
+           ,"id_politico"] <- 4316
+
+ids_cambio[ids_cambio$primer_nombre == 'FRANCISCO' &
+           ids_cambio$primer_apellido == 'FORTEZA'&
+           ids_cambio$legislatura %in%c(42, 41)
+           ,"id_politico"] <- 4317
+
+politicos_id_1 <- rbind(politicos_id_1, ids_cambio)
+
 ### Genero nuevos ids para politicos_id_1 (4131 el id mas alto)
 
 #### FALSOS NEGATIVOS
@@ -478,18 +492,22 @@ politicos_id_1[politicos_id_1$primer_apellido == 'GARDIOL' &
 #### FALSOS POSITIVOS
 
 ids_a_filtrar <- c(
-  2516, 2688, 1077, 379, 1786, 3369,
+  2516, 2688, 1077, 379, 1786, 3369,1133,1174,2830,
   1350, 2400, 2319, 2078, 3962, 2737, 1783, 10, 3959,
-  1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826,
-  4010, 3841, 3819, 3820, 2519, 4037, 1748, 3985,
-  258, 513, 3900, 762, 3908, 3827, 4097, 4099,
-  3935, 1190, 3902, 997, 3281, 960
+  1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826, 776,
+  4010, 3841, 3819, 3820, 2519, 4037, 1748, 3985,927,4050,4041,
+  258, 513, 3900, 762, 3908, 3827, 4097, 4099,793,879,4056,
+  3935, 1190, 3902, 997, 3281, 960, 2343, 464, 2681,4090,4060,
+  3235, 671, 667, 704, 731, 765, 768, 775, 779, 790,955
 )
 
 # Filtrar el data frame excluyendo esos IDs
 politicos_id_filtrado <- politicos_id_1 %>%
   filter(id_politico %in% ids_a_filtrar)
 
+# quitar esos id del original
+politicos_id_2 <- politicos_id_1 %>%
+  filter(!id_politico %in% ids_a_filtrar)
 
 ### a partir de 4256
 
@@ -521,73 +539,31 @@ politicos_id_filtrado[politicos_id_filtrado$primer_nombre == 'JOSE' &
                       politicos_id_filtrado$primer_apellido == 'ESPALTER'
                       ,"id_politico"] <- 3889
 
-
 max(politicos_id_filtrado$id_politico)
 
 politicos_id_1[politicos_id_1$primer_nombre == 'LUIS' &
                politicos_id_1$primer_apellido == 'HIERRO' &
                politicos_id_1$legislatura %in%c(27, 34)  
-               ,"id_politico"] <- 4312
+               ,"id_politico"] <- 4366
 
 politicos_id_1[politicos_id_1$primer_nombre == 'ANTONIO' &
                politicos_id_1$primer_apellido == 'CHIESA' &
                politicos_id_1$segundo_apellido == 'BRUNO' & 
                politicos_id_1$legislatura %in%c(47)  
-               ,"id_politico"] <- 4313
+               ,"id_politico"] <- 4367
 
 politicos_id_1[politicos_id_1$primer_nombre == 'MIGUEL' &
                politicos_id_1$primer_apellido == 'DUBRA' &
                politicos_id_1$legislatura %in%c(43)  
-               ,"id_politico"] <- 4314
+               ,"id_politico"] <- 4368
 
 politicos_id_1[politicos_id_1$primer_apellido == 'MOREIRA' &
                politicos_id_1$primer_nombre == 'CARLOS' & 
                politicos_id_1$legislatura %in%c (41,42)
-               ,"id_politico"] <- 4315
+               ,"id_politico"] <- 4369
 
-
-
-
-politicos_id_1[which(politicos_id_1$primer_apellido == 'PEREZ'
-               & politicos_id_1$primer_nombre == 'MARIO'
-               & politicos_id_1$id_politico == 1077)
-               , "id_politico"] <- 4136
-
-politicos_id_1[which(politicos_id_1$primer_nombre == 'ENRIQUE'
-               & politicos_id_1$primer_apellido == 'COSTA'
-               & politicos_id_1$id_politico == 379)
-               , "id_politico"] <- 4137
-
-politicos_id_1[which(politicos_id_1$primer_nombre == 'ENRIQUE'
-               & politicos_id_1$primer_apellido == 'SOUTO'
-               & politicos_id_1$id_politico == 379)
-               , "id_politico"] <- 4138
-
-politicos_id_1[which(politicos_id_1$primer_nombre == 'FRANCISCO'
-               & politicos_id_1$primer_apellido == 'FRANCO'
-               & politicos_id_1$id_politico == 1786)
-               , "id_politico"] <- 4139
-
-politicos_id_1[which(politicos_id_1$primer_nombre == 'FRANCISCO'
-               & politicos_id_1$primer_apellido == 'MARIÑO'
-               & politicos_id_1$id_politico == 3369)
-               , "id_politico"] <- 4140
-
-politicos_id_1_0[which(politicos_id_1_0$primer_nombre == 'ADRIANA' &
-                       politicos_id_1_0$id_politico == 1058 )
-                       ,"id_politico"] <- 4132
-
-politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
-                       politicos_id_1_0$id_politico == 3818 )
-                       ,"id_politico"] <- 4133
-
-politicos_id_1_0[which(politicos_id_1_0$segundo_apellido == 'SIMPSON' &
-                       politicos_id_1_0$id_politico == 3818 )
-                       ,"id_politico"] <- 4133
-
-
-
-
+# UNION DEL DF FINAL
+df_final <- rbind(politicos_id_2, politicos_id_filtrado)
 
 
 
