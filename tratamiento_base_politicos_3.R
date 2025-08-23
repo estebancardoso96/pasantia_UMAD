@@ -488,17 +488,16 @@ politicos_id_1[politicos_id_1$primer_apellido == 'GARDIOL' &
                politicos_id_1$primer_nombre == 'NAPOLEON'   
                ,"id_politico"] <- 1804
 
-
 #### FALSOS POSITIVOS
 
 ids_a_filtrar <- c(
-  2516, 2688, 1077, 379, 1786, 3369,1133,1174,2830,
-  1350, 2400, 2319, 2078, 3962, 2737, 1783, 10, 3959,
-  1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826, 776,
+  2516, 2688, 1077, 379, 1786, 3369,1133,1174,2830,4360,
+  1350, 2400, 2319, 2078, 3962, 2737, 1783, 10, 3959,4317,
+  1196, 3796, 3890, 1384, 4057, 2629, 3825, 3826, 776,4133,
   4010, 3841, 3819, 3820, 2519, 4037, 1748, 3985,927,4050,4041,
-  258, 513, 3900, 762, 3908, 3827, 4097, 4099,793,879,4056,
+  258, 513, 3900, 762, 3908, 3827, 4097, 4099,793,879,4056,3801,
   3935, 1190, 3902, 997, 3281, 960, 2343, 464, 2681,4090,4060,
-  3235, 671, 667, 704, 731, 765, 768, 775, 779, 790,955
+  3235, 671, 667, 704, 731, 765, 768, 775, 779, 790,955, 4028
 )
 
 # Filtrar el data frame excluyendo esos IDs
@@ -536,34 +535,132 @@ politicos_id_filtrado <- politicos_id_filtrado %>%
 # asigno a jose espalter el id anterior
 
 politicos_id_filtrado[politicos_id_filtrado$primer_nombre == 'JOSE' &
-                      politicos_id_filtrado$primer_apellido == 'ESPALTER'
+                        politicos_id_filtrado$primer_apellido == 'ESPALTER'
                       ,"id_politico"] <- 3889
 
 max(politicos_id_filtrado$id_politico)
 
-politicos_id_1[politicos_id_1$primer_nombre == 'LUIS' &
-               politicos_id_1$primer_apellido == 'HIERRO' &
-               politicos_id_1$legislatura %in%c(27, 34)  
-               ,"id_politico"] <- 4366
-
-politicos_id_1[politicos_id_1$primer_nombre == 'ANTONIO' &
-               politicos_id_1$primer_apellido == 'CHIESA' &
-               politicos_id_1$segundo_apellido == 'BRUNO' & 
-               politicos_id_1$legislatura %in%c(47)  
-               ,"id_politico"] <- 4367
-
-politicos_id_1[politicos_id_1$primer_nombre == 'MIGUEL' &
-               politicos_id_1$primer_apellido == 'DUBRA' &
-               politicos_id_1$legislatura %in%c(43)  
-               ,"id_politico"] <- 4368
-
-politicos_id_1[politicos_id_1$primer_apellido == 'MOREIRA' &
-               politicos_id_1$primer_nombre == 'CARLOS' & 
-               politicos_id_1$legislatura %in%c (41,42)
-               ,"id_politico"] <- 4369
-
-# UNION DEL DF FINAL
 df_final <- rbind(politicos_id_2, politicos_id_filtrado)
+
+# ULTIMAS CORRECCIONES
+
+df_final[df_final$primer_nombre == 'ANTONIO' &
+         df_final$primer_apellido == 'CHIESA' &
+         df_final$segundo_apellido == 'BRUNO' & 
+         df_final$legislatura %in%c(47)  
+         ,"id_politico"] <- 4371
+
+df_final[df_final$primer_nombre == 'MIGUEL' &
+         df_final$primer_apellido == 'DUBRA' &
+         df_final$legislatura %in%c(43)  
+         ,"id_politico"] <- 4372
+
+df_final[df_final$primer_apellido == 'MOREIRA' &
+         df_final$primer_nombre == 'CARLOS' & 
+         df_final$legislatura %in%c (41,42)
+         ,"id_politico"] <- 4373
+
+df_final[df_final$primer_apellido == 'ACCINELLI' &
+         df_final$segundo_apellido == 'GALVEZ'  &
+         df_final$legislatura == 39  
+         ,"id_politico"] <- 4374
+
+df_final[df_final$primer_apellido == 'ACCINELLI' &
+         df_final$primer_nombre == 'GALVEZ' &
+         df_final$legislatura %in%c(39)
+         ,"feha_nac"] <- NA
+
+df_final[df_final$primer_apellido == 'GALLO' &
+         df_final$primer_nombre == 'LUIS'  &
+         df_final$legislatura == 48  
+         ,"id_politico"] <- 4375
+
+df_final[df_final$primer_apellido == 'COSIO' &
+         df_final$primer_nombre == 'VALENTIN'  &
+         df_final$legislatura == 39 
+         ,"fecha_nac"] <- as.Date("1900-02-14")
+
+df_final[which(df_final$primer_apellido == "BERRO" &
+         df_final$primer_nombre == "CARLOS" &
+         df_final$segundo_nombre == "MARIA"),
+         "id_politico"] <- 4376
+
+df_final[which(df_final$primer_apellido == "RAMIREZ" &
+         df_final$primer_nombre == "JOSE" &
+         df_final$segundo_nombre == "ANTONIO"),
+         "id_politico"] <- 4377
+
+df_final[which(df_final$primer_apellido == "KORZENIAK" &
+         df_final$primer_nombre == "JOSE" &
+         df_final$segundo_nombre == "IGNACIO"),
+         "id_politico"] <- 4378
+
+df_final[which(df_final$primer_apellido == "FABINI" &
+         df_final$primer_nombre == "JUAN" &
+         df_final$segundo_nombre == "E."),
+         "id_politico"] <- 4379
+
+df_final[which(df_final$primer_apellido == "JIMENEZ" &
+         df_final$primer_nombre == "JUSTINO" &
+         df_final$cargo == "Candidato Presidente"),
+         "id_politico"] <- 4380
+
+df_final[which(df_final$id_politico == 4390
+         ),
+         "fecha_nac_final"] <- "1910-06-01"
+
+df_final[which(df_final$id_politico == 4245
+),
+"fecha_nac_final"] <- "1902-02-24"
+
+df_final[which(df_final$id_politico == 4213
+),
+"fecha_nac_final"] <- "1898-06-16"
+
+df_final[which(df_final$id_politico == 4198
+),
+"fecha_nac_final"] <- "1910-06-03"
+
+df_final[which(df_final$id_politico == 4171
+),
+"fecha_nac_final"] <- "1883-06-01"
+
+df_final[which(df_final$primer_apellido == "FORTEZA" &
+         df_final$segundo_nombre == "(H)"),
+         "id_politico"] <- 4391
+
+df_final[which(df_final$id_politico == 4391
+),
+"fecha_nac_final"] <- "1928-06-01"
+
+df_final[which(df_final$id_politico == 4370
+),
+"fecha_nac_final"] <- "1892-06-01"
+
+
+max(df_final$id_politico)
+
+write.csv(df_final, 'df_final.csv', row.names = FALSE)
+
+
+################################################# LEVANTO #################################################
+
+df_final <- read_csv("df_final.csv")
+
+df_final <- df_final %>%
+  group_by(id_politico) %>%
+  mutate(
+    n_fechas_distintas = n_distinct(fecha_nac[!is.na(fecha_nac)]),
+    fecha_nac_final = case_when(
+      n_fechas_distintas > 1 ~ "1",  # conflicto
+      n_fechas_distintas == 1 ~ as.character(first(na.omit(fecha_nac))), # única fecha
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  ungroup() %>%
+  select(-n_fechas_distintas)
+
+
 
 
 
