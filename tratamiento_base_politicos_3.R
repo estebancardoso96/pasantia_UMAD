@@ -680,9 +680,6 @@ df_final <- read_csv("df_final.csv")
 
 df_final <- df_final %>% mutate(fecha_nac = as.Date(fecha_nac))
 
-
-df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
-
 # correcciones de las edades (edades negativas)
 
 df_final[which(
@@ -752,7 +749,7 @@ df_final[which(
   "id_politico"] <- 4396
 
 df_final[which(
-  df_final$id_politico == 4397 &
+  df_final$id_politico == 1122 &
   df_final$primer_apellido == 'SOSA' &  
   df_final$legislatura == 41),
   "fecha_nac"] <- NA
@@ -769,7 +766,7 @@ df_final[which(
   "id_politico"] <- 4398
 
 df_final[which(
-  df_final$id_politico == 4398 &
+  df_final$id_politico == 375 &
   df_final$primer_apellido == 'BONINO'),
   "id_politico"] <- 4399
 
@@ -788,8 +785,12 @@ df_final[which(
   df_final$primer_apellido == 'ROSA'),
   "fecha_nac"] <-  NA
 
+df_final %>% filter(!is.na(fecha_nac)) %>% count()
+
+df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
+
 ### colocar na a las fechas de nacimiento para las personas tienen menos de 21 años al asumir el cargo
-df_final <- df_final %>% mutate(fecha_nac = if_else(ed_asumir > 21, fecha_nac, NA))
+df_final <- df_final %>% mutate(fecha_nac = if_else(is.na(ed_asumir) | ed_asumir > 21, fecha_nac, as.Date(NA)))
 df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
 
 
