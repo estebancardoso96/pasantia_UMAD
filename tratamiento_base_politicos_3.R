@@ -3,6 +3,7 @@ library(tidyverse)
 library(stringr)
 library(stringi)
 library(puy)
+library(lubridate)
 
 data("politicos")
 data("legislaturas")
@@ -542,6 +543,20 @@ max(politicos_id_filtrado$id_politico)
 
 df_final <- rbind(politicos_id_2, politicos_id_filtrado)
 
+df_final <- df_final %>%
+  group_by(id_politico) %>%
+  mutate(
+    n_fechas_distintas = n_distinct(fecha_nac[!is.na(fecha_nac)]),
+    fecha_nac_final = case_when(
+      n_fechas_distintas > 1 ~ "1",  # conflicto
+      n_fechas_distintas == 1 ~ as.character(first(na.omit(fecha_nac))), # única fecha
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  ungroup() %>%
+  select(-n_fechas_distintas)
+
+
 # ULTIMAS CORRECCIONES
 
 df_final[df_final$primer_nombre == 'ANTONIO' &
@@ -637,71 +652,148 @@ df_final[which(df_final$id_politico == 4370
 ),
 "fecha_nac_final"] <- "1892-06-01"
 
+df_final[which(df_final$primer_apellido == "MESA" &
+         df_final$primer_nombre == "NICOLAS"),
+         "id_politico"] <- 4392
+
+df_final[which(df_final$primer_apellido == "LARRAÑAGA" &
+         df_final$primer_nombre == "JORGE" &       
+         df_final$legislatura == 40),
+         "id_politico"] <- 4393
+
+df_final[which(df_final$primer_apellido == "BOTANA" &
+         df_final$segundo_nombre == "SERGIO" &       
+         df_final$primer_nombre == "LUIS" &       
+         df_final$legislatura == 40),
+         "id_politico"] <- 243
 
 max(df_final$id_politico)
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
+names(df_final)
 
+df_final <- df_final %>% select(-c(feha_nac, fecha_nac)) %>% rename(fecha_nac = fecha_nac_final)
 ################################################# LEVANTO #################################################
 
 df_final <- read_csv("df_final.csv")
 
-df_final <- df_final %>%
-  group_by(id_politico) %>%
-  mutate(
-    n_fechas_distintas = n_distinct(fecha_nac[!is.na(fecha_nac)]),
-    fecha_nac_final = case_when(
-      n_fechas_distintas > 1 ~ "1",  # conflicto
-      n_fechas_distintas == 1 ~ as.character(first(na.omit(fecha_nac))), # única fecha
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  ungroup() %>%
-  select(-n_fechas_distintas)
+df_final <- df_final %>% mutate(fecha_nac = as.Date(fecha_nac))
+
+
+df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
+
+# correcciones de las edades (edades negativas)
+
+df_final[which(
+  df_final$cargo == "Intendente Interventor" &
+    df_final$id_politico == 3724),
+  "fecha_inicio"] <- as.Date("1973-06-27")
+
+df_final[which(
+         df_final$cargo == "Intendente" &
+         df_final$legislatura == 22 &   
+         df_final$id_politico == 3750),
+         "fecha_inicio"] <- as.Date("1995-06-17")
+
+df_final[which(
+  df_final$legislatura == 31 &   
+  df_final$id_politico == 91),
+  "fecha_inicio"] <- as.Date("1932-02-15")
+
+df_final[which(
+  df_final$id_politico == 4340),
+  "fecha_nac"] <- as.Date("1880-06-30")
+
+df_final[which(
+  df_final$id_politico == 13),
+  "fecha_nac"] <- as.Date("1915-06-30")
+
+df_final[which(
+  df_final$id_politico == 536),
+  "fecha_nac"] <- as.Date("1883-02-19")
+
+df_final[which(
+  df_final$id_politico == 13),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 13),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 1224 &
+  df_final$primer_apellido == 'SOUTO'),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 1224 &
+  df_final$primer_apellido == 'SOUTO'),
+  "id_politico"] <- 4394
+
+df_final[which(
+  df_final$id_politico == 2461 &
+  df_final$primer_apellido == 'GARCIA'),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 2461 &
+  df_final$primer_apellido == 'SOUTO'),
+  "id_politico"] <- 4395
+
+df_final[which(
+  df_final$id_politico == 1122 &
+  df_final$primer_apellido == 'PONS'),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 1122 &
+  df_final$primer_apellido == 'PONS'),
+  "id_politico"] <- 4396
+
+df_final[which(
+  df_final$id_politico == 4397 &
+  df_final$primer_apellido == 'SOSA' &  
+  df_final$legislatura == 41),
+  "fecha_nac"] <- NA
+
+df_final[which(
+  df_final$id_politico == 1122 &
+  df_final$primer_apellido == 'SOSA' &  
+  df_final$legislatura == 41),
+  "id_politico"] <- 4397
+
+df_final[which(
+  df_final$id_politico == 1122 &
+  df_final$primer_apellido == 'ROS'),
+  "id_politico"] <- 4398
+
+df_final[which(
+  df_final$id_politico == 4398 &
+  df_final$primer_apellido == 'BONINO'),
+  "id_politico"] <- 4399
+
+df_final[which(
+  df_final$id_politico == 4399 &
+  df_final$primer_apellido == 'BONINO'),
+  "fecha_nac"] <-  as.Date('1937-09-25')
+
+df_final[which(
+  df_final$id_politico == 376 &
+  df_final$primer_apellido == 'ROSA'),
+  "id_politico"] <- 4400
+
+df_final[which(
+  df_final$id_politico == 4400 &
+  df_final$primer_apellido == 'ROSA'),
+  "fecha_nac"] <-  NA
+
+### colocar na a las fechas de nacimiento para las personas tienen menos de 21 años al asumir el cargo
+df_final <- df_final %>% mutate(fecha_nac = if_else(ed_asumir > 21, fecha_nac, NA))
+df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
 
 
 
 
-
-### pegado de los id con mas de una fecha de nacimiento
-base2_1_0 <- base2_1 %>%
-  group_by(id_politico) %>%
-  filter(fecha_nac == min(fecha_nac, na.rm = TRUE)) %>%
-  distinct(id_politico, .keep_all = TRUE) %>%
-  ungroup()
-
-politicos_id_1 <- politicos_id_1 %>% left_join(base2_1_0, by =c('id_politico'))
-
-#########################################################################################################
-
-
-
-apellidos <- politicos_id %>% distinct(id_politico, primer_apellido) %>%
-  group_by(primer_apellido) %>% count() %>% arrange(desc(n))
-
-## apellidos unicos
-apellidos_1 <- apellidos %>% filter(n == 1)
-
-apellidos_1 <- politicos_id %>%
-  filter(primer_apellido %in% apellidos_1$primer_apellido)
-
-## apellidos repetidos
-apellidos_2 <- apellidos %>% filter(n > 1)
-
-apellidos_2 <- politicos_id %>%
-  filter(primer_apellido %in% apellidos_2$primer_apellido)
-
-ids <- apellidos_2 %>%
-  select(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico, fecha_inicio) %>%
-  distinct() %>%
-  group_by(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, id_politico) %>%
-  slice_max(order_by = fecha_inicio, n = 1, with_ties = FALSE) %>%
-  ungroup()
-
-
-#write.csv(ids, row.names=FALSE,'base_fecha_nac_2.csv')
-
-base <- base %>% select(-c(id_politico, fecha_inicio))
 
 
