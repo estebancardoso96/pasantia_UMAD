@@ -835,33 +835,9 @@ df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
 df_final <- read_csv("df_final.csv")
 
-dbWriteTable(connec, "fact_politicos", df_final, overwrite = TRUE, row.names = FALSE)
+dbWriteTable(connec, "fact_politicos_PASANTIA_02_09", df_final, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
-
-dsn_database = "postgres"
-dsn_hostname = "localhost"
-dsn_port = "5432"
-dsn_uid = "postgres"
-dsn_pwd = "bolsilludo2020"
-
-library(RPostgres)
-
-tryCatch({
-  drv <- dbDriver("Postgres")
-  print("Connecting to Database…")
-  connec <- dbConnect(drv,
-                      dbname = dsn_database,
-                      host = dsn_hostname,
-                      port = dsn_port,
-                      user = dsn_uid,
-                      password = dsn_pwd)
-  print("Database Connected!")
-},
-error=function(cond) {
-  print("Unable to connect to Database.")
-})
-
 
 df_final <- dbGetQuery(connec, "SELECT * FROM fact_politicos")
 
@@ -887,4 +863,6 @@ df_final <- df_final %>% mutate(ed_asumir_1 = ifelse(is.na(fecha_inicio), ed_asu
 
 df_final <- df_final %>%
   mutate(ed_asumir_1 = ifelse(ed_asumir_1 < 22 | ed_asumir_1 > 85, NA, ed_asumir_1))
+
+write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
