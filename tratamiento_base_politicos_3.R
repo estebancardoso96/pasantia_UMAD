@@ -676,8 +676,6 @@ names(df_final)
 df_final <- df_final %>% select(-c(feha_nac, fecha_nac)) %>% rename(fecha_nac = fecha_nac_final)
 ################################################# LEVANTO #################################################
 
-df_final <- read_csv("df_final.csv")
-
 df_final <- df_final %>% mutate(fecha_nac = as.Date(fecha_nac))
 
 # correcciones de las edades (edades negativas)
@@ -785,7 +783,87 @@ df_final[which(
   df_final$primer_apellido == 'ROSA'),
   "fecha_nac"] <-  NA
 
+df_final[which(
+  df_final$id_politico == 3830 &
+  df_final$primer_apellido == 'BATLLE'),
+  "fecha_nac"] <-  as.Date('1943-04-02')
+
+df_final[which(
+  df_final$id_politico == 536 &
+  df_final$primer_apellido == 'BOTANA'),
+  "fecha_nac"] <-  as.Date('1964-11-08')
+
+df_final[which(
+  df_final$id_politico == 2268 &
+  df_final$primer_apellido == 'WILLIMAN' &
+  df_final$legislatura == 42),  
+  "id_politico"] <-  4401
+
+df_final[which(
+  df_final$id_politico == 4401 &
+  df_final$primer_apellido == 'WILLIMAN'),
+  "fecha_nac"] <-  as.Date('1925-01-05')
+
+df_final[which(
+  df_final$id_politico == 2268 &
+  df_final$primer_apellido == 'WILLIMAN' &
+  df_final$legislatura == 42),  
+  "id_politico"] <-  4401
+
+df_final[which(
+  df_final$id_politico == 3828 &
+  df_final$segundo_apellido == 'ANZA'),  
+  "id_politico"] <-  4402
+
+df_final[which(
+  df_final$id_politico == 4402 &
+  df_final$segundo_apellido == 'ANZA'),
+  "fecha_nac"] <-  as.Date('1932-01-29')
+
+df_final[which(
+  df_final$primer_apellido == 'FORTEZA' &
+  df_final$legislatura >= 39),
+  "id_politico"] <-  4391
+
+df_final[which(
+  df_final$id_politico == 4391 &
+  df_final$primer_apellido == 'FORTEZA'),
+  "fecha_nac"] <-  as.Date('1928-06-01')
+
+max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
+
+df_final <- read_csv("df_final.csv")
+
+dbWriteTable(connec, "fact_politicos", df_final, overwrite = TRUE, row.names = FALSE)
+
+################################################################################################################
+
+dsn_database = "postgres"
+dsn_hostname = "localhost"
+dsn_port = "5432"
+dsn_uid = "postgres"
+dsn_pwd = "bolsilludo2020"
+
+library(RPostgres)
+
+tryCatch({
+  drv <- dbDriver("Postgres")
+  print("Connecting to Database…")
+  connec <- dbConnect(drv,
+                      dbname = dsn_database,
+                      host = dsn_hostname,
+                      port = dsn_port,
+                      user = dsn_uid,
+                      password = dsn_pwd)
+  print("Database Connected!")
+},
+error=function(cond) {
+  print("Unable to connect to Database.")
+})
+
+
+df_final <- dbGetQuery(connec, "SELECT * FROM fact_politicos")
 
 df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
 
@@ -794,7 +872,19 @@ df_final <- df_final %>% mutate(fecha_nac = if_else(is.na(ed_asumir) | ed_asumir
 df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
 
 
+legislaturas <- legislaturas %>% select(legislatura, fecha_inicio, fecha_fin)
+legislaturas <- legislaturas %>% mutate(legislatura = as.double(legislatura))
+legislaturas <- legislaturas %>% rename(fecha_inicio_l = fecha_inicio, fecha_fin_l = fecha_fin)
 
+df_final <- df_final %>% left_join(legislaturas, by = "legislatura")
 
+df_final <- df_final %>%
+  mutate(fecha_intermedia = fecha_inicio_l + (fecha_fin_l - fecha_inicio_l) / 2)
 
+df_final$ed_asumir_1 <-trunc((df_final$fecha_nac %--% df_final$fecha_intermedia) / years(1))
+
+df_final <- df_final %>% mutate(ed_asumir_1 = ifelse(is.na(fecha_inicio), ed_asumir_1, NA))
+
+df_final <- df_final %>%
+  mutate(ed_asumir_1 = ifelse(ed_asumir_1 < 22 | ed_asumir_1 > 85, NA, ed_asumir_1))
 
