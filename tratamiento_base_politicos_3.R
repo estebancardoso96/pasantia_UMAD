@@ -847,32 +847,35 @@ df_final <- read_csv("df_final.csv")
 
 library(DBI)
 library(RPostgres)
+library(RPostgreSQL)
 
-con <- dbConnect(
-  Postgres(),
-  dbname   = Sys.getenv("DB_NAME"),
-  host     = Sys.getenv("DB_HOST"),
-  user     = Sys.getenv("DB_USER"),
-  password = Sys.getenv("DB_PASS"),
-  port     = 5432
-)
+readRenviron("~/.Renviron")
 
-tryCatch({
-  drv <- dbDriver("Postgres")
-  print("Connecting to Database…")
-  connec <- dbConnect(drv,
-                      dbname = dsn_database,
-                      host = dsn_hostname,
-                      port = dsn_port,
-                      user = dsn_uid,
-                      password = dsn_pwd)
-  print("Database Connected!")
-},
-error=function(cond) {
-  print("Unable to connect to Database.")
+usuario <- Sys.getenv("DB_USER")
+password <- Sys.getenv("DB_PASS")
+host     <- Sys.getenv("DB_HOST")
+dbname   <- Sys.getenv("DB_NAME")
+
+# Conectar
+con <- tryCatch({
+  dbConnect(
+    Postgres(),
+    dbname   = Sys.getenv("DB_NAME"),
+    host     = Sys.getenv("DB_HOST"),
+    user     = Sys.getenv("DB_USER"),
+    password = Sys.getenv("DB_PASS"),
+    port     = 5432
+  )
+}, error = function(e) {
+  message("❌ No se pudo conectar a la base de datos: ", e$message)
+  NULL
 })
 
-dbWriteTable(connec, "fact_politicos_PASANTIA_02_09", df_final, overwrite = TRUE, row.names = FALSE)
+if (!is.null(con)) {
+  message("✅ Conexión exitosa a la base de datos")
+}
+
+dbWriteTable(con, "fact_politicos_PASANTIA_02_09", df_final, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
 
@@ -902,11 +905,7 @@ df_final <- df_final %>%
   mutate(ed_asumir_1 = ifelse(ed_asumir_1 < 22 | ed_asumir_1 > 85, NA, ed_asumir_1))
 
 df_final <- df_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
-
-# cambio NA a sin partido
-
-df_final <- df_final %>% mutate(partido = ifelse(is.na(partido), "Sin partido", partido))
-
+borrame <- df_final %>% group_by(partido) %>% count()
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
