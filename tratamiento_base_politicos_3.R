@@ -789,6 +789,16 @@ df_final[which(
   "fecha_nac"] <-  as.Date('1943-04-02')
 
 df_final[which(
+  df_final$id_politico == 3830 &
+  df_final$segundo_apellido == 'BERTOLINI'),
+  "id_politico"] <-  4403
+
+df_final[which(
+  df_final$id_politico == 3830 &
+  df_final$primer_apellido == 'BATLLE'),
+  "fecha_nac"] <-  as.Date('1897-11-26')
+
+df_final[which(
   df_final$id_politico == 536 &
   df_final$primer_apellido == 'BOTANA'),
   "fecha_nac"] <-  as.Date('1964-11-08')
@@ -835,6 +845,33 @@ df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
 df_final <- read_csv("df_final.csv")
 
+library(DBI)
+library(RPostgres)
+
+con <- dbConnect(
+  Postgres(),
+  dbname   = Sys.getenv("DB_NAME"),
+  host     = Sys.getenv("DB_HOST"),
+  user     = Sys.getenv("DB_USER"),
+  password = Sys.getenv("DB_PASS"),
+  port     = 5432
+)
+
+tryCatch({
+  drv <- dbDriver("Postgres")
+  print("Connecting to Database…")
+  connec <- dbConnect(drv,
+                      dbname = dsn_database,
+                      host = dsn_hostname,
+                      port = dsn_port,
+                      user = dsn_uid,
+                      password = dsn_pwd)
+  print("Database Connected!")
+},
+error=function(cond) {
+  print("Unable to connect to Database.")
+})
+
 dbWriteTable(connec, "fact_politicos_PASANTIA_02_09", df_final, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
@@ -863,6 +900,13 @@ df_final <- df_final %>% mutate(ed_asumir_1 = ifelse(is.na(fecha_inicio), ed_asu
 
 df_final <- df_final %>%
   mutate(ed_asumir_1 = ifelse(ed_asumir_1 < 22 | ed_asumir_1 > 85, NA, ed_asumir_1))
+
+df_final <- df_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
+
+# cambio NA a sin partido
+
+df_final <- df_final %>% mutate(partido = ifelse(is.na(partido), "Sin partido", partido))
+
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
