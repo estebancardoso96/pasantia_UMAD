@@ -905,7 +905,12 @@ df_final <- df_final %>%
   mutate(ed_asumir_1 = ifelse(ed_asumir_1 < 22 | ed_asumir_1 > 85, NA, ed_asumir_1))
 
 df_final <- df_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
-borrame <- df_final %>% group_by(partido) %>% count()
+
+# periodos de legislaturas
+
+df_final <- df_final %>% mutate(legislaturas_agrupadas = case_when(legislatura <= 31 ~ "1902-1933",
+                                                                     legislatura > 31 & legislatura <= 41 ~ "1934-1973",
+                                                                     legislatura > 41 ~ "1985-2020"))
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
