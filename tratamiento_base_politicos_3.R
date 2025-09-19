@@ -67,7 +67,7 @@ apellidos_compuestos <- c("LEON", "LOS SANTOS", "LA SERNA", "LA SIERRA", "ACHA",
                           "LA HOZ", "ALCANTARA", "LIMA", "ARRASCAETA", "ENRIQUEZ", "TORO", "CANDIA", "TRANO", 
                           "COLL", "EACHEN", "ALLISTER GREEN", "VICAR", "SOUZA", "COSTA", "ANGELIS", "LA PEA", "LA SOVERA",
                           "LARROBLA", "VEDIA", "BRUM","LA HANTY", "MULA", 'ARTEAGA','AMORES', 'PAZOS','HAEDO HARLEY',
-                          'BRUM CARBAJAL','CARLOS PINTOS','CASTRO PEREZ','POSADAS BELGRANO','VEGA', 'ROSA VAZQUEZ')
+                          'BRUM CARBAJAL','CARLOS PINTOS','CASTRO PEREZ','POSADAS BELGRANO','VEGA', 'ROSA VAZQUEZ', 'ROZA')
 
 df_limpio <- df_limpio %>%
   mutate(
@@ -911,6 +911,39 @@ df_final <- df_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir
 df_final <- df_final %>% mutate(legislaturas_agrupadas = case_when(legislatura <= 31 ~ "1902-1933",
                                                                      legislatura > 31 & legislatura <= 41 ~ "1934-1973",
                                                                      legislatura > 41 ~ "1985-2020"))
+
+
+######## Correción de la legislatura 47 (que marca a todos los legisladores como titulares)
+
+leg47_biblio <- read.csv("leg47_biblioteca.csv", encoding = "utf-8")
+leg47_biblio <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "SENADOR","SENADORA", "DIPUTADA"))
+
+
+# --- Lógica para apellidos ---
+# Detectar si empieza con "DE " y en ese caso tomar "DE + siguiente palabra" como Apellido1
+leg47_biblio <- leg47_biblio %>%
+  mutate(
+    Apellido1 = ifelse(str_detect(Apellidos, "^(DE|DA)"),
+                       word(Apellidos, 1, 2),     # DE + segunda palabra
+                       word(Apellidos, 1)),       # si no empieza con DE, tomar solo la primera
+    Apellido2 = ifelse(str_detect(Apellidos, "^(DE|DA)"),
+                       word(Apellidos, 3),        # lo que venga después de "DE X"
+                       word(Apellidos, 2))        # segundo apellido normal
+  )
+
+
+leg47_biblio <- leg47_biblio %>% select(-c(primer_apellido, segundo_apellido)) %>% rename('primer_apellido'='Apellido1',
+                                                                          'segundo_apellido' ='Apellido2')
+
+leg47_diputado <- leg47 %>% filter(cargo %in%c("Diputado"))
+leg47_senador <- leg47 %>% filter(cargo %in%c("Senador"))
+
+leg47_biblio_diputado <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "DIPUTADA"))
+
+# Me quedo con las filas unicas
+
+leg47_biblio_diputado_unicos <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()<=1) %>% ungroup()
+
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
