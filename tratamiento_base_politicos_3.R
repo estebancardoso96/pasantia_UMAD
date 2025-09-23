@@ -875,9 +875,10 @@ if (!is.null(con)) {
   message("✅ Conexión exitosa a la base de datos")
 }
 
-dbWriteTable(con, "fact_politicos_PASANTIA_02_09", df_final, overwrite = TRUE, row.names = FALSE)
+dbWriteTable(con, "fact_politicos_PASANTIA_23_09", politicos, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
+politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_PASANTIA_02_09"')
 
 df_final <- dbGetQuery(connec, "SELECT * FROM fact_politicos")
 
@@ -913,11 +914,13 @@ df_final <- df_final %>% mutate(legislaturas_agrupadas = case_when(legislatura <
                                                                      legislatura > 41 ~ "1985-2020"))
 
 
+################### CORRECCIONES EN LOS LEGISLADORES DE LAS LEGISLATURAS ###############################
 ######## Correción de la legislatura 47 (que marca a todos los legisladores como titulares)
+
+politicos <- politicos %>% mutate(eliminada = 0)
 
 leg47_biblio <- read.csv("leg47_biblioteca.csv", encoding = "utf-8")
 leg47_biblio <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "SENADOR","SENADORA", "DIPUTADA"))
-
 
 # --- Lógica para apellidos ---
 # Detectar si empieza con "DE " y en ese caso tomar "DE + siguiente palabra" como Apellido1
@@ -934,8 +937,32 @@ leg47_biblio <- leg47_biblio %>%
 
 leg47_biblio <- leg47_biblio %>% select(-c(primer_apellido, segundo_apellido)) %>% rename('primer_apellido'='Apellido1',
                                                                           'segundo_apellido' ='Apellido2')
+leg47_biblio <- leg47_biblio %>% select(-c(Nombre, Nombres, Apellidos))
+
+## SENADORES
+# analisis de calidad del dato de legisladores
+leg47_biblio_sen_tit <- leg47_biblio %>% filter(Condición == 'Titular' & Cargo %in%c('SENADOR','SENADORA'))
+
+# conteo (tengo mas senadores titulares que bancas)
+leg47_biblio_sen_tit %>% distinct(X) %>% count()
+leg47_senador %>% count()
+
+# MARCO SUPLENTE SI COMENZO LUEGO DEL 2010
+leg47_biblio_sen_tit <- leg47_biblio_sen_tit %>%
+  mutate(Condición = if_else(Inicio == 2010, 'Titular','Suplente'))
+
+# Elimino filas (por ejemplo Daniel Martinez senador suplente)
+leg47_biblio_sen_tit <- leg47_biblio_sen_tit[-c(19, 22),]
+
+leg47_biblio_sen_tit %>% filter(Condición == 'Titular') %>% count() # sigue habiendo mas senadores titulares
+
+# correccion a mano
+
+
 
 # Elimino la enie para poder pegar
+
+leg47 <- read.csv("C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/leg47.csv", sep = ",")
 
 leg47$primer_apellido <- gsub('Ñ','N', leg47$primer_apellido)
 
@@ -952,7 +979,6 @@ leg47_biblio_diputado_unicos <- leg47_biblio_diputado_unicos %>%
 
 # Filas duplicadas
 leg47_biblio_diputado_dup <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()>1) %>% ungroup()
-
 
 # Pegado con diputados unicos
 pegado <- leg47_diputado %>% left_join(leg47_biblio_diputado_unicos, by=c('primer_apellido', 'primer_nombre'))
