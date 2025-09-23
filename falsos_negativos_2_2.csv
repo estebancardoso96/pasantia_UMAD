@@ -1,0 +1,449 @@
+"primer_apellido","segundo_apellido","primer_nombre","segundo_nombre","partido","legislatura","cluster_id","id_unificado"
+"ABADIE","SANTOS","HORACIO","","Partido Colorado","32",1,1
+"ABADIE","SANTOS","HORACIO","","Partido Colorado","40",1,1
+"ABDALA","","CARLOS","","Partido Colorado","44",13,13
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","28",57,57
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","29",57,57
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","30",57,57
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","34",57,57
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","35",57,57
+"ACEVEDO","","EDUARDO","","Partido Colorado","24",57,57
+"ACEVEDO","ALVAREZ","EDUARDO","","Partido Colorado","36",57,57
+"ALONSO","","NELSON","","Partido Colorado","40",219,219
+"ALONSO","","NELSON","","Partido por el Gobierno del Pueblo","43",221,219
+"ALVAREZ","CORTES","JUAN","","Partido Colorado","28",250,250
+"AMORIN","BATLLE","JOSE","","Partido Colorado","42",338,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","43",338,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","44",338,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","45",338,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","46",338,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","47",338,338
+"AMORIN","","JOSE","","Partido Independiente","48",347,338
+"AMORIN","BATLLE","JOSE","","Partido Colorado","48",338,338
+"ANTUNEZ","","ADEMAR","","Movimiento Progresista","38",424,423
+"ANTUÑA","","JOSE","G.","Partido Colorado","25",428,428
+"ANTUÑA","","JOSE","G.","Partido Colorado","26",428,428
+"ANTUÑA","","JOSE","G.","Partido Colorado","27",428,428
+"ANTUÑA","","JOSE","G.","Partido Colorado","32",428,428
+"ANTUÑA","","JOSE","G.","Partido Colorado","33",428,428
+"ANTUÑA","","JOSE","","Union Democrata Reformista","37",433,428
+"ARIAS","","JOSE","F.","Partido Colorado","25",519,519
+"ARIAS","","JOSE","F.","Partido Colorado","26",519,519
+"ARIAS","","JOSE","F.","Partido Colorado","27",519,519
+"ARISMENDI","","RODNEY","","Partido Comunista del Uruguay","34",526,526
+"ARISMENDI","","RODNEY","","Partido Comunista del Uruguay","35",526,526
+"ARISMENDI","","RODNEY","","Partido Comunista del Uruguay","36",526,526
+"ARISMENDI","","RODNEY","","Partido Comunista del Uruguay","37",526,526
+"ARISMENDI","","RODNEY","","Partido Comunista del Uruguay","38",526,526
+"AROCENA","","JOSE","ANDRES","Partido Colorado","48",555,555
+"AROCENA","","JOSE","","Partido Independiente","47",557,555
+"AROCENA","","JOSE","","Partido Independiente","48",557,555
+"ARRILLAGA","","JOSE","SERVANDO","Partido por el Gobierno del Pueblo","43",608,589
+"BARGO","","ARSENIO","","Partido Colorado","33",810,810
+"BARGO","","ARSENIO","","Union Democrata Reformista","37",812,810
+"BARLA","","MARTIN","","Partido Colorado","48",815,814
+"BARREIRO","","AMBROSIO","WALTER","","22",827,827
+"BATALLA","","HUGO","","Partido Colorado","38",866,866
+"BATALLA","","HUGO","","Partido Colorado","39",866,866
+"BATALLA","","HUGO","","Partido Colorado","40",866,866
+"BATALLA","","HUGO","","Partido por el Gobierno del Pueblo","43",871,866
+"BATALLA","","HUGO","","Partido Colorado","44",866,866
+"BATALLA","","HUGO","","Partido Colorado","43",866,866
+"BENTANCOUR","ALVARIO","JUAN","","Partido Colorado","42",1007,1006
+"BENTANCOUR","ALVARIO","JUAN","","Partido Colorado","44",1007,1006
+"BENTANCOUR","FERREIRA","JUAN","","Partido Colorado","42",1007,1006
+"BERTACHI","","CARLOS","","Partido por el Gobierno del Pueblo","43",1103,1102
+"BERTON","","SERGIO","","Partido Colorado","47",1111,1111
+"BIANCHI","BADANO","LUIS","","Partido Colorado","44",1138,1138
+"BOGLIACCINI","","RAUL","F.","Partido Colorado","29",1203,1202
+"BORDABERRY","","JUAN","MA.","","40",1258,1255
+"BORDABERRY","","JUAN","MARIA","Partido Colorado","41",1260,1255
+"BORDABERRY","","JUAN","MARIA","Partido Colorado","40",1260,1255
+"BOTANA","","SERGIO","","Partido Colorado","48",1295,1294
+"BOVE","ARTEAGA","JOSE","","Pueblo Soberano","35",1316,1313
+"BUERO","","ENRIQUE","E.","Partido Colorado","27",1406,1406
+"BUERO","ALVAREZ","ENRIQUE","","Movimiento Renovador","37",1414,1406
+"CABRERA","GIORDANO","CARMELO","","Partido Colorado","41",1462,1457
+"CAMPOS","","ALFREDO","R.","","33",1538,1538
+"CAMPOS","","ALFREDO","R.","Partido Colorado","34",1539,1538
+"CAPUTTI","","TABARE","","Partido por el Gobierno del Pueblo","43",1604,1603
+"CARESANI","","HOLF","","Partido Colorado","38",1688,1688
+"CARNELLI","","LORENZO","","Partido Radicalismo Blanco","29",1705,1702
+"CARNELLI","","LORENZO","","Partido Radicalismo Blanco","30",1705,1702
+"CASSINA","","CARLOS","","Partido por el Gobierno del Pueblo","43",1761,1760
+"CASTELLI","","HUMBERTO","","Partido Colorado","29",1775,1775
+"CASTRO","H","JUAN","PEDRO","Partido Colorado","22",1784,1784
+"CASTRO","H","JUAN","PEDRO","Partido Colorado","23",1784,1784
+"CASTRO","","JUAN","PEDRO","Partido Colorado","21",1784,1784
+"CASTRO","","JUAN","PEDRO","Partido Colorado","22",1784,1784
+"CASTRO","","JUAN","PEDRO","Partido Colorado","24",1784,1784
+"CASTRO","RAMOS","EDUARDO","","Partido Colorado","39",1797,1797
+"CHELONI","","CONRADO","","Partido Colorado","36",1896,1896
+"CHIARINO","","JUAN","VICENTE","Union Civica","34",1903,1903
+"CHIARINO","","JUAN","VICENTE","Union Civica","35",1903,1903
+"CHIARINO","","JUAN","VICENTE","Union Civica","36",1903,1903
+"CHIARINO","","JUAN","VICENTE","Union Civica","37",1903,1903
+"CHIARINO","","JUAN","VICENTE","Union Civica","42",1903,1903
+"CHIARINO","","JUAN","VICENTE","Movimiento Civico Cristiano","39",1908,1903
+"CHIARINO","","JUAN","VICENTE","Partido Democrata Cristiano","38",1909,1903
+"CORE","","FLORENCIO","","Partido Colorado","37",2048,2045
+"CORE","","FLORENCIO","","Partido Colorado","38",2048,2045
+"COSSIO","","VALENTIN","","Union Blanca de Treinta y Tres","36",2102,2101
+"COSTA","","VICENTE","F.","Partido Colorado","27",2109,2109
+"COSTA","","VICENTE","F.","Partido Colorado","28",2109,2109
+"COSTA","","VICENTE","F.","Partido Colorado General Fructuoso Rivera","29",2111,2109
+"COSTA","","VICENTE","F.","Partido Colorado General Fructuoso Rivera","30",2111,2109
+"DE","ARTEAGA","CLODOMIRO","","","21",2259,2259
+"DE CASTRO","CASTRO","CARLOS","","","21",2293,2293
+"DE CASTRO","CASTRO","CARLOS","","Partido Colorado","22",2294,2293
+"DE CASTRO","CASTRO","CARLOS","","Partido Colorado","23",2294,2293
+"DE CASTRO","CASTRO","CARLOS","","Partido Colorado","24",2294,2293
+"DE CASTRO","CASTRO","CARLOS","","Partido Colorado","28",2294,2293
+"DE CASTRO","CASTRO","CARLOS","","Partido Colorado","31",2294,2293
+"DEL VALLE","VALLE","VICTOR","H.","Partido de la Concertacion","48",2408,2407
+"DIAZ","MAYNARD","DANIEL","","Partido por el Gobierno del Pueblo","43",2469,2469
+"DIAZ","","RAMON","","Partido Liberal","45",2489,2474
+"DIAZ","","OMAR","","Movimiento Progresista","38",2490,2486
+"DIAZ","(H)","JOSE","R.","Partido Colorado","29",2493,2463
+"DIAZ","(H)","JOSE","R.","Partido Colorado","31",2493,2463
+"DOMINGUEZ","","RUFINO","T.","","21",2519,2519
+"DOMINGUEZ","","RUFINO","T.","Partido Colorado","26",2521,2519
+"DOMINGUEZ","","RUFINO","T.","Partido Colorado","28",2521,2519
+"DOMINGUEZ","","RUFINO","T.","Partido Colorado","29",2521,2519
+"DUBRA","","MANUEL","","Partido Colorado General Fructuoso Rivera","32",2546,2546
+"DUBRA","","MANUEL","","","30",2548,2546
+"ELIZEIRE","","SEBASTIAN","","Partido Democrata Cristiano","40",2633,2633
+"ESPALTER","","JOSE","","Partido Colorado","21",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","22",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","23",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","24",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","25",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","26",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","27",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","28",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado Radical","29",2674,2666
+"ESPALTER","","JOSE","","Partido Colorado Radical","30",2674,2666
+"ESPALTER","","JOSE","","Partido Colorado","32",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","33",2666,2666
+"ESPALTER","","JOSE","LUIS","Partido Colorado","26",2666,2666
+"ESPALTER","","JOSE","","Partido Colorado","30",2666,2666
+"ETCHEGARAY","","PEDRO","","Partido Colorado","48",2739,2737
+"ETCHEGARAY","","PEDRO","","Partido Colorado","46",2739,2737
+"FAU","","YAMANDU","","Partido por el Gobierno del Pueblo","43",2840,2839
+"FAU","","YAMANDU","","Partido Colorado","44",2841,2839
+"FAU","","YAMANDU","","Partido Colorado","45",2841,2839
+"FERNANDEZ","FAINGOLD","HUGO","","Partido Colorado","44",2858,2858
+"FERNANDEZ","FAINGOLD","HUGO","","Partido Colorado","45",2858,2858
+"FERNANDEZ","FRANCA","DANIEL","","Partido Colorado","42",2860,2860
+"FERNANDEZ","","JOSE","PEDRO","Partido Colorado","33",2865,2865
+"FERNANDEZ","","WASHINGTON","","Partido Colorado","35",2883,2883
+"FERNANDEZ","","WASHINGTON","","Partido Colorado","36",2883,2883
+"FERNANDEZ","","WASHINGTON","","Partido Colorado","37",2883,2883
+"FERNANDEZ","BRITOS","HUGO","","Partido Colorado","42",2858,2858
+"FERNANDEZ","BRITOS","HUGO","","Partido Colorado","43",2858,2858
+"FERNANDEZ","","HUGO","","Partido Colorado","43",2858,2858
+"FERNANDEZ","RONDEAU","JULIO","","Partido Colorado","36",2916,2867
+"FERNANDEZ","FAINGOLD","HUGO","","Partido Colorado","42",2858,2858
+"FERNANDEZ","","JULIO","","Partido Colorado","47",2916,2867
+"FIGOLI","","LUIS","","Partido Colorado","28",3035,3035
+"FIGOLI","","LUIS","","Partido Colorado","29",3035,3035
+"FIGOLI","","LUIS","","Partido Colorado","30",3035,3035
+"FIGOLI","","LUIS","","Partido Colorado","33",3035,3035
+"FIGOLI","","LUIS","","Partido Colorado","37",3035,3035
+"FIGOLI","","LUIS","","Partido Colorado","39",3035,3035
+"FLORES","","VENANCIO","","Union Civica","35",3076,3076
+"FLORES","","VENANCIO","","Union Civica","36",3076,3076
+"FLORES","","VENANCIO","","Union Civica","37",3076,3076
+"FLORES","","VENANCIO","","Union Civica","38",3076,3076
+"FLORES","","VENANCIO","","Union Civica","39",3076,3076
+"FLORES","","VENANCIO","","Union Civica","40",3076,3076
+"FLORES","","VENANCIO","","Movimiento Civico Cristiano","39",3086,3076
+"FUREST","","JUAN","CARLOS","Partido Colorado","39",3181,3181
+"GALAN","","MIGUEL","ANGEL","Partido Colorado","43",3209,3206
+"GALLINAL","","JOSE","ANTONIO","","34",3235,3235
+"GALLINAL","","JOSE","ANTONIO","","35",3236,3235
+"GARCIA","","GUILLERMO","L.","Partido Colorado","25",3304,3304
+"GARCIA","","GUILLERMO","L.","Partido Colorado","27",3304,3304
+"GARCIA","","GUILLERMO","L.","Partido Colorado","28",3304,3304
+"GARCIA","","GUILLERMO","L.","Partido Colorado","29",3304,3304
+"GARCIA","","GUILLERMO","L.","Partido Colorado","30",3304,3304
+"GARCIA","PINTOS","SALVADOR","","Union Civica","34",3321,3316
+"GARCIA","PINTOS","SALVADOR","","Union Civica","35",3321,3316
+"GARCIA","PINTOS","SALVADOR","","Union Civica","36",3321,3316
+"GARCIA","PINTOS","SALVADOR","","Union Civica","37",3321,3316
+"GARCIA","OTERO","JULIO","","Partido Democrata Cristiano","38",3373,3373
+"GARCIA","OTERO","JULIO","","Union Civica","37",3376,3373
+"GIAMBRUNO","","CYRO","","Partido Colorado","33",3466,3462
+"GIL","MARTINS","ORLANDO","V.","Partido Colorado","36",3486,3482
+"GOMEZ","","EUGENIO","","Partido Comunista del Uruguay","29",3544,3544
+"GOMEZ","","EUGENIO","","Partido Comunista del Uruguay","30",3544,3544
+"GOMEZ","","EUGENIO","","Partido Comunista del Uruguay","31",3544,3544
+"GOMEZ","","EUGENIO","","Partido Comunista del Uruguay","32",3544,3544
+"GOMEZ","","EUGENIO","","Partido Comunista del Uruguay","33",3544,3544
+"GOMEZ","HAEDO","FRANCISCO","","Partido Colorado","37",3552,3552
+"GOMEZ","","EUGENIO","","Partido de los Trabajadores","38",3567,3544
+"GONZALEZ","","ALBERTO","F.","Partido Colorado","33",3570,3570
+"GONZALEZ","","PEDRO","A.","Partido Colorado","29",3647,3647
+"GONZALEZ","","CARLOS","MARIA","Partido Colorado","35",3651,3571
+"GUTIERREZ","","CESAR","G.","Partido Colorado General Fructuoso Rivera","28",3796,3796
+"GUTIERREZ","","CESAR","G.","Partido Colorado General Fructuoso Rivera","29",3796,3796
+"GUTIERREZ","","CESAR","G.","Partido Colorado General Fructuoso Rivera","30",3796,3796
+"GUTIERREZ","","CESAR","G.","Partido Colorado General Fructuoso Rivera","31",3796,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","27",3811,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","28",3811,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","29",3811,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","30",3811,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","34",3811,3796
+"GUTIERREZ","","CESAR","MAYO","Partido Colorado","35",3811,3796
+"GUTIERREZ","","CESAR","","Partido Colorado","32",3811,3796
+"HERRERA","","JULIO","","Partido Colorado","44",3913,3913
+"HERRERA","","JULIO","","Partido Colorado","45",3913,3913
+"HERRERA","","JULIO","","Partido de la Concertacion","48",3916,3913
+"HUGALDE","","JULIO","","Partido Colorado","36",3951,3951
+"IBAÑEZ","","ROBERTO","","Partido Colorado","36",3973,3973
+"IGLESIAS","","ALBERTO","","Partido Colorado","44",3997,3997
+"IGLESIAS","","ALBERTO","","Partido Colorado","45",3997,3997
+"JIMENEZ","DE ARECHAGA","EDUARDO","","","40",4080,4080
+"JIMENEZ","DE ARECHAGA","EDUARDO","","Partido Colorado","37",4082,4080
+"KOSTER","","LUIS","","Union Vecinal","35",4120,4119
+"LEIVAS","","TABARE","","Partido Colorado","48",4309,4308
+"LOPEZ","GUTIERREZ","JUAN","CARLOS","Partido Colorado","35",4420,4403
+"LOPEZ","GUTIERREZ","JUAN","CARLOS","Partido Colorado","36",4420,4403
+"LOPEZ","GUTIERREZ","JUAN","CARLOS","Partido Colorado","37",4420,4403
+"LOPEZ","GUTIERREZ","JUAN","CARLOS","Partido Colorado","38",4420,4403
+"LOPEZ","VIDAUR","JOSE","MA.","","30",4436,4436
+"LOPEZ","RAMOS","JOSE","","Partido Colorado","29",4452,4436
+"LOPEZ","LAPHITZ","JOSE","E.","Partido Colorado","39",4452,4436
+"MANE","","ALBERTO","","","30",4623,4623
+"MANE","","ALBERTO","","Partido Colorado","31",4624,4623
+"MANGADO","","JUAN","IGNACIO","Partido Colorado","44",4628,4626
+"MANINI","RIOS","PEDRO","","Partido Colorado","22",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","23",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","24",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","25",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","26",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado General Fructuoso Rivera","27",4637,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado General Fructuoso Rivera","29",4637,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado General Fructuoso Rivera","30",4637,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado General Fructuoso Rivera","31",4637,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado General Fructuoso Rivera","32",4637,4632
+"MANINI","RIOS","CARLOS","","Partido Colorado General Fructuoso Rivera","32",4642,4642
+"MANINI","RIOS","CARLOS","","Partido Colorado","35",4643,4642
+"MANINI","RIOS","CARLOS","","Partido Colorado","36",4643,4642
+"MANINI","RIOS","PEDRO","","Partido Colorado","28",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","32",4632,4632
+"MANINI","RIOS","PEDRO","","Partido Colorado","33",4632,4632
+"MANINI","RIOS","CARLOS","","Partido Colorado","40",4643,4642
+"MANINI","RIOS","CARLOS","","Partido Colorado","42",4643,4642
+"MANINI","RIOS","CARLOS","","Partido Colorado","38",4643,4642
+"MARTINEZ","","ENRIQUE","D.","Partido Colorado","31",4694,4694
+"MARTINEZ","","ENRIQUE","D.","Partido Colorado","32",4694,4694
+"MARTINEZ","","ENRIQUE","D.","Partido Colorado","33",4694,4694
+"MARTINEZ","","ENRIQUE","D.","Partido Colorado","34",4694,4694
+"MARTINEZ","GARCIA","EDUARDO","L.","Partido Colorado","21",4701,4701
+"MARTINEZ","GARCIA","EDUARDO","L.","Partido Colorado","24",4701,4701
+"MARTINEZ","GARCIA","EDUARDO","L.","Partido Colorado","25",4701,4701
+"MARTINEZ","GARCIA","EDUARDO","L.","Partido Colorado","26",4701,4701
+"MARTINEZ","GARCIA","EDUARDO","L.","Partido Colorado","27",4701,4701
+"MARTINEZ","","JUAN","","Partido Colorado","41",4709,4706
+"MARTINEZ","","JUAN","F.","Partido Colorado","37",4709,4706
+"MARTINEZ","MORENO","ENRIQUE","","Partido Colorado","37",4694,4694
+"MARTINEZ","MORENO","ENRIQUE","","Partido Colorado","38",4694,4694
+"MARTINEZ","MORENO","ENRIQUE","","Partido Colorado","39",4694,4694
+"MARTINEZ","MORENO","ENRIQUE","","Partido Colorado","40",4694,4694
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","27",4731,4700
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","28",4731,4700
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","29",4731,4700
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","34",4731,4700
+"MARTINEZ","","DIEGO","","Partido Colorado","45",4738,4692
+"MARTINEZ","","JORGE","","Partido Colorado","47",4753,4691
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","36",4731,4700
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","37",4731,4700
+"MARTINEZ","TRUEBA","ANDRES","","Partido Colorado","35",4731,4700
+"MASSERA","","JOSE","LUIS","Partido Comunista del Uruguay","38",4809,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","22",4812,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","23",4812,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","24",4812,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","29",4812,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","30",4812,4809
+"MASSERA","","JOSE","PEDRO","Partido Colorado","31",4812,4809
+"MEZZERA","","RODOLFO","","Partido Colorado","25",4964,4964
+"MEZZERA","","RODOLFO","","Partido Colorado","26",4964,4964
+"MEZZERA","ALVAREZ","RODOLFO","","Partido Democrata Cristiano","38",4966,4964
+"MIBELLI","","CELESTINO","","Partido Comunista del Uruguay","28",4968,4967
+"MIBELLI","","CELESTINO","","Partido Comunista del Uruguay","29",4968,4967
+"MICHELENA","","BERNABE","","Partido Comunista del Uruguay","37",4974,4973
+"MICHELINI","","RAFAEL","","Partido por el Gobierno del Pueblo","43",4979,4979
+"MICHELINI","","ZELMAR","","Partido Colorado","37",4983,4983
+"MICHELINI","","ZELMAR","","Partido Colorado","38",4983,4983
+"MICHELINI","","ZELMAR","","Partido Colorado","39",4983,4983
+"MICHELINI","","ZELMAR","","Partido Colorado","40",4983,4983
+"MICHELINI","","ZELMAR","","Partido Colorado General Fructuoso Rivera","41",4987,4983
+"MIERES","","PABLO","","Partido por el Gobierno del Pueblo","43",5002,5001
+"MIERES","","PABLO","","Partido Independiente","48",5006,5001
+"MIERES","","PABLO","","Partido Independiente","49",5006,5001
+"MIERES","","PABLO","","Partido Independiente","47",5006,5001
+"MIERES","","PABLO","","Partido Independiente","46",5006,5001
+"MIERES","","PABLO","","Partido Independiente","45",5006,5001
+"MORENO","","CARLOS","B.","Partido Colorado","35",5172,5165
+"MORENO","","CARLOS","B.","Partido Colorado","36",5172,5165
+"MORENO","","CARLOS","B.","Partido Colorado","37",5172,5165
+"MUNAR","","PEDRO","","","34",5200,5200
+"MUNAR","","PEDRO","","","35",5201,5200
+"MUNIZ","CUELLO","MARIA","CARMEN","Partido Colorado","43",5202,5202
+"MUNIZ","CUELLO","MARIA","CARMEN","Partido Colorado","44",5202,5202
+"MURPHY","","CAROLINA","","Partido de la Concertacion","48",5221,5220
+"NUÑEZ","","FELIX","","Concordancia Colorada","31",5337,5337
+"NUÑEZ","","FELIX","","Partido Colorado","33",5338,5337
+"OGANDO","","CONSTANTINO","","Partido Colorado","29",5349,5349
+"OLIVA","","LUIS","","Partido Colorado","47",5381,5381
+"ORTIZ","","CELIAR","","Partido Colorado","29",5459,5459
+"ORTIZ","","CELIAR","","Partido Colorado","37",5459,5459
+"ORTIZ","","CELIAR","","","36",5471,5459
+"PASTORINO","","ENRIQUE","","Partido Comunista del Uruguay","36",5611,5611
+"PASTORINO","","ENRIQUE","","Partido Comunista del Uruguay","37",5611,5611
+"PASTORINO","","ENRIQUE","","Partido Comunista del Uruguay","38",5611,5611
+"PAYSE","REYES","HECTOR","","Partido Colorado","38",5640,5638
+"PAYSE","REYES","HECTOR","","Partido Colorado","39",5640,5638
+"PERCOVICH","","CARLOS","","Partido Colorado","23",5705,5705
+"PEREZ","OLAVE","ADOLFO","","Partido Colorado","22",5815,5815
+"PEREZ","OLAVE","ADOLFO","","Partido Colorado","23",5815,5815
+"PEREZ","OLAVE","ADOLFO","","Partido Colorado","24",5815,5815
+"PEREZ","OLAVE","ADOLFO","","Partido Colorado","25",5815,5815
+"PEREZ","SANCHEZ","ADOLFO","","Partido Colorado","32",5815,5815
+"PEREZ","SANDE","ADOLFO","","Partido Colorado","45",5815,5815
+"PEREZ","PELOCHE","OSCAR","","Partido Colorado","42",5837,5819
+"PEREZ","PELOCHE","OSCAR","","Partido Colorado","43",5837,5819
+"PEREZ","","SAVINIANO","","Partido General Aparicio Saravia","35",5867,5824
+"PEREZ","","SAVINIANO","","Partido General Aparicio Saravia","36",5867,5824
+"PEROTTI","","ITALO","EDUARDO","Partido Colorado","27",5879,5879
+"PEROTTI","","ITALO","EDUARDO","Partido Colorado","28",5879,5879
+"PEROTTI","","ITALO","EDUARDO","Partido Colorado General Fructuoso Rivera","29",5881,5879
+"PEROTTI","","ITALO","EDUARDO","Partido Colorado General Fructuoso Rivera","30",5881,5879
+"PEYROU","","LEON","","Union Democrata Reformista","37",5901,5900
+"PEÑA","","DANIEL","","Partido de la Gente","48",5907,5904
+"PLA","RODRIGUEZ","AMERICO","","Partido Democrata Cristiano","39",6007,6007
+"POLLERI","","FELIX","","Partido Colorado","27",6028,6028
+"POLLERI","","FELIX","","Partido Colorado","28",6028,6028
+"POLLERI","","FELIX","","Partido Colorado General Fructuoso Rivera","29",6030,6028
+"POLLERI","","FELIX","","Partido Colorado General Fructuoso Rivera","30",6030,6028
+"POLLERI","","FELIX","","Partido Colorado","32",6028,6028
+"POLLERI","","FELIX","","Partido Colorado","29",6028,6028
+"PONCE","","LUIS","","Partido Obrero Revolucionario","37",6060,6046
+"PORTILLO","","MABEL","","Partido del Sol","43",6075,6075
+"PORTILLO","","MABEL","","Partido Verde Ecologista","42",6076,6075
+"POSADAS","","IVAN","","Partido Independiente","46",6085,6083
+"PRANDO","","CARLOS","MARIA","Partido Colorado","24",6109,6109
+"PRANDO","","CARLOS","MARIA","Partido Colorado","28",6109,6109
+"PRANDO","","CARLOS","MARIA","Partido Colorado General Fructuoso Rivera","29",6111,6109
+"PRANDO","","CARLOS","MARIA","Partido Colorado General Fructuoso Rivera","30",6111,6109
+"PRANDO","","CARLOS","MARIA","Partido por la Tradicion Colorada","31",6113,6109
+"PRANDO","","CARLOS","MA.","Partido Colorado","28",6109,6109
+"PREVITALI","","SERGIO","","Partido Colorado","40",6123,6123
+"PRIETO","","BALTASAR","","Partido por el Gobierno del Pueblo","43",6127,6126
+"PRIETO","","BALTASAR","","Partido Colorado","44",6128,6126
+"PUYOL","","ANDRES","F.","Partido Colorado","28",6169,6169
+"PUYOL","","ANDRES","F.","Partido Colorado","29",6169,6169
+"PUYOL","","ANDRES","F.","Partido por la Tradicion Colorada","31",6171,6169
+"PUYOL","","ANDRES","F.","Partido Colorado","32",6169,6169
+"PUYOL","","ANDRES","","Partido Colorado","32",6169,6169
+"RIBEIRO","","CARLOS","RAUL","Partido Colorado","37",6349,6349
+"RIBEIRO","","CARLOS","RAUL","Partido Colorado","38",6349,6349
+"RIBEIRO","","CARLOS","RAUL","Partido Colorado","40",6349,6349
+"RIBEIRO","","CARLOS","RAUL","Partido Colorado","41",6349,6349
+"RIBEIRO","","CARLOS","","","42",6353,6349
+"ROBALLO","DE PREVITALI","ALBA","","Partido Colorado","38",6419,6419
+"ROBALLO","DE PREVITALI","ALBA","","Partido Colorado","39",6419,6419
+"ROBALLO","DE PREVITALI","ALBA","","Partido Colorado","40",6419,6419
+"ROBALLO","DE PREVITALI","ALBA","","Partido Colorado","37",6419,6419
+"RODRIGUEZ","","ENRIQUE","J.","Partido Colorado","35",6448,6448
+"RODRIGUEZ","FABREGAT","ENRIQUE","","Partido Colorado","28",6448,6448
+"RODRIGUEZ","FABREGAT","ENRIQUE","","Partido Colorado","29",6448,6448
+"RODRIGUEZ","FABREGAT","ENRIQUE","","Partido Colorado","30",6448,6448
+"RODRIGUEZ","FABREGAT","ENRIQUE","","Partido Colorado","31",6448,6448
+"RODRIGUEZ","","HECTOR","","Partido Comunista del Uruguay","35",6455,6455
+"RODRIGUEZ","","JUAN","CARLOS","Partido Colorado","43",6457,6453
+"RODRIGUEZ","","JUAN","CARLOS","Partido Colorado","44",6457,6453
+"RODRIGUEZ","ALTEZ","ERNESTO","","Partido Colorado","43",6491,6491
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","21",6499,6446
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","22",6499,6446
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","23",6499,6446
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","24",6499,6446
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","25",6499,6446
+"RODRIGUEZ","","ANTONIO","MARIA","Partido Colorado","26",6499,6446
+"RODRIGUEZ","APELO","RAUL","","Partido Colorado","42",6505,6505
+"RODRIGUEZ","CORREA","ANTONIO","","Partido Colorado","45",6499,6446
+"RODRIGUEZ","CORREA","FRANCISCO","","Partido Colorado","45",6521,6509
+"RODRIGUEZ","CORREA","JUAN","","Partido Colorado","36",6457,6453
+"RODRIGUEZ","CORREA","JUAN","","Partido Colorado","37",6457,6453
+"RODRIGUEZ","CORREA","JUAN","","Partido Colorado","38",6457,6453
+"RODRIGUEZ","CORREA","MANUEL","","Partido Colorado","35",6525,6445
+"RODRIGUEZ","CORREA","MANUEL","","Partido Colorado","36",6525,6445
+"RODRIGUEZ","","ENRIQUE","","Partido Comunista del Uruguay","35",6528,6448
+"RODRIGUEZ","","ENRIQUE","","Partido Comunista del Uruguay","38",6528,6448
+"RODRIGUEZ","ROCHA","OSCAR","","Partido Colorado","33",6548,6543
+"RODRIGUEZ","CORREA","JUAN","","Partido Colorado","35",6457,6453
+"RODRIGUEZ","","RAMON","","Partido Colorado","48",6595,6579
+"RODRIGUEZ","CORREA","MANUEL","","Partido Colorado","38",6525,6445
+"RODRIGUEZ","","RAUL","","Asamblea Popular","46",6600,6505
+"RODRIGUEZ","FABREGAT","ENRIQUE","","Partido Colorado","38",6448,6448
+"RODRIGUEZ","CORREA","MANUEL","","Partido Colorado","37",6525,6445
+"RODRIGUEZ","","HECTOR","","Partido Laborista","37",6606,6455
+"RODRIGUEZ","","JOSE","","Partido Colorado","34",6608,6456
+"RODRIGUEZ","CORREA","MANUEL","","Partido Colorado","34",6525,6445
+"ROMEU","","JOSE","","Partido Colorado","24",6636,6635
+"ROSSI","","MARIO","","Partido Colorado General Fructuoso Rivera","28",6707,6707
+"ROSSI","","MARIO","","Partido Colorado General Fructuoso Rivera","31",6707,6707
+"ROSSI","","MARIO","","Partido Comuna","46",6713,6707
+"ROVIRA","","ALEJANDRO","","Partido Colorado","40",6718,6718
+"ROVIRA","","ALEJANDRO","","","41",6719,6718
+"RUBIO","","EDUARDO","JOSE","Partido Colorado","48",6741,6734
+"SANCHEZ","","ALEJANDRO","","Partido cuatro puntos cardinales","46",6879,6873
+"SANTAMARINA","","EDEN","MELO","Partido por el Gobierno del Pueblo","43",6915,6914
+"SANTAMARINA","","EDEN","MELO","Partido Colorado","44",6916,6914
+"SARALEGUI","","MIGUEL","","Partido Democrata Cristiano","39",6952,6952
+"SARALEGUI","","MIGUEL","","Partido Democrata Cristiano","38",6952,6952
+"SARALEGUI","","MIGUEL","","Union Civica","37",6954,6952
+"SARAVIA","","MAURO","","Partido Colorado","38",6971,6971
+"SARAVIA","","MAURO","","Partido Colorado","39",6971,6971
+"SENCION","","FULGENCIO","P.","Concentracion Colorada","29",7090,7090
+"SENCION","","FULGENCIO","P.","Concordancia Colorada","31",7091,7090
+"SILVA","VARELA","JORGE","","Partido Colorado","37",7143,7143
+"SILVA","ROTTA","JORGE","","Partido Colorado","45",7143,7143
+"SILVA","","JORGE","","Partido Democratico Unido","48",7157,7143
+"SILVEIRA","","GUSTAVO","","Partido Colorado","47",7180,7175
+"SOSA","ACOSTA","HERIBERTO","","Partido por el Gobierno del Pueblo","43",7271,7270
+"SUAREZ","","JUAN","CARLOS","Partido Colorado","37",7348,7348
+"SUAREZ","","ALBERTO","C.","Partido Comunista del Uruguay","35",7359,7359
+"SUAREZ","","MARIA","LUISA","Partido de los Trabajadores","45",7385,7383
+"TERRA","","JUAN","PABLO","Partido Democrata Cristiano","40",7444,7444
+"TERRA","AROCENA","HORACIO","","Union Civica","34",7447,7447
+"TERRA","AROCENA","HORACIO","","Union Civica","35",7447,7447
+"TERRA","AROCENA","HORACIO","","Union Civica","36",7447,7447
+"TERRA","AROCENA","HORACIO","","Union Civica","37",7447,7447
+"TERRA","","JOSE","LADISLAO","","21",7457,7443
+"TERRA","AROCENA","HORACIO","","Partido Democrata Cristiano","38",7461,7447
+"URIARTE","","CARLOS","MARIA","Partido Colorado","49",7632,7630
+"URIOSTE","OLIVERA","CESAR","","Partido Colorado","29",7645,7639
+"VAILLANT","","VICTOR","","Partido Colorado","42",7668,7668
+"VAILLANT","","VICTOR","","Partido Colorado","44",7668,7668
+"VARZI","","PABLO","","","24",7709,7709
+"VARZI","","PABLO","","Partido Colorado","25",7710,7709
+"VASCONCELLOS","","HECTOR","","Partido por la Tradicion Colorada","31",7711,7711
+"VASCONCELLOS","","HECTOR","","Partido Colorado","29",7718,7711
+"VASCONCELLOS","","HECTOR","","Partido Colorado","31",7718,7711
+"VAZQUEZ","","WASHINGTON","","Partido Colorado","40",7744,7744
+"VAZQUEZ","","WASHINGTON","","Partido Colorado","41",7744,7744
+"VAZQUEZ","VARELA","JACOBO","","Partido Colorado","33",7747,7747
+"VAZQUEZ","","WASHINGTON","","Partido Federal","39",7762,7744
+"VIEYTE","","MIGUEL","","Partido por la Tradicion Colorada","32",7903,7903
+"VIEYTE","","MIGUEL","","Partido Colorado","34",7904,7903
+"VIEYTE","","MIGUEL","","Partido Colorado","35",7904,7903
+"WILLIMAN","","CLAUDIO","","Partido Colorado","21",7979,7978
+"WILLIMAN","","CLAUDIO","","Partido Colorado","22",7979,7978
+"XIMENEZ","","ISAIAS","","Partido Colorado","27",7990,7990
+"XIMENEZ","","ISAIAS","","Partido Colorado","28",7990,7990
+"XIMENEZ","","ISAIAS","","Partido Colorado Radical","29",7992,7990
+"XIMENEZ","","ISAIAS","","Partido Colorado","30",7990,7990
+"XIMENEZ","","ISAIAS","","Partido Colorado","31",7990,7990
+"ZABALZA","","PEDRO","","Partido Blanco","36",8017,8013

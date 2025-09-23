@@ -935,14 +935,27 @@ leg47_biblio <- leg47_biblio %>%
 leg47_biblio <- leg47_biblio %>% select(-c(primer_apellido, segundo_apellido)) %>% rename('primer_apellido'='Apellido1',
                                                                           'segundo_apellido' ='Apellido2')
 
+# Elimino la enie para poder pegar
+
+leg47$primer_apellido <- gsub('Ñ','N', leg47$primer_apellido)
+
 leg47_diputado <- leg47 %>% filter(cargo %in%c("Diputado"))
 leg47_senador <- leg47 %>% filter(cargo %in%c("Senador"))
 
 leg47_biblio_diputado <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "DIPUTADA"))
 
 # Me quedo con las filas unicas
-
 leg47_biblio_diputado_unicos <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()<=1) %>% ungroup()
+
+leg47_biblio_diputado_unicos <- leg47_biblio_diputado_unicos %>%
+  select(primer_nombre, primer_apellido, Fecha.nacimiento,Condición)
+
+# Filas duplicadas
+leg47_biblio_diputado_dup <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()>1) %>% ungroup()
+
+
+# Pegado con diputados unicos
+pegado <- leg47_diputado %>% left_join(leg47_biblio_diputado_unicos, by=c('primer_apellido', 'primer_nombre'))
 
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
