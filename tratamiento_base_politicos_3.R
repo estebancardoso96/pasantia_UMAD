@@ -840,6 +840,143 @@ df_final[which(
   df_final$primer_apellido == 'FORTEZA'),
   "fecha_nac"] <-  as.Date('1928-06-01')
 
+df_final[which(
+  df_final$primer_apellido == 'BARRERA' &
+  df_final$legislatura == 45),
+  "id_politico"] <-  4404
+
+df_final[which(
+  df_final$primer_apellido == 'CABRERA' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$legislatura == 48),
+  "id_politico"] <-  4405
+
+df_final[which(
+  df_final$primer_apellido == 'ARENA' &
+  df_final$primer_nombre == 'DANIEL' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4406
+
+df_final[which(
+  df_final$primer_apellido == 'MESA' &
+  df_final$primer_nombre == 'DANIEL' &
+  df_final$legislatura == 45),
+  "id_politico"] <-  4407
+
+df_final[which(
+  df_final$primer_apellido == 'BOSCH' &
+  df_final$primer_nombre == 'FEDERICO' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4408
+
+df_final[which(
+  df_final$primer_apellido == 'CHIESA' &
+  df_final$primer_nombre == 'EDUARDO' &
+  df_final$legislatura == 45),
+  "id_politico"] <-  4409
+
+df_final[which(
+  df_final$primer_apellido == 'CAIRO' &
+  df_final$primer_nombre == 'DANIEL' &
+  df_final$legislatura == 44),
+  "id_politico"] <-  4410
+
+df_final[which(
+  df_final$primer_apellido == 'CORES' &
+  df_final$primer_nombre == 'HUGO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4411
+
+df_final[which(
+  df_final$primer_apellido == 'PITA' &
+  df_final$primer_nombre == 'JUAN' &
+  df_final$segundo_nombre == 'CARLOS' &  
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4412
+
+df_final[which(
+  df_final$primer_apellido == 'CRUZ' &
+  df_final$primer_nombre == 'PEDRO' &
+  df_final$legislatura == 48 &  
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4413
+
+df_final[which(
+  df_final$primer_apellido == 'YAEZ' &
+  df_final$primer_nombre == 'RUBEN'),
+  "id_politico"] <-  4414
+
+df_final[which(
+  df_final$primer_apellido == 'MONTES' &
+  df_final$primer_nombre == 'HECTOR' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4415
+
+df_final[which(
+  df_final$primer_apellido == 'FREY' &
+  df_final$primer_nombre == 'RUBEN' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4416
+
+df_final[which(
+  df_final$primer_apellido == 'FURLATI' &
+  df_final$primer_nombre == 'JUAN' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4417
+
+df_final[which(
+  df_final$primer_apellido == 'GARCIA' &
+  df_final$primer_nombre == 'EMILIO' &
+  df_final$legislatura == 48),
+  "id_politico"] <-  4418
+
+df_final[which(
+  df_final$primer_apellido == 'LAGO' &
+  df_final$primer_nombre == 'RAUL' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4419
+
+df_final[which(
+  df_final$primer_apellido == 'LONGO' &
+  df_final$primer_nombre == 'FERNANDO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4420
+
+df_final[which(
+  df_final$primer_apellido == 'MENENDEZ' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4421
+
+df_final[which(
+  df_final$primer_apellido == 'TOLEDO' &
+  df_final$primer_nombre == 'PEDRO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4422
+
+df_final[which(
+  df_final$primer_apellido == 'ARBIO' &
+  df_final$primer_nombre == 'PEDRO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4424
+
+df_final[which(
+  df_final$primer_apellido == 'BARRIOS' &
+  df_final$primer_nombre == 'HEBEL'),
+  "id_politico"] <-  4425
+
+df_final[which(
+  df_final$primer_apellido == 'BORJAS' &
+  df_final$primer_nombre == 'LUIS' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4426
+
+df_final[which(
+  df_final$primer_apellido == 'CASTRO' &
+  df_final$primer_nombre == 'TOMAS' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4427
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
@@ -875,12 +1012,12 @@ if (!is.null(con)) {
   message("✅ Conexión exitosa a la base de datos")
 }
 
-dbWriteTable(con, "fact_politicos_PASANTIA_23_09", politicos, overwrite = TRUE, row.names = FALSE)
+dbWriteTable(con, "fact_politicos_PASANTIA_23_09", df_final, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
-politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_PASANTIA_02_09"')
+politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_PASANTIA_23_09"')
 
-df_final <- dbGetQuery(connec, "SELECT * FROM fact_politicos")
+df_final <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_PASANTIA_23_09"')
 
 df_final$ed_asumir <-trunc((df_final$fecha_nac %--% df_final$fecha_inicio) / years(1))
 
@@ -956,7 +1093,59 @@ leg47_biblio_sen_tit <- leg47_biblio_sen_tit[-c(19, 22),]
 
 leg47_biblio_sen_tit %>% filter(Condición == 'Titular') %>% count() # sigue habiendo mas senadores titulares
 
-# correccion a mano
+# correccion a mano (colocar los suplentes que por error en la tabla del parlamento aparecen como titulares)
+
+leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'ALFREDO'&
+                     leg47_biblio_sen_tit$primer_apellido == 'SOLARI',
+                     "Condición"] <- 'Suplente'
+
+leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'WILSON'&
+                     leg47_biblio_sen_tit$primer_apellido == 'SANABRIA',
+                     "Condición"] <- 'Suplente'
+
+leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'ENRIQUE'&
+                     leg47_biblio_sen_tit$primer_apellido == 'PINTADO',
+                     "Condición"] <- 'Suplente'
+
+leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'SUSANA'&
+                     leg47_biblio_sen_tit$segundo_nombre == 'ELIDA',
+                     "primer_apellido"] <- 'DALMAS'
+
+leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'EBER'&
+                     leg47_biblio_sen_tit$segundo_apellido == 'VAZQUEZ',
+                     "primer_apellido"] <- 'DA ROSA VAZQUEZ'
+
+## marco a todos los senadores como suplentes (base UMAD)
+leg47_senador <- leg47_senador %>% mutate(status = "Suplente")
+
+################### OBTENGO DEL DW TODOS LOS ID POLITICOS Y NOMBRES Y APELLIDOS #########################
+
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  segundo_nombre,
+                  primer_apellido,
+                  segundo_apellido
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%'"
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
