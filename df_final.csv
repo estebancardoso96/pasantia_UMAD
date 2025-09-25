@@ -73,10 +73,10 @@
 "ACOSTA",NA,"WALTER",NA,1464,"Partido Nacional",NA,NA,44,"Diputado","Suplente","Maldonado",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA",NA,"MARILU",NA,1460,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Rocha Castillos",0,NA,1946-09-16,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,63,63,"1985-2020",0
 "ACOSTA",NA,"ARTURO",NA,2809,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Cerro Largo Fraile Muerto",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"ACOSTA",NA,"MATIAS",NA,2817,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Rivera Tranqueras",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"ACOSTA",NA,"MATIAS",NA,4482,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Rivera Tranqueras",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA",NA,"CESAR",NA,3014,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Paso Carrasco",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA",NA,"MARCELA",NA,3054,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Los Cerrillos",0,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"ACOSTA",NA,"MATIAS",NA,2817,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Rivera Tranqueras",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"ACOSTA",NA,"MATIAS",NA,4482,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Rivera Tranqueras",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA",NA,"DANIELO","A.",3262,"Partido Nacional",2015-03-01,NA,48,"Alcalde","Titular","Lavalleja José Pedro Varela",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA","Y LARA","HORACIO",NA,3554,"Partido Colorado",1938-06-30,1942-06-07,33,"Intendente","Titular","Montevideo",1,NA,NA,1938-05-24,1942-02-21,1940-04-07 12:00:00,NA,NA,NA,"1934-1973",0
 "ACOSTA","ARTETA","GILBERTO",NA,3697,"Partido Colorado",1963-02-15,1967-02-14,39,"Concejal Departamental","Titular","Maldonado",1,NA,1909-04-20,1963-02-15,1967-02-14,1965-02-14,NA,53,53,"1934-1973",0
@@ -750,7 +750,7 @@
 "BARBOZA",NA,"ORIBE",NA,1517,"Partido Nacional",NA,NA,43,"Diputado","Suplente","Florida",1,NA,NA,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "BARBOZA",NA,"ORIBE",NA,1517,"Partido Nacional",NA,NA,44,"Diputado","Suplente","Florida",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "BARBOZA",NA,"DARIO",NA,2813,"Partido Colorado",2010-03-01,NA,47,"Concejal","Titular","Cerro Largo Río Branco",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"BARBOZA",NA,"DANY",NA,2813,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Cerro Largo Arbolito",0,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"BARBOZA",NA,"DANY",NA,4481,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Cerro Largo Arbolito",0,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "BARBOZA",NA,"CLAUDIO",NA,3619,"Partido Nacional",1955-02-15,1959-02-14,37,"Concejal Departamental","Titular","Rivera",1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
 "BARCELO",NA,"ANIBAL",NA,2661,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones La Paz",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "BARDALLO",NA,"JULIO",NA,1518,"Union Civica",NA,NA,39,"Senador","Suplente",NA,1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
@@ -1342,7 +1342,7 @@
 "CABRERA",NA,"RAMON",NA,2633,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Montevideo A",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "CABRERA",NA,"ROBERTO",NA,2652,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Las Piedras",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "CABRERA",NA,"ZULLY",NA,2727,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Salinas",0,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"CABRERA",NA,"ARMANDO",NA,2735,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Colonia Nicolich",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"CABRERA",NA,"ARMANDO",NA,4478,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Colonia Nicolich",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "CABRERA",NA,"JORGE",NA,4405,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Montevideo C",1,NA,1968-05-11,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,46,46,"1985-2020",0
 "CABRERA",NA,"FERNANDO",NA,2735,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Lavalleja José Pedro Varela",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "CABRERA",NA,"CESAR",NA,271,"Partido Colorado",1999-04-25,1999-04-25,44,"Candidato Precandidato Presidente",NA,NA,1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
@@ -4008,10 +4008,10 @@
 "LOPEZ","TOLEDO","BAUTISTA",NA,1905,"Partido Colorado",NA,NA,36,"Senador","Suplente",NA,1,NA,NA,1951-02-15,1955-02-14,1953-02-14,NA,NA,NA,"1934-1973",0
 "LOPEZ","TOLEDO","BAUTISTA",NA,1905,"Partido Colorado",NA,NA,37,"Senador","Titular",NA,1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
 "LOPEZ","TOLEDO","BAUTISTA",NA,1905,"Partido Colorado",NA,NA,39,"Senador","Titular",NA,1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
-"LOPEZ",NA,"JULIO",NA,2729,"Frente Amplio",2010-03-01,NA,47,"Alcalde","Titular","Canelones Parque del Plata",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"LOPEZ",NA,"JULIO",NA,4477,"Frente Amplio",2010-03-01,NA,47,"Alcalde","Titular","Canelones Parque del Plata",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "LOPEZ",NA,"RICARDO",NA,2650,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Tacuarembo San Gregorio de Polanco",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "LOPEZ",NA,"MARIO",NA,2985,"Frente Amplio",2015-03-01,NA,48,"Alcalde","Titular","Canelones Ciudad de la Costa",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"LOPEZ",NA,"JULIO",NA,2729,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Parque del Plata",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"LOPEZ",NA,"JULIO",NA,4477,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Parque del Plata",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "LOPEZ",NA,"MARCOS",NA,2985,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Cerro Largo Río Branco",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "LOPEZ",NA,"JAVIER","H.",3197,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Rio Negro Young",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "LOPEZ",NA,"RICARDO",NA,2650,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Tacuarembo San Gregorio de Polanco",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
@@ -5128,12 +5128,12 @@
 "PERDOMO","LOMBARDO","BENJAMIN",NA,2013,"Partido Colorado",NA,NA,39,"Diputado","Suplente","Cerro Largo",1,NA,1927-04-26,1963-02-15,1967-02-14,1965-02-14,37,NA,37,"1934-1973",0
 "PERDOMO","LOMBARDO","BENJAMIN",NA,2013,"Partido Colorado",NA,NA,40,"Diputado","Suplente","Cerro Largo",1,NA,1927-04-26,1967-02-15,1972-02-14,1969-08-15 12:00:00,42,NA,42,"1934-1973",0
 "PERDOMO",NA,"GUSATVO",NA,2679,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones San Ramón",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"PERDOMO",NA,"DANIEL",NA,2777,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Maldonado Aiguá",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"PERDOMO",NA,"DANIEL",NA,4480,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Maldonado Aiguá",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"ALCIDES",NA,2783,"Frente Amplio",2010-03-01,NA,47,"Alcalde","Titular","Rocha La Paloma",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"SANDRA",NA,2857,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Salto Pueblo Rincón de Valentín",0,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"EUGENIA",NA,3007,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Santa Lucia",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"ANGEL",NA,2777,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones Santa Lucia",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"PERDOMO",NA,"DANIEL",NA,2777,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Maldonado Aiguá",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"PERDOMO",NA,"DANIEL",NA,4480,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Maldonado Aiguá",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"ALCIDES",NA,2783,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Rocha La Paloma",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"CARLOS",NA,2012,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Florida Casupá",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "PERDOMO",NA,"GUILLERMO",NA,1061,"Partido Nacional",1963-02-15,1967-02-14,39,"Presidente del Concejo Departamental","Titular","Canelones",1,NA,1928-09-16,1963-02-15,1967-02-14,1965-02-14,NA,34,34,"1934-1973",0
@@ -5841,7 +5841,7 @@
 "RODRIGUEZ",NA,"AMADEO",NA,3598,"Partido Colorado",1955-02-15,1959-02-14,37,"Concejal Departamental","Titular","Florida",1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
 "RODRIGUEZ","IBARBURU","CESAR",NA,2096,"Partido Nacional",1959-02-15,1963-02-14,38,"Concejal Departamental","Titular","Rivera",1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "RODRIGUEZ",NA,"RUBEN",NA,1200,"Partido Colorado",1995-02-15,2001-02-14,44,"Intendente",NA,"Rio Negro",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"RODRIGUEZ",NA,"HYARA",NA,2719,"Frente Amplio",2010-02-26,2010-07-08,46,"Intendente","Suplente","Montevideo",0,NA,NA,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,NA,NA,"1985-2020",0
+"RODRIGUEZ",NA,"HYARA",NA,4475,"Frente Amplio",2010-02-26,2010-07-08,46,"Intendente","Suplente","Montevideo",0,NA,NA,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,NA,NA,"1985-2020",0
 "RODRIGUEZ",NA,"VILIBALDO",NA,3771,"Partido Colorado",1905-07-02,NA,46,"Intendente","Suplente","Rivera",1,NA,NA,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,NA,NA,"1985-2020",0
 "ROIBAL",NA,"EBERT",NA,3161,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Salto Pueblo Belén",1,NA,1971-08-16,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,43,43,"1985-2020",0
 "ROIG",NA,"ANIBAL",NA,2486,"Partido Nacional",1964-06-09,1965-02-20,39,"Ministro Salud Publica","Titular",NA,1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
@@ -6426,7 +6426,7 @@
 "SOCA",NA,"FRANCISCO",NA,1122,"Partido Colorado",1913-02-10,1914-02-09,24,"Senador","Titular","Rivera",1,NA,1856-07-24,1911-02-09,1914-02-09,1912-08-10,NA,56,56,"1902-1933",0
 "SOCA",NA,"FRANCISCO",NA,1122,"Partido Colorado",1914-02-09,1917-01-02,25,"Senador","Titular","Rivera",1,NA,1856-07-24,1914-02-09,1917-01-02,1915-07-23,NA,57,57,"1902-1933",0
 "SOCA",NA,"FRANCISCO",NA,1122,"Partido Colorado",1917-02-01,1919-02-13,26,"Senador","Titular","Rivera",1,NA,1856-07-24,1917-02-01,1920-02-14,1918-08-09,NA,60,60,"1902-1933",0
-"SOCA",NA,"ANGEL",NA,2722,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Cerro Largo Río Branco",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"SOCA",NA,"ANGEL",NA,4476,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Cerro Largo Río Branco",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "SOCORRO",NA,"LAURO",NA,2179,"Partido Colorado",NA,NA,41,"Diputado","Titular","Montevideo",1,NA,NA,1972-02-15,1973-06-27,1972-10-21,NA,NA,NA,"1934-1973",0
 "SODANO",NA,"HECTOR",NA,2290,"Cabildo Abierto",2020-02-15,NA,49,"Diputado","Titular","Montevideo",1,NA,1983-10-25,2020-02-15,2025-02-14,2022-08-16,NA,36,36,"1985-2020",0
 "SOLARES",NA,"ALFREDO","J.",1322,"Partido Nacional",1926-02-15,1929-02-14,29,"Diputado","Titular","Colonia",1,NA,NA,1926-02-09,1929-01-28,1927-08-05,NA,NA,NA,"1902-1933",0
@@ -6650,9 +6650,9 @@
 "TOGNOLA",NA,"JOSE",NA,2211,"Frente Amplio",NA,NA,42,"Diputado","Suplente","Montevideo",1,NA,NA,1985-02-15,1990-02-14,1987-08-16 12:00:00,NA,NA,NA,"1985-2020",0
 "TOLEDO",NA,"JUAN","A.",1360,"Frente Amplio",1991-09-10,1991-10-10,43,"Senador","Suplente",NA,1,NA,NA,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "TOLEDO",NA,"PEDRO",NA,4422,"Frente Amplio",1992-07-30,NA,43,"Senador","Suplente",NA,1,NA,NA,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"TOLEDO",NA,"DARIO",NA,2766,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Maldonado Pan de Azúcar",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"TOLEDO",NA,"DARIO",NA,4479,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Maldonado Pan de Azúcar",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "TOLEDO",NA,"DANIEL",NA,2766,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Lavalleja José Pedro Varela",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"TOLEDO",NA,"DARIO",NA,2766,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Maldonado Pan de Azúcar",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"TOLEDO",NA,"DARIO",NA,4479,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Maldonado Pan de Azúcar",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "TOLEDO",NA,"BONIFACIO",NA,3263,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Lavalleja José Pedro Varela",1,NA,1964-08-23,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,50,50,"1985-2020",0
 "TOMATTI",NA,"ENRIQUE","LUIS",1362,"Partido Colorado",1967-02-15,1968-11-19,40,"Diputado","Titular","Treinta y Tres",1,NA,NA,1967-02-15,1972-02-14,1969-08-15 12:00:00,NA,NA,NA,"1934-1973",0
 "TONCOBITZ",NA,"SANDRA",NA,3168,"Partido Colorado",2015-03-01,NA,48,"Concejal","Titular","Salto San Antonio",0,NA,1972-06-18,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,42,42,"1985-2020",0
@@ -7074,7 +7074,7 @@
 "VISOSO",NA,"SILBIA",NA,3175,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Paysandu Quebracho",1,NA,1961-04-20,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,53,53,"1985-2020",0
 "VISPO",NA,"ENRIQUE",NA,3347,"Partido Colorado",1989-11-26,1989-11-26,42,"Candidato Vicepresidente",NA,NA,1,NA,NA,1985-02-15,1990-02-14,1987-08-16 12:00:00,NA,NA,NA,"1985-2020",0
 "VIVIAN",NA,"DIONISIO",NA,2299,"Frente Amplio",2010-02-15,NA,47,"Diputado","Titular","Canelones",1,NA,1951-10-29,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,58,58,"1985-2020",0
-"VIVIAN",NA,"CHRISTIAN",NA,2689,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Montes",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"VIVIAN",NA,"CHRISTIAN",NA,4474,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Montes",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "VIVIANO",NA,"ALVARO",NA,2427,"Partido Nacional",2020-02-15,NA,49,"Diputado","Titular","Montevideo",1,NA,1971-12-05,2020-02-15,2025-02-14,2022-08-16,NA,48,48,"1985-2020",0
 "VIÑA",NA,"RAMON",NA,1431,"Partido Nacional",1932-02-15,1933-03-31,31,"Diputado","Titular","Montevideo",1,NA,1904-06-10,1932-02-09,1933-03-31,1932-09-04,NA,27,27,"1902-1933",0
 "VIÑA",NA,"RAMON",NA,1431,"Partido Nacional",1934-05-18,1938-05-24,32,"Diputado","Titular","Montevideo",1,NA,1904-06-10,1934-05-18,1938-05-16,1936-05-16 12:00:00,NA,29,29,"1934-1973",0

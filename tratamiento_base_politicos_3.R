@@ -1249,6 +1249,60 @@ df_final[which(
   df_final$partido == 'Partido Colorado'),
   "id_politico"] <- 4473
 
+df_final[which(
+  df_final$primer_apellido == 'VIVIAN' &
+  df_final$primer_nombre == 'CHRISTIAN' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4474
+
+df_final[which(
+  df_final$primer_apellido == 'RODRIGUEZ' &
+  df_final$primer_nombre == 'HYARA' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4475
+
+df_final[which(
+  df_final$primer_apellido == 'SOCA' &
+  df_final$primer_nombre == 'ANGEL' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4476
+
+df_final[which(
+  df_final$primer_apellido == 'LOPEZ' &
+  df_final$primer_nombre == 'JULIO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4477
+
+df_final[which(
+  df_final$primer_apellido == 'CABRERA' &
+  df_final$primer_nombre == 'ARMANDO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4478
+
+df_final[which(
+  df_final$primer_apellido == 'TOLEDO' &
+  df_final$primer_nombre == 'DARIO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4479
+
+df_final[which(
+  df_final$primer_apellido == 'PERDOMO' &
+  df_final$primer_nombre == 'DANIEL' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4480
+
+df_final[which(
+  df_final$primer_apellido == 'BARBOZA' &
+  df_final$primer_nombre == 'DANY' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4481
+
+df_final[which(
+  df_final$primer_apellido == 'ACOSTA' &
+  df_final$primer_nombre == 'MATIAS' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4482
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
