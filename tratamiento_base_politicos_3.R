@@ -1170,6 +1170,85 @@ df_final[which(
   df_final$partido == 'Frente Amplio'),
   "id_politico"] <- 4460
 
+df_final[which(
+  df_final$primer_apellido == 'OLIVERA' &
+  df_final$primer_nombre == 'RAUL' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4461
+
+df_final[which(
+  df_final$primer_apellido == 'ETCHEVERRY' &
+  df_final$primer_nombre == 'LUCIA' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4462
+
+df_final[which(
+  df_final$primer_apellido == 'ALVEAR' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4463
+
+df_final[which(
+  df_final$primer_apellido == 'ESTEVEZ' &
+  df_final$primer_nombre == 'OMAR' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4464
+
+df_final[which(
+  df_final$primer_apellido == 'VIANA' &
+  df_final$primer_nombre == 'PABLO' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4465
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'CONRADO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4466
+
+df_final[which(
+  df_final$primer_apellido == 'BASTOS' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4467
+
+df_final[which(
+  df_final$primer_apellido == 'SANTOS' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4468
+
+df_final[which(
+  df_final$primer_apellido == 'SILVEIRA' &
+  df_final$primer_nombre == 'PABLO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4469
+
+df_final[which(
+  df_final$primer_apellido == 'RODRIGUEZ' &
+  df_final$primer_nombre == 'MARIA' &
+  df_final$segundo_nombre == 'V.' & 
+  df_final$legislatura == 48 & 
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4470
+
+df_final[which(
+  df_final$primer_apellido == 'RODRIGUEZ' &
+  df_final$primer_nombre == 'RICHARD' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4471
+
+df_final[which(
+  df_final$primer_apellido == 'CARDOZO' &
+  df_final$primer_nombre == 'ADEMAR'),
+  "id_politico"] <- 4472
+
+df_final[which(
+  df_final$primer_apellido == 'ALVEZ' &
+  df_final$primer_nombre == 'RICARDO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4473
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
@@ -1330,7 +1409,7 @@ ids_politicos <- dbGetQuery(
 
 
 
-
+  
 
 
 
