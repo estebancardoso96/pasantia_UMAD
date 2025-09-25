@@ -977,6 +977,112 @@ df_final[which(
   df_final$partido == 'Partido Nacional'),
   "id_politico"] <-  4427
 
+df_final[which(
+  df_final$primer_apellido == 'CID' &
+  df_final$primer_nombre == 'ALBERTO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4428
+
+df_final[which(
+  df_final$primer_apellido == 'CORONEL' &
+  df_final$primer_nombre == 'JOSE' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4429
+
+df_final[which(
+  df_final$primer_apellido == 'CORREA' &
+  df_final$primer_nombre == 'WALTER' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4430
+
+df_final[which(
+  df_final$primer_apellido == 'CORREA' &
+  df_final$primer_nombre == 'DANIEL' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4431
+
+df_final[which(
+  df_final$primer_apellido == 'DINI' &
+  df_final$primer_nombre == 'LUIS' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <-  4432
+
+df_final[which(
+  df_final$primer_apellido == 'FALCO' &
+  df_final$primer_nombre == 'CARLOS' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <-  4433
+
+df_final[which(
+  df_final$primer_apellido == 'FERNANDEZ' &
+  df_final$primer_nombre == 'DINA' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4434
+
+df_final[which(
+  df_final$primer_apellido == 'FERNANDEZ' &
+  df_final$primer_nombre == 'DIVER'),
+  "id_politico"] <-  4435
+
+df_final[which(
+  df_final$primer_apellido == 'CENANDES' &
+  df_final$primer_nombre == 'JESUS'),
+  "id_politico"] <-  4436
+
+df_final[which(
+  df_final$primer_apellido == 'FERRARI' &
+  df_final$primer_nombre == 'HUGO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4437
+
+df_final[which(
+  df_final$primer_apellido == 'FERREIRA' &
+  df_final$primer_nombre == 'SILVIA' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4438
+
+df_final[which(
+  df_final$primer_apellido == 'GUSSONI' &
+  df_final$primer_nombre == 'HUGO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4439
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'BERNARDO' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4440
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'MABEL' &
+  df_final$partido == 'Nuevo Espacio'),
+  "id_politico"] <- 4441
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'MABEL' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4442
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'MILTON' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4443
+
+df_final[which(
+  df_final$primer_apellido == 'GONZALEZ' &
+  df_final$primer_nombre == 'NELSON' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4444
+
+df_final[which(
+  df_final$primer_apellido == 'ITUO' &
+  df_final$primer_nombre == 'JOSE' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4445
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
@@ -1171,7 +1277,6 @@ leg47_biblio_diputado_dup <- leg47_biblio_diputado %>% group_by(X) %>% filter(n(
 
 # Pegado con diputados unicos
 pegado <- leg47_diputado %>% left_join(leg47_biblio_diputado_unicos, by=c('primer_apellido', 'primer_nombre'))
-
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 
