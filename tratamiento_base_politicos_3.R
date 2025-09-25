@@ -895,6 +895,13 @@ df_final[which(
   "id_politico"] <-  4412
 
 df_final[which(
+  df_final$primer_apellido == 'PITA' &
+  df_final$primer_nombre == 'JUAN' &
+  df_final$segundo_nombre == 'CARLOS' &  
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <-  4412
+
+df_final[which(
   df_final$primer_apellido == 'CRUZ' &
   df_final$primer_nombre == 'PEDRO' &
   df_final$legislatura == 48 &  
@@ -1438,6 +1445,12 @@ df_final[which(
     df_final$partido == 'Partido Nacional'),
   "id_politico"] <- 4500
 
+df_final[which(
+  df_final$primer_nombre == 'JORGE' &
+  df_final$primer_apellido == 'BARREIRO' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4501
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
@@ -1449,7 +1462,7 @@ library(RPostgreSQL)
 
 readRenviron("~/.Renviron")
 
-usuario <- Sys.getenv("DB_USER")
+usuario  <- Sys.getenv("DB_USER")
 password <- Sys.getenv("DB_PASS")
 host     <- Sys.getenv("DB_HOST")
 dbname   <- Sys.getenv("DB_NAME")
