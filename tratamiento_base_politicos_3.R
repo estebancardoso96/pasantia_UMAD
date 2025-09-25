@@ -1303,6 +1303,141 @@ df_final[which(
   df_final$partido == 'Partido Nacional'),
   "id_politico"] <- 4482
 
+df_final[which(
+  df_final$primer_apellido == 'SILVEIRA' &
+  df_final$primer_nombre == 'ELIO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4483
+
+df_final[which(
+  df_final$primer_apellido == 'SILVEIRA' &
+  df_final$primer_nombre == 'ELIO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4483
+
+df_final[which(
+  df_final$primer_apellido == 'MORAES' &
+  df_final$primer_nombre == 'MARIA' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4484
+
+df_final[which(
+  df_final$primer_apellido == 'ALVAREZ' &
+  df_final$primer_nombre == 'NESTOR' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4485
+
+df_final[which(
+  df_final$primer_apellido == 'ALFARO' &
+  df_final$primer_nombre == 'MARIO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4486
+
+df_final[which(
+  df_final$primer_apellido == 'BERNANDO' &
+  df_final$primer_nombre == 'JORGE' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4487
+
+df_final[which(
+  df_final$primer_apellido == 'SUAREZ' &
+  df_final$primer_nombre == 'JAVIER' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4488
+
+df_final[which(
+  df_final$primer_apellido == 'CORDANO' &
+  df_final$primer_nombre == 'ANA' &
+  df_final$partido == 'Partido Verde Animalista'),
+  "id_politico"] <- 4489
+
+df_final[which(
+  df_final$primer_apellido == 'MARTINEZ' &
+  df_final$primer_nombre == 'DARIO' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4490
+
+df_final[which(
+  df_final$primer_apellido == 'DELGADO' &
+  df_final$primer_nombre == 'JUAN' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4491
+
+df_final[which(
+  df_final$primer_apellido == 'FERNANDEZ' &
+  df_final$primer_nombre == 'ARACIEL' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4492
+
+df_final[which(
+  df_final$primer_apellido == 'ALEGRE' &
+  df_final$primer_nombre == 'MIGUEL' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4493
+
+df_final[which(
+  df_final$primer_apellido == 'IZA' &
+  df_final$primer_nombre == 'RAFAEL' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4494
+
+df_final[which(
+  df_final$primer_apellido == 'RIVERA' &
+  df_final$primer_nombre == 'JULIO' &
+  df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4495
+
+df_final[which(
+  df_final$primer_apellido == 'BENTANCOUR' &
+  df_final$segundo_apellido == 'FERREIRA' &
+  df_final$partido == 'Partido Colorado'),
+  "id_politico"] <- 4496
+
+df_final[which(
+  df_final$primer_apellido == 'DEL' &
+  df_final$primer_nombre == 'MARIA' &
+  df_final$segundo_apellido == 'VALLE SILVERA'),
+  "id_politico"] <- 4497
+
+df_final[which(
+  df_final$id_politico == 4497),
+  "primer_apellido"] <- 'DEL VALLE'
+
+df_final[which(
+  df_final$id_politico == 3880),
+  "primer_apellido"] <- 'DEL C. SUAREZ'
+
+df_final[which(
+  df_final$id_politico == 4020 &
+  df_final$primer_apellido == 'PEREIRA'),
+  "id_politico"] <- 4022
+
+df_final[which(
+  df_final$id_politico == 4022 &
+  df_final$circunscripcion == 'Montevideo'),
+  "eliminada"] <- 1
+
+df_final[which(
+  df_final$primer_nombre == 'MARIA' &
+  df_final$primer_apellido == 'PEREIRA'),
+  "id_politico"] <- 4498
+
+df_final[which(
+  df_final$primer_apellido == 'AMARAL' &
+  df_final$primer_nombre == 'GERARDO' &
+  df_final$partido == 'Frente Amplio'),
+  "id_politico"] <- 4499
+
+df_final[which(
+  df_final$id_politico == 4309),
+  "circunscripcion"] <- 'Maldonado'
+
+df_final[which(
+  df_final$primer_apellido == 'RODRIGUEZ' &
+    df_final$segundo_apellido == 'GROLERO' &
+    df_final$partido == 'Partido Nacional'),
+  "id_politico"] <- 4500
+
 max(df_final$id_politico)
 df_final %>% filter(!is.na(fecha_nac)) %>% count()
 
