@@ -1558,36 +1558,7 @@ leg47_biblio_sen_tit <- leg47_biblio %>% filter(Condición == 'Titular' & Cargo 
 leg47_biblio_sen_tit %>% distinct(X) %>% count()
 leg47_senador %>% count()
 
-# MARCO SUPLENTE SI COMENZO LUEGO DEL 2010
-leg47_biblio_sen_tit <- leg47_biblio_sen_tit %>%
-  mutate(Condición = if_else(Inicio == 2010, 'Titular','Suplente'))
-
-# Elimino filas (por ejemplo Daniel Martinez senador suplente)
-leg47_biblio_sen_tit <- leg47_biblio_sen_tit[-c(19, 22),]
-
 leg47_biblio_sen_tit %>% filter(Condición == 'Titular') %>% count() # sigue habiendo mas senadores titulares
-
-# correccion a mano (colocar los suplentes que por error en la tabla del parlamento aparecen como titulares)
-
-leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'ALFREDO'&
-                     leg47_biblio_sen_tit$primer_apellido == 'SOLARI',
-                     "Condición"] <- 'Suplente'
-
-leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'WILSON'&
-                     leg47_biblio_sen_tit$primer_apellido == 'SANABRIA',
-                     "Condición"] <- 'Suplente'
-
-leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'ENRIQUE'&
-                     leg47_biblio_sen_tit$primer_apellido == 'PINTADO',
-                     "Condición"] <- 'Suplente'
-
-leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'SUSANA'&
-                     leg47_biblio_sen_tit$segundo_nombre == 'ELIDA',
-                     "primer_apellido"] <- 'DALMAS'
-
-leg47_biblio_sen_tit[leg47_biblio_sen_tit$primer_nombre == 'EBER'&
-                     leg47_biblio_sen_tit$segundo_apellido == 'VAZQUEZ',
-                     "primer_apellido"] <- 'DA ROSA VAZQUEZ'
 
 ## marco a todos los senadores como suplentes (base UMAD)
 leg47_senador <- leg47_senador %>% mutate(status = "Suplente")
@@ -1645,6 +1616,48 @@ pegado_final[pegado_final$primer_apellido == 'ABT' &
              pegado_final$primer_nombre == 'ANDRES',
              "id_politico"] <- 2970
 pegado_final <- pegado_final %>% mutate(no_esta = ifelse(!is.na(id_politico), 0, 1))
+pegado_final <- pegado_final %>% mutate(
+  segundo_nombre = na_if(segundo_nombre, ""),
+  segundo_apellido = na_if(segundo_apellido, ""),
+  primer_apellido = na_if(primer_apellido, ""),
+  primer_nombre = na_if(primer_nombre, ""))
+pegado_final <- pegado_final %>% filter(!is.na(primer_apellido))
+pegado_final <- pegado_final %>% mutate(legislatura = 47)
+pegado_final <- pegado_final %>% rename(periodo = Periodo, cargo = Cargo, inicio = Inicio, fin = Fin)
+circun47 <- leg47 %>% select(id_politico, cargo, circunscripcion) %>% distinct()
+pegado_final <- pegado_final %>% left_join(circun47, by = c("id_politico", "cargo"))
+pegado_final <- pegado_final %>% mutate(fecha_inicio_l = '2010-02-15',
+                                        fecha_fin_l = '2015-02-14', legislaturas_agrupadas = '1985-2020')
+pegado_final <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre, segundo_nombre,
+                        id_politico, partido, inicio, fin, legislatura, cargo, status,
+                        circunscripcion, sexo, fecha_nac, fecha_inicio_l, fecha_fin_l, legislaturas_agrupadas)
+
+# MARCO SUPLENTE SI COMENZO LUEGO DEL 2010
+pegado_final <- pegado_final %>%
+  mutate(status = if_else(inicio > 2010 & inicio < 2015, 'Suplente', status))
+
+# correccion a mano (colocar los suplentes que por error en la tabla del parlamento aparecen como titulares)
+
+pegado_final[pegado_final$primer_nombre == 'ALFREDO'&
+             pegado_final$primer_apellido == 'SOLARI',
+                     "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'WILSON'&
+             pegado_final$primer_apellido == 'SANABRIA',
+                     "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'ENRIQUE'&
+             pegado_final$primer_apellido == 'PINTADO',
+                     "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'SUSANA'&
+             pegado_final$segundo_nombre == 'ELIDA',
+                     "primer_apellido"] <- 'DALMAS'
+
+pegado_final[pegado_final$primer_nombre == 'EBER'&
+             pegado_final$segundo_apellido == 'VAZQUEZ',
+                     "primer_apellido"] <- 'DA ROSA VAZQUEZ'
+
 
 
 
