@@ -1486,7 +1486,7 @@ if (!is.null(con)) {
   message("✅ Conexión exitosa a la base de datos")
 }
 
-dbWriteTable(con, "fact_politicos_PASANTIA_23_09", df_final, overwrite = TRUE, row.names = FALSE)
+#dbWriteTable(con, "fact_politicos_PASANTIA_23_09", df_final, overwrite = TRUE, row.names = FALSE)
 
 ################################################################################################################
 politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_PASANTIA_23_09"')
@@ -1619,7 +1619,11 @@ pegado_2 <-pegado %>% select(Partido,primer_nombre, segundo_nombre,primer_apelli
                              id_politico, no_esta) %>%   distinct()
 
 pegado_2 <- read.csv('pegado2.csv')
-
+pegado_2 <- pegado_2[-(179),]
+pegado_2 <- pegado_2 %>% filter(id_politico != "4252" | is.na(id_politico))
+pegado_2 <- pegado_2 %>% filter(id_politico != "3816" | is.na(id_politico))
+pegado_2 <- pegado_2 %>% filter(id_politico != "3812" | is.na(id_politico))
+pegado_2 <- pegado_2 %>% filter(id_politico != "3979" | is.na(id_politico))
 pegado_final <- leg47_biblio %>% left_join(pegado_2, by = c("primer_apellido", "primer_nombre","Fecha.nacimiento")) %>%
   select(-ends_with(".y"))
 
@@ -1637,6 +1641,10 @@ pegado_final$Cargo <- gsub('SENADORA', 'Senador',pegado_final$Cargo)
 pegado_final <- pegado_final %>% rename(status=Condición, segundo_nombre = segundo_nombre.x,
                         segundo_apellido = segundo_apellido.x, partido = Partido.x)
 pegado_final <- pegado_final %>% select(-c(Fecha.nacimiento, X))
+pegado_final[pegado_final$primer_apellido == 'ABT' &
+             pegado_final$primer_nombre == 'ANDRES',
+             "id_politico"] <- 2970
+pegado_final <- pegado_final %>% mutate(no_esta = ifelse(!is.na(id_politico), 0, 1))
 
 
 
@@ -1646,8 +1654,6 @@ ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
 
 
   
-
-
 
 
 
