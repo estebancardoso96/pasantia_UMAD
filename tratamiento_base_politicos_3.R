@@ -1598,15 +1598,49 @@ ids_politicos <- dbGetQuery(
   con,
   "select distinct id_politico,
                   primer_nombre,
-                  segundo_nombre,
                   primer_apellido,
-                  segundo_apellido
+                  fecha_nac
    from public.\"fact_politicos_PASANTIA_23_09\"
    where legislaturas_agrupadas like '%1985-2020%'"
 )
 
 
+leg47_biblio$Fecha.nacimiento <- str_squish(leg47_biblio$Fecha.nacimiento)
 
+leg47_biblio <- leg47_biblio %>% mutate(
+    Fecha.nacimiento = na_if(Fecha.nacimiento, ""))
+
+leg47_biblio <- leg47_biblio %>%
+  mutate(fecha_nac = dmy(Fecha.nacimiento))
+
+pegado <- leg47_biblio %>% left_join(ids_politicos, by = c("primer_apellido", "primer_nombre","fecha_nac"))
+
+pegado_2 <-pegado %>% select(Partido,primer_nombre, segundo_nombre,primer_apellido,segundo_apellido,Fecha.nacimiento,
+                             id_politico, no_esta) %>%   distinct()
+
+pegado_2 <- read.csv('pegado2.csv')
+
+pegado_final <- leg47_biblio %>% left_join(pegado_2, by = c("primer_apellido", "primer_nombre","Fecha.nacimiento")) %>%
+  select(-ends_with(".y"))
+
+pegado_final$Partido.x <- gsub('FRENTE AMPLIO', 'Frente Amplio',pegado_final$Partido.x)
+pegado_final$Partido.x <- gsub('PARTIDO NACIONAL', 'Partido Nacional',pegado_final$Partido.x)
+pegado_final$Partido.x <- gsub('PARTIDO COLORADO', 'Partido Colorado',pegado_final$Partido.x)
+pegado_final$Partido.x <- gsub('PARTIDO INDEPENDIENTE', 'Partido Independiente',pegado_final$Partido.x)
+pegado_final <- pegado_final %>% mutate(sexo = ifelse(Cargo %in%c('SENADOR', 'DIPUTADO'), 1, 0))
+pegado_final <- pegado_final %>%
+  mutate(sexo = 1L - as.integer(str_ends(primer_nombre, regex("a$", ignore_case = TRUE))))
+pegado_final$Cargo <- gsub('DIPUTADO', 'Diputado',pegado_final$Cargo)
+pegado_final$Cargo <- gsub('DIPUTADA', 'Diputado',pegado_final$Cargo)
+pegado_final$Cargo <- gsub('SENADOR', 'Senador',pegado_final$Cargo)
+pegado_final$Cargo <- gsub('SENADORA', 'Senador',pegado_final$Cargo)
+pegado_final <- pegado_final %>% rename(status=Condición, segundo_nombre = segundo_nombre.x,
+                        segundo_apellido = segundo_apellido.x, partido = Partido.x)
+pegado_final <- pegado_final %>% select(-c(Fecha.nacimiento, X))
+
+
+
+ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
 
 
 
