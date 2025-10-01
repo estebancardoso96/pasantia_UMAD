@@ -1,5 +1,4 @@
 "primer_apellido","segundo_apellido","primer_nombre","segundo_nombre","id_politico","partido","fecha_inicio","fecha_fin","legislatura","cargo","status","circunscripcion","sexo","fuente","fecha_nac","fecha_inicio_l","fecha_fin_l","fecha_intermedia","ed_asumir_1","ed_asumir","edad_asumir","legislaturas_agrupadas","eliminada"
-"ABAL",NA,"TERESA",NA,2646,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Paso Carrasco",0,NA,1948-10-03,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,61,61,"1985-2020",0
 "ABDALA",NA,"WASHINGTON",NA,1,"Partido Colorado",1995-02-15,2000-02-14,44,"Diputado","Titular","Montevideo",1,NA,1959-09-08,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,35,35,"1985-2020",0
 "ABDALA",NA,"WASHINGTON",NA,1,"Partido Colorado",2000-02-15,2005-02-14,45,"Diputado","Titular","Montevideo",1,NA,1959-09-08,2000-02-15,2005-02-14,2002-08-16,NA,40,40,"1985-2020",0
 "ABDALA",NA,"WASHINGTON",NA,1,"Partido Colorado",2005-02-15,NA,46,"Diputado","Titular","Montevideo",1,NA,1959-09-08,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,45,45,"1985-2020",0
@@ -64,7 +63,6 @@
 "ACOSTA",NA,"LUIS","C.",1459,"Partido Colorado",NA,NA,32,"Diputado","Suplente","Canelones",1,NA,NA,1934-05-18,1938-05-16,1936-05-16 12:00:00,NA,NA,NA,"1934-1973",0
 "ACOSTA",NA,"LUIS","C.",1459,"Partido Colorado",NA,NA,36,"Diputado","Suplente","Canelones",1,NA,NA,1951-02-15,1955-02-14,1953-02-14,NA,NA,NA,"1934-1973",0
 "ACOSTA",NA,"LUIS","C.",1459,"Partido Colorado",NA,NA,37,"Diputado","Titular","Canelones",1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
-"ACOSTA",NA,"MARGOT",NA,1460,"Partido Colorado",NA,NA,45,"Diputado","Suplente","Canelones",0,NA,1946-09-16,2000-02-15,2005-02-14,2002-08-16,55,NA,55,"1985-2020",0
 "ACOSTA","MARTINEZ","MARIO",NA,1461,"Partido Colorado",NA,NA,43,"Diputado","Suplente","Lavalleja",1,NA,NA,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA","MARTINEZ","MARIO",NA,1461,"Partido Colorado",NA,NA,44,"Diputado","Suplente","Lavalleja",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ACOSTA","NOCEDO","NIBER",NA,1462,"Partido Colorado",NA,NA,43,"Diputado","Suplente","Treinta y Tres",1,NA,1945-11-28,1990-02-15,1995-02-14,1992-08-15 12:00:00,46,NA,46,"1985-2020",0
@@ -88,7 +86,6 @@
 "ACQUISTAPACE",NA,"JOSE",NA,13,"Partido Colorado",1962-11-25,1962-11-25,38,"Candidato Consejo Nacional de Gobierno",NA,NA,1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "ACQUISTAPACE",NA,"JOSE",NA,13,"Partido Colorado",1947-02-15,1951-02-14,35,"Intendente","Titular","Paysandu",1,NA,NA,1947-02-13,1951-02-12,1949-02-12,NA,NA,NA,"1934-1973",0
 "ACQUISTAPACE",NA,"JOSE",NA,13,"Partido Colorado",1951-02-15,1955-02-14,36,"Intendente","Titular","Paysandu",1,NA,NA,1951-02-15,1955-02-14,1953-02-14,NA,NA,NA,"1934-1973",0
-"ACUA",NA,"JORGE",NA,1239,"Partido Colorado",NA,NA,44,"Senador","Suplente",NA,1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "ADDIEGO","BRUNO","RAFAEL",NA,3289,"Presidente Suprema Corte de Justicia",1985-02-12,1985-03-01,42,"Presidente de la Republica","Interino",NA,1,NA,1923-02-23,1985-02-15,1990-02-14,1987-08-16 12:00:00,NA,61,61,"1985-2020",0
 "AGAZZI",NA,"ERNESTO",NA,14,"Frente Amplio",2000-02-15,2005-02-14,45,"Diputado","Titular","Canelones",1,NA,1942-09-04,2000-02-15,2005-02-14,2002-08-16,NA,57,57,"1985-2020",0
 "AGAZZI",NA,"ERNESTO",NA,14,"Frente Amplio",2005-02-15,NA,46,"Senador","Titular",NA,1,NA,1942-09-04,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,62,62,"1985-2020",0
@@ -439,6 +436,7 @@
 "ARECO",NA,"FRANCISCO","E.",87,"Partido Colorado",1947-02-15,1951-02-14,35,"Diputado","Titular","Flores",1,NA,NA,1947-02-13,1951-02-12,1949-02-12,NA,NA,NA,"1934-1973",0
 "ARECO",NA,"FRANCISCO","E.",87,"Partido Colorado",1955-02-15,1959-02-14,37,"Diputado","Titular","Flores",1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
 "ARECO",NA,"FRANCISCO","E.",87,"Partido Colorado",1963-02-15,1967-02-14,39,"Diputado","Titular","Flores",1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
+"VEIGA",NA,"JOSE","LUIS",4504,"Frente Amplio",NA,NA,41,"Diputado","Suplente","Montevideo",1,NA,NA,1972-02-15,1973-06-27,1972-10-21,NA,NA,NA,"1934-1973",0
 "ARECO",NA,"RICARDO","J.",88,"Partido Colorado",1902-02-15,1905-02-14,21,"Diputado","Titular","Treinta y Tres",1,NA,1866-05-03,1902-02-08,1905-02-06,1903-08-09,NA,35,35,"1902-1933",0
 "ARECO",NA,"RICARDO","J.",88,"Partido Colorado",1905-02-15,NA,22,"Diputado","Titular","Montevideo",1,NA,1866-05-03,1905-03-09,1908-01-13,1906-08-11,NA,38,38,"1902-1933",0
 "ARECO",NA,"RICARDO","J.",88,"Partido Colorado",NA,1907-02-14,22,"Diputado","Titular","Treinta y Tres",1,NA,1866-05-03,1905-03-09,1908-01-13,1906-08-11,40,NA,40,"1902-1933",0
@@ -1982,9 +1980,7 @@
 "CROCCI",NA,"ELIAS",NA,1680,"Partido Colorado",1963-02-15,1967-02-14,39,"Concejal Departamental","Titular","Montevideo",1,NA,1938-06-16,1963-02-15,1967-02-14,1965-02-14,NA,24,24,"1934-1973",0
 "CROCE",NA,"JUAN","CARLOS",1681,"Partido Nacional",NA,NA,42,"Senador","Suplente",NA,1,NA,NA,1985-02-15,1990-02-14,1987-08-16 12:00:00,NA,NA,NA,"1985-2020",0
 "CROCI",NA,"ELIAS",NA,1680,"Partido Colorado",NA,NA,40,"Diputado","Titular","Montevideo",1,NA,1938-06-16,1967-02-15,1972-02-14,1969-08-15 12:00:00,31,NA,31,"1934-1973",0
-"CROSA",NA,"FERNANDO",NA,1202,"Partido Nacional",NA,NA,38,"Diputado","Suplente","Cerro Largo",1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "CROSSA",NA,"ARIEL",NA,1682,"Partido Nacional",NA,NA,45,"Diputado","Suplente","Canelones",1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
-"CROSSA",NA,"FERNANDO",NA,1202,"Partido Nacional",1972-02-15,1973-06-27,41,"Intendente","Titular","Treinta y Tres",1,NA,NA,1972-02-15,1973-06-27,1972-10-21,NA,NA,NA,"1934-1973",0
 "CROTTOGINI",NA,"JUAN","JOSE",3359,"Frente Amplio",1971-11-28,1971-11-28,40,"Candidato Vicepresidente",NA,NA,1,NA,1908-05-27,1967-02-15,1972-02-14,1969-08-15 12:00:00,NA,63,63,"1934-1973",0
 "CROVETTO",NA,"ANDRES",NA,389,"Partido Colorado",1914-02-15,1917-02-14,25,"Diputado","Titular","Soriano",1,NA,NA,1914-02-09,1917-01-02,1915-07-23,NA,NA,NA,"1902-1933",0
 "CRUZ",NA,"PEDRO",NA,4413,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Canelones La Paz",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
@@ -2022,6 +2018,7 @@
 "CURUCHET",NA,"HECTOR",NA,1692,"Partido Colorado",1955-02-15,1959-02-14,37,"Presidente del Concejo Departamental","Titular","Colonia",1,NA,1931-08-20,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,23,23,"1934-1973",0
 "CURUTCHET",NA,"JUAN",NA,3737,"Sin partido",1905-05-29,1905-06-02,22,"Intendente Interventor","Interventor militar","Maldonado",1,NA,NA,1905-03-09,1908-01-13,1906-08-11,NA,NA,NA,"1902-1933",0
 "CUSSANO",NA,"MAURICIO",NA,395,"Partido Nacional",2005-02-15,NA,46,"Diputado","Titular","Canelones",1,NA,1955-01-16,2005-02-15,2010-02-14,2007-08-16 12:00:00,NA,50,50,"1985-2020",0
+"CROSSA",NA,"FERNANDO",NA,4506,"Partido Nacional",1972-02-15,1973-06-27,41,"Intendente","Titular","Treinta y Tres",1,NA,NA,1972-02-15,1973-06-27,1972-10-21,NA,NA,NA,"1934-1973",0
 "CUSTODIO",NA,"CANDIDO","HECTOR",1693,"Partido Nacional",NA,NA,38,"Diputado","Suplente","Treinta y Tres",1,NA,1916-02-02,1959-02-15,1963-02-14,1961-02-14,45,NA,45,"1934-1973",0
 "CUTINELLA",NA,"ATILIO","CARLOS",1694,"Partido Colorado",NA,NA,34,"Diputado","Titular","Colonia",1,NA,NA,1943-02-04,1947-02-10,1945-02-06 12:00:00,NA,NA,NA,"1934-1973",0
 "CUTINELLA",NA,"ATILIO","CARLOS",1694,"Partido Colorado",NA,NA,35,"Diputado","Titular","Colonia",1,NA,NA,1947-02-13,1951-02-12,1949-02-12,NA,NA,NA,"1934-1973",0
@@ -2400,7 +2397,6 @@
 "DURAN","RUBIO","ANTONIO","M.",1731,"Partido Nacional",NA,NA,38,"Diputado","Suplente","Paysandu",1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "DURAN","RUBIO","ANTONIO","M.",1731,"Partido Nacional",NA,NA,39,"Diputado","Titular","Paysandu",1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
 "DURAN","RUBIO","MARIO",NA,1732,"Partido Nacional",NA,NA,40,"Senador","Suplente",NA,1,NA,NA,1967-02-15,1972-02-14,1969-08-15 12:00:00,NA,NA,NA,"1934-1973",0
-"DURAN",NA,"MARY",NA,2793,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Canelones Toledo",0,NA,1954-07-30,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,60,60,"1985-2020",0
 "DURAN","Y VEIGA","NICOLAS",NA,3379,"Partido Nacional",1962-11-25,1962-11-25,38,"Candidato Consejo Nacional de Gobierno",NA,NA,1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "DUTRA",NA,"NANCY",NA,2778,"Partido Colorado",2010-03-01,NA,47,"Concejal","Titular","Maldonado Aiguá",0,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "DUTRA",NA,"BOLIVAR",NA,2982,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Montevideo G",1,NA,1955-01-15,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,60,60,"1985-2020",0
@@ -3267,7 +3263,6 @@
 "GOMEZ",NA,"EDUARDO","R.",1820,"Partido Colorado",NA,NA,32,"Diputado","Titular","Tacuarembo",1,NA,NA,1934-05-18,1938-05-16,1936-05-16 12:00:00,NA,NA,NA,"1934-1973",0
 "GOMEZ",NA,"EDUARDO","R.",1820,"Partido Colorado",NA,NA,32,"Senador","Suplente",NA,1,NA,NA,1934-05-18,1938-05-16,1936-05-16 12:00:00,NA,NA,NA,"1934-1973",0
 "GOMEZ",NA,"OSCAR",NA,1821,"Frente Amplio",NA,NA,45,"Diputado","Suplente","Montevideo",1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
-"GOMEZ",NA,"ALVARO",NA,2018,"Frente Amplio",2010-03-01,NA,47,"Alcalde","Titular","Canelones Toledo",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "GOMEZ",NA,"MILTON",NA,2815,"Partido Colorado",2010-03-01,NA,47,"Alcalde","Titular","Rivera Tranqueras",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "GOMEZ",NA,"ALVARO",NA,4450,"Frente Amplio",2015-03-01,NA,48,"Alcalde","Titular","Canelones Toledo",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "GOMEZ","GAVAZZO","CARLOS",NA,3371,"Partido Socialista",1966-11-27,1966-11-27,39,"Candidato Vicepresidente",NA,NA,1,2,1904-06-01,1963-02-15,1967-02-14,1965-02-14,NA,62,62,"1934-1973",0
@@ -4768,7 +4763,6 @@
 "NUNES","RIBEIRO","FIDENCIO",NA,986,"Partido Nacional",1939-12-14,1942-02-21,33,"Senador","Suplente",NA,1,NA,1898-03-20,1938-05-24,1942-02-21,1940-04-07 12:00:00,NA,41,41,"1934-1973",0
 "NUNES","RIBEIRO","FIDENCIO",NA,986,"Partido Nacional",1926-02-13,1929-10-02,29,"Consejero Departamental","Titular","Paysandu",1,NA,1898-03-20,1926-02-09,1929-01-28,1927-08-05,NA,27,27,"1902-1933",0
 "NUNEZ",NA,"LUIS","ALBERTO",2591,"Partido Nacional",1990-03-01,1995-03-01,43,"Ministro Corte Electoral",NA,NA,1,NA,1931-03-14,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,58,58,"1985-2020",0
-"NUÑEZ",NA,"MANUEL",NA,987,"Frente Amplio",2000-02-15,2005-02-14,45,"Senador","Titular",NA,1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
 "NUÑEZ",NA,"MARIA","A.",988,"Partido Colorado",2001-05-08,2001-05-18,45,"Diputado","Suplente","Rio Negro",1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
 "NUÑEZ","CONNIO","LUIS","A.",1972,"Partido Nacional",NA,NA,43,"Diputado","Suplente","Rivera",1,NA,1931-03-14,1990-02-15,1995-02-14,1992-08-15 12:00:00,61,NA,61,"1985-2020",0
 "NUÑEZ","GUERRA","SILVIO",NA,1973,"Partido Nacional",NA,NA,42,"Diputado","Suplente","Durazno",1,NA,1950-01-12,1985-02-15,1990-02-14,1987-08-16 12:00:00,37,NA,37,"1985-2020",0
@@ -4796,6 +4790,7 @@
 "OIS",NA,"MARTIN",NA,993,"Partido Nacional",1943-02-15,1947-02-14,34,"Diputado","Titular","Treinta y Tres",1,NA,NA,1943-02-04,1947-02-10,1945-02-06 12:00:00,NA,NA,NA,"1934-1973",0
 "OIS",NA,"MARTIN",NA,993,"Partido Nacional",1947-02-15,1949-03-15,35,"Diputado","Titular","Treinta y Tres",1,NA,NA,1947-02-13,1951-02-12,1949-02-12,NA,NA,NA,"1934-1973",0
 "OIS",NA,"MARTIN",NA,993,"Partido Nacional",1955-02-15,1957-03-15,37,"Diputado","Titular","Treinta y Tres",1,NA,NA,1955-02-15,1959-02-03,1957-02-08 12:00:00,NA,NA,NA,"1934-1973",0
+"NUÑEZ",NA,"MANUEL",NA,4503,"Frente Amplio",2000-02-15,2005-02-14,45,"Senador","Titular",NA,1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
 "OIS",NA,"MARTIN",NA,993,"Partido Nacional",1959-02-15,1963-02-14,38,"Diputado","Titular","Treinta y Tres",1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "OJEDA",NA,"CARLOS","M.",3704,"Partido Nacional",1963-02-15,1967-02-14,39,"Concejal Departamental","Titular","Rio Negro",1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
 "OLAIZOLA",NA,"FERNANDO",NA,2839,"Partido Nacional",2010-03-01,NA,47,"Concejal","Titular","Salto Pueblo San Antonio",1,NA,1955-11-12,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,54,54,"1985-2020",0
@@ -6911,13 +6906,12 @@
 "VEGA",NA,"CESAR",NA,2397,"Partido Ecologista Radical Intransigente",2014-06-01,2014-06-01,47,"Candidato Precandidato Presidente",NA,NA,1,NA,1962-10-30,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,51,51,"1985-2020",0
 "VEGA",NA,"GUMERSINDO","V.",3707,"Partido Nacional",1963-02-15,1967-02-14,39,"Concejal Departamental","Titular","Rivera",1,NA,1905-05-23,1963-02-15,1967-02-14,1965-02-14,NA,57,57,"1934-1973",0
 "VEGH","GARZON","CARLOS",NA,2489,"Partido Colorado",1967-03-01,1967-06-28,40,"Ministro Economia y Finanzas","Titular",NA,1,1,1902-06-01,1967-02-15,1972-02-14,1969-08-15 12:00:00,NA,64,64,"1934-1973",0
-"VEIGA",NA,"JOSE","LUIS",1059,"Frente Amplio",NA,NA,41,"Diputado","Suplente","Montevideo",1,NA,NA,1972-02-15,1973-06-27,1972-10-21,NA,NA,NA,"1934-1973",0
-"VEIGA",NA,"JOSE","LUIS",1059,"Frente Amplio",NA,NA,44,"Diputado","Suplente","Montevideo",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
-"VEIGA",NA,"JOSE","LUIS",1059,"Frente Amplio",NA,NA,45,"Diputado","Suplente","Montevideo",1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
 "VEIRA",NA,"MARCELINO",NA,2243,"Partido Colorado",NA,NA,42,"Diputado","Suplente","Rivera",1,NA,1919-08-14,1985-02-15,1990-02-14,1987-08-16 12:00:00,68,NA,68,"1985-2020",0
 "VEJO","RODRIGUEZ","ISIDORO",NA,2483,"Partido Nacional",1963-03-01,1967-03-01,39,"Ministro Obras Publicas","Titular",NA,1,NA,NA,1963-02-15,1967-02-14,1965-02-14,NA,NA,NA,"1934-1973",0
 "VELASCO",NA,"ARAMIS",NA,2244,"Partido Colorado",NA,NA,45,"Diputado","Suplente","Tacuarembo",1,NA,1940-11-13,2000-02-15,2005-02-14,2002-08-16,61,NA,61,"1985-2020",0
 "VELAZQUEZ","DE LEON","LEONEL",NA,2245,"Partido Colorado",NA,NA,42,"Diputado","Suplente","San Jose",1,NA,NA,1985-02-15,1990-02-14,1987-08-16 12:00:00,NA,NA,NA,"1985-2020",0
+"VEIGA",NA,"JOSE","LUIS",4504,"Frente Amplio",NA,NA,44,"Diputado","Suplente","Montevideo",1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"VEIGA",NA,"JOSE","LUIS",4504,"Frente Amplio",NA,NA,45,"Diputado","Suplente","Montevideo",1,NA,NA,2000-02-15,2005-02-14,2002-08-16,NA,NA,NA,"1985-2020",0
 "VELAZQUEZ",NA,"JORGE",NA,2828,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Artigas Baltasar Brum",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "VELAZQUEZ",NA,"JORGE",NA,2828,"Frente Amplio",2015-03-01,NA,48,"Concejal","Titular","Treinta y Tres Vergara",1,NA,NA,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "VELLOZO",NA,"RODOLFO",NA,1413,"Partido Colorado",1902-02-15,1904-03-24,21,"Diputado","Titular","Montevideo",1,NA,NA,1902-02-08,1905-02-06,1903-08-09,NA,NA,NA,"1902-1933",0
@@ -6927,7 +6921,6 @@
 "VENER","CARBONI","WALTER",NA,1414,"Partido Nacional",2000-02-15,2005-02-14,45,"Diputado","Titular","Soriano",1,NA,1953-04-11,2000-02-15,2005-02-14,2002-08-16,NA,46,46,"1985-2020",0
 "VENTURA",NA,"FABIO",NA,3045,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Canelones San Jacinto",1,NA,1971-05-16,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,43,43,"1985-2020",0
 "VENTURA",NA,"RUPERTO","A.",3483,"Partido Nacional",1926-02-13,1929-10-02,29,"Consejero Departamental","Titular","Rocha",1,NA,NA,1926-02-09,1929-01-28,1927-08-05,NA,NA,NA,"1902-1933",0
-"VERA",NA,"JOSE","LUIS",1059,"Partido de la Concertacion",2014-06-01,2014-06-01,47,"Candidato Precandidato Presidente",NA,NA,1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
 "VERA",NA,"ANTENOR",NA,3397,"Movimiento Progresista",1962-11-25,1962-11-25,38,"Candidato Consejo Nacional de Gobierno",NA,NA,1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
 "VERDIER",NA,"CARLOS","MARIA",1415,"Partido Nacional",1951-06-20,1955-02-14,36,"Diputado","Suplente","Montevideo",1,NA,1906-12-28,1951-02-15,1955-02-14,1953-02-14,NA,44,44,"1934-1973",0
 "VERDIER",NA,"JUAN","M.",1416,"Partido Nacional",1949-11-07,1950-03-07,35,"Diputado","Suplente","Montevideo",1,NA,NA,1947-02-13,1951-02-12,1949-02-12,NA,NA,NA,"1934-1973",0
@@ -8416,7 +8409,6 @@
 "RAFFO","FRAVEGA","JUAN","CARLOS",4247,"Partido Nacional",NA,NA,37,"Senador","Titular",NA,1,NA,1894-07-30,1955-02-15,1959-02-03,1957-02-08 12:00:00,62,NA,62,"1934-1973",0
 "RAFFO","FRAVEGA","JUAN","CARLOS",4247,"Partido Nacional",NA,NA,38,"Senador","Titular",NA,1,NA,1894-07-30,1959-02-15,1963-02-14,1961-02-14,66,NA,66,"1934-1973",0
 "RAFFO",NA,"JUAN","CARLOS",4246,"Partido Nacional",1993-03-12,1994-06-20,43,"Ministro Transporte y Obras Publicas","Titular",NA,1,NA,1946-08-04,1990-02-15,1995-02-14,1992-08-15 12:00:00,NA,46,46,"1985-2020",0
-"SANGUINETTI",NA,"JULIO","LUIS",4316,"Partido Colorado",NA,2005-02-14,45,"Diputado","Suplente","Canelones",1,NA,1963-06-28,2000-02-15,2005-02-14,2002-08-16,39,NA,39,"1985-2020",0
 "SANGUINETTI",NA,"JULIO","MARIA",4248,"Partido Colorado",NA,NA,39,"Diputado","Titular","Montevideo",1,NA,1936-01-06,1963-02-15,1967-02-14,1965-02-14,29,NA,29,"1934-1973",0
 "SANGUINETTI",NA,"JULIO","MARIA",4248,"Partido Colorado",NA,NA,40,"Diputado","Titular","Montevideo",1,NA,1936-01-06,1967-02-15,1972-02-14,1969-08-15 12:00:00,33,NA,33,"1934-1973",0
 "SANGUINETTI",NA,"JULIO","MARIA",4248,"Partido Colorado",NA,NA,41,"Diputado","Titular","Montevideo",1,NA,1936-01-06,1972-02-15,1973-06-27,1972-10-21,36,NA,36,"1934-1973",0
@@ -8676,3 +8668,11 @@
 "MOREIRA",NA,"CARLOS",NA,4000,"Partido Nacional",NA,NA,42,"Diputado","Suplente","Colonia",1,NA,1946-05-16,1985-02-15,1990-02-14,1987-08-16 12:00:00,41,NA,41,"1985-2020",0
 "AROCENA",NA,"JOSE","ANDRES",3817,"Partido Nacional",2015-02-15,NA,48,"Diputado","Titular",NA,1,NA,1964-05-24,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,50,50,"1985-2020",0
 "VARELA",NA,"CARLOS",NA,4251,"Frente Amplio",2020-02-15,NA,49,"Diputado","Titular","Montevideo",1,NA,1954-05-01,2020-02-15,2025-02-14,2022-08-16,NA,65,65,"1985-2020",0
+"VERA",NA,"JOSE","LUIS",4505,"Partido de la Concertacion",2014-06-01,2014-06-01,47,"Candidato Precandidato Presidente",NA,NA,1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"CROSA",NA,"FERNANDO",NA,4506,"Partido Nacional",NA,NA,38,"Diputado","Suplente","Cerro Largo",1,NA,NA,1959-02-15,1963-02-14,1961-02-14,NA,NA,NA,"1934-1973",0
+"ACUA",NA,"JORGE",NA,4507,"Partido Colorado",NA,NA,44,"Senador","Suplente",NA,1,NA,NA,1995-02-15,2000-02-14,1997-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"ACOSTA",NA,"MARGOT",NA,4508,"Partido Colorado",NA,NA,45,"Diputado","Suplente","Canelones",0,NA,1946-09-16,2000-02-15,2005-02-14,2002-08-16,55,NA,55,"1985-2020",0
+"GOMEZ",NA,"ALVARO",NA,4509,"Frente Amplio",2010-03-01,NA,47,"Alcalde","Titular","Canelones Toledo",1,NA,NA,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,NA,NA,"1985-2020",0
+"ABAL",NA,"TERESA",NA,4510,"Frente Amplio",2010-03-01,NA,47,"Concejal","Titular","Canelones Paso Carrasco",0,NA,1948-10-03,2010-02-15,2015-02-14,2012-08-15 12:00:00,NA,61,61,"1985-2020",0
+"DURAN",NA,"MARY",NA,4511,"Partido Nacional",2015-03-01,NA,48,"Concejal","Titular","Canelones Toledo",0,NA,1954-07-30,2015-02-15,2020-02-14,2017-08-15 12:00:00,NA,60,60,"1985-2020",0
+"SANGUINETTI",NA,"JULIO","LUIS",4512,"Partido Colorado",NA,2005-02-14,45,"Diputado","Suplente","Canelones",1,NA,1963-06-28,2000-02-15,2005-02-14,2002-08-16,39,NA,39,"1985-2020",0
