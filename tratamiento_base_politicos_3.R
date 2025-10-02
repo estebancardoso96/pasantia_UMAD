@@ -1760,8 +1760,22 @@ pegado_final <- rbind(titular, no_titular)
 pegado_final <- pegado_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
 
 # subo al DW
-dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
-             , pegado_final, overwrite = TRUE, row.names = FALSE)
+#dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
+#             , pegado_final, overwrite = TRUE, row.names = FALSE)
+
+# subo un hub politicos
+hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre,
+                        segundo_nombre, fecha_nac, id_politico, agregado) %>% distinct()
+
+hub_politicos <- hub_politicos %>% mutate(id_fuente = 2)
+
+
+dim_fuente <- data.frame(id_fuente = c(1, 2),
+           desc = c('UMAD', 'Biblioteca Parlamento'))
+
+dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+             , hub_politicos, overwrite = TRUE, row.names = FALSE)
+
 
 
 
@@ -1797,4 +1811,3 @@ write.csv(df_final, 'df_final.csv', row.names = FALSE)
 write.csv(pegado_final, 'leg47_biblio.csv', row.names = FALSE)
 
 
-asas
