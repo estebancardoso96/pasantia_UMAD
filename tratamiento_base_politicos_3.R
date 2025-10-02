@@ -1795,3 +1795,6 @@ pegado <- leg47_diputado %>% left_join(leg47_biblio_diputado_unicos, by=c('prime
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 write.csv(pegado_final, 'leg47_biblio.csv', row.names = FALSE)
+
+
+asas
