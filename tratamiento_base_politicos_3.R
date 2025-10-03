@@ -1570,9 +1570,10 @@ ids_politicos <- dbGetQuery(
   "select distinct id_politico,
                   primer_nombre,
                   primer_apellido,
+                  partido,
                   fecha_nac
    from public.\"fact_politicos_PASANTIA_23_09\"
-   where legislaturas_agrupadas like '%1985-2020%'"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
 )
 
 
@@ -1769,43 +1770,98 @@ hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, prim
 
 hub_politicos <- hub_politicos %>% mutate(id_fuente = 2)
 
-
 dim_fuente <- data.frame(id_fuente = c(1, 2),
            desc = c('UMAD', 'Biblioteca Parlamento'))
 
-dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
-             , hub_politicos, overwrite = TRUE, row.names = FALSE)
+#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+#             , hub_politicos, overwrite = TRUE, row.names = FALSE)
 
 
+################# levanto legislatura 48
+
+leg48_biblio <- read.csv('leg48_biblioteca.csv')
+
+leg48_biblio <- leg48_biblio %>% mutate(
+  segundo_nombre = na_if(segundo_nombre, ""),
+  segundo_apellido = na_if(segundo_apellido, ""),
+  primer_apellido = na_if(primer_apellido, ""),
+  primer_nombre = na_if(primer_nombre, ""))
 
 
+# pegado del id politico con hub de biblio
+
+### PRIMER PEGADO: nombre, apellido y fecha de nacimiento (base biblioteca)
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+leg48_biblio <- leg48_biblio %>% mutate(fecha_nac = as.Date(fecha_nac))
+
+leg48_biblio <- leg48_biblio %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                                'primer_apellido', 'fecha_nac'))
+
+### SEGUNDO PEGADO: nombre, apellido y fecha de nacimiento
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg48_biblio_id <- leg48_biblio %>% filter(!is.na(id_politico))
+leg48_biblio_sin_id <- leg48_biblio %>% filter(is.na(id_politico)) %>% select(-id_politico)
+ids_politicos <- ids_politicos %>% filter(!id_politico %in%c(4730, 4053))
+
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                        'primer_apellido', 'fecha_nac'))
+  
+leg48_biblio_id2 <- leg48_biblio_sin_id %>% filter(!is.na(id_politico))
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>% filter(is.na(id_politico)) %>% select(-id_politico)
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>% filter(X != 259)
+
+
+### TERCER PEGADO: apellido, nombre y partido
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  partido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre','partido',
+                                                       'primer_apellido')) %>% select(-ends_with(".y")) %>% 
+  rename(fecha_nac = fecha_nac.x)
+
+leg48_biblio_sin_id[leg48_biblio_sin_id$primer_nombre == 'MARIA'&
+                    leg48_biblio_sin_id$primer_apellido == 'LUSTEMBERG',
+                    "id_politico"] <- 2344
+
+leg48_biblio_id3 <- leg48_biblio_sin_id %>%
+  filter(!is.na(id_politico))
+
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>%
+  filter(is.na(id_politico))
+
+rbind(leg48_biblio_id, leg48_biblio_id2, leg48_biblio_id3)
+
+  
+# identificar errores en el id politico
 ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
-
 ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
 
-
-# Elimino la enie para poder pegar
-
-leg47 <- read.csv("C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/leg47.csv", sep = ",")
-
-leg47$primer_apellido <- gsub('Ñ','N', leg47$primer_apellido)
-
-leg47_diputado <- leg47 %>% filter(cargo %in%c("Diputado"))
-leg47_senador <- leg47 %>% filter(cargo %in%c("Senador"))
-
-leg47_biblio_diputado <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "DIPUTADA"))
-
-# Me quedo con las filas unicas
-leg47_biblio_diputado_unicos <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()<=1) %>% ungroup()
-
-leg47_biblio_diputado_unicos <- leg47_biblio_diputado_unicos %>%
-  select(primer_nombre, primer_apellido, Fecha.nacimiento,Condición)
-
-# Filas duplicadas
-leg47_biblio_diputado_dup <- leg47_biblio_diputado %>% group_by(X) %>% filter(n()>1) %>% ungroup()
-
-# Pegado con diputados unicos
-pegado <- leg47_diputado %>% left_join(leg47_biblio_diputado_unicos, by=c('primer_apellido', 'primer_nombre'))
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 write.csv(pegado_final, 'leg47_biblio.csv', row.names = FALSE)
