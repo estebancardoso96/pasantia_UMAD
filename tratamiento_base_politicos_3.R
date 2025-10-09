@@ -1530,7 +1530,7 @@ df_final <- df_final %>% mutate(legislaturas_agrupadas = case_when(legislatura <
 
 politicos <- politicos %>% mutate(eliminada = 0)
 
-leg47_biblio <- read.csv("leg47_biblioteca.csv", encoding = "utf-8")
+leg47_biblio <- read.csv("leg47_biblio.csv", encoding = "utf-8")
 leg47_biblio <- leg47_biblio %>% filter(Cargo %in%c("DIPUTADO", "SENADOR","SENADORA", "DIPUTADA"))
 
 # --- Lógica para apellidos ---
@@ -1760,9 +1760,43 @@ no_titular <- no_titular %>% mutate(ed_asumir = NA)
 pegado_final <- rbind(titular, no_titular)
 pegado_final <- pegado_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
 
-# subo al DW
-#dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
-#             , pegado_final, overwrite = TRUE, row.names = FALSE)
+leg47_biblio[leg47_biblio$primer_nombre == 'MARCELO'&
+             leg47_biblio$primer_apellido == 'BISTOLFI',
+             "status"] <- 'Titular'
+
+leg47_biblio[leg47_biblio$primer_nombre == 'JODAMI'&
+             leg47_biblio$primer_apellido == 'MARTINEZ',
+             "status"] <- 'Suplente'
+
+leg47_biblio[leg47_biblio$primer_nombre == 'LUIS'&
+               leg47_biblio$primer_apellido == 'BOTANA',
+             "status"] <- 'Suplente'
+
+leg47_biblio[leg47_biblio$primer_nombre == 'CARLOS'&
+             leg47_biblio$primer_apellido == 'ENCISO',
+             "status"] <- 'Suplente'
+
+leg47_biblio %>% filter(status == 'Titular' & cargo == 'Senador') %>% 
+  group_by(partido) %>% distinct(id_politico) %>%  count()
+
+leg47_biblio <- leg47_biblio %>%
+  select(
+    primer_apellido, segundo_apellido, primer_nombre, segundo_nombre,
+    id_politico, partido, inicio, fin, legislatura, cargo, status,
+    circunscripcion, sexo, fecha_nac, fecha_inicio_l, fecha_fin_l,
+    fecha_intermedia, ed_asumir_1, ed_asumir, edad_asumir, agregado,
+    legislaturas_agrupadas
+  )
+
+# Subir respetando el orden
+#dbWriteTable(
+#  con,
+#  Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla"),
+#  leg47_biblio,
+#  overwrite = TRUE,
+#  row.names = FALSE
+#)
+
 
 # subo un hub politicos
 hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre,
@@ -1786,6 +1820,7 @@ leg48_biblio <- leg48_biblio %>% mutate(
   segundo_apellido = na_if(segundo_apellido, ""),
   primer_apellido = na_if(primer_apellido, ""),
   primer_nombre = na_if(primer_nombre, ""))
+
 
 
 # pegado del id politico con hub de biblio
@@ -1855,9 +1890,926 @@ leg48_biblio_id3 <- leg48_biblio_sin_id %>%
 leg48_biblio_sin_id <- leg48_biblio_sin_id %>%
   filter(is.na(id_politico))
 
-rbind(leg48_biblio_id, leg48_biblio_id2, leg48_biblio_id3)
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>%
+  mutate(
+    key = paste(primer_nombre, primer_apellido, fecha_nac, sep = "|"),
+    id_politico = dense_rank(key) + 4729L
+  ) %>%
+  select(-key)   
 
-  
+leg48_biblio_sin_id <- leg48_biblio_sin_id %>% mutate(agregado = 1)
+leg48_biblio_ag <- rbind(leg48_biblio_id, leg48_biblio_id2, leg48_biblio_id3)
+leg48_biblio_ag <- leg48_biblio_ag %>% mutate(agregado = 0)
+pegado_final <- rbind(leg48_biblio_ag, leg48_biblio_sin_id)
+pegado_final <- pegado_final %>% mutate(id_fuente = 2)
+
+# subo un hub politicos
+hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre,
+                                         segundo_nombre, fecha_nac, id_politico, agregado,                                         id_fuente) %>% distinct()
+
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+nuevos <- anti_join(hub_politicos, ids_politicos,
+                    by=c("primer_nombre", "primer_apellido",
+                         "fecha_nac"))
+
+#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+#             , nuevos, append = TRUE,row.names = FALSE)
+
+
+## legislatura 48
+
+pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>% distinct(id_politico) %>% count()
+
+# correccion a mano DIPUTADOS (colocar los suplentes que por error en la tabla del
+# parlamento aparecen como titulares)
+
+dip_titu <- pegado_final %>% filter(cargo == "Diputado" & status == 'Titular')
+pegado_final <- pegado_final %>% filter(cargo == "Senador" | (cargo == 'Diputado' & status == 'Suplente'))
+
+pegado_final[pegado_final$primer_nombre == 'CARLOS'&
+             pegado_final$primer_apellido == 'CAMY',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'DANIEL'&
+             pegado_final$primer_apellido == 'GARIN',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JOSE'&
+             pegado_final$primer_apellido == 'FALERO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JUAN'&
+            pegado_final$primer_apellido == 'CASTILLO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'NELSON'&
+             pegado_final$primer_apellido == 'PENA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JUAN'&
+             pegado_final$primer_apellido == 'CASTILLO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'ENRIQUE'&
+             pegado_final$primer_apellido == 'PINTADO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'MICHELLE'&
+             pegado_final$primer_apellido == 'SUAREZ',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'IVONNE'&
+             pegado_final$primer_apellido == 'PASSADA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'CHARLES'&
+             pegado_final$primer_apellido == 'CARRERA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JOSE'&
+             pegado_final$primer_apellido == 'CARDOSO',
+             "status"] <- 'Suplente'
+
+pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>% distinct(id_politico) %>% count()
+dip_titu %>% filter(cargo == 'Diputado' & status == 'Titular') %>% distinct(id_politico) %>% count()
+
+## diputados
+
+dip_titu[dip_titu$primer_nombre == 'JOSE'&
+         dip_titu$primer_apellido == 'OLANO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'MABEL'&
+         dip_titu$primer_apellido == 'QUINTELA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'OSCAR'&
+         dip_titu$primer_apellido == 'VIERA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'CATALINA'&
+         dip_titu$primer_apellido == 'CORREA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'ALEJO'&
+         dip_titu$primer_apellido == 'UMPIERREZ',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'NIBIA'&
+         dip_titu$primer_apellido == 'REISCH',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'GONZALO'&
+         dip_titu$primer_apellido == 'NOVALES',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'GERARDO'&
+         dip_titu$primer_apellido == 'NUNEZ',
+         "status"] <- 'Titular'
+
+dip_titu[dip_titu$primer_nombre == 'BETTIANA'&
+         dip_titu$primer_apellido == 'DIAZ',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JORGE'&
+         dip_titu$primer_apellido == 'MERONI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'RICHARD'&
+         dip_titu$primer_apellido == 'CHARAMELO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'DARCY'&
+         dip_titu$primer_apellido == 'DE LOS SANTOS',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'HECTOR'&
+         dip_titu$primer_apellido == 'GIANOLI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'BENJAMIN'&
+         dip_titu$primer_apellido == 'IRAZABAL',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'CLAUDIA'&
+         dip_titu$primer_apellido == 'HUGO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'WILSON'&
+         dip_titu$primer_apellido == 'BENTANCOR',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'ELISABETH'&
+         dip_titu$primer_apellido == 'ARRIETA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'FELIPE'&
+         dip_titu$primer_apellido == 'MICHELINI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'MARIA'&
+         dip_titu$primer_apellido == 'SANTALLA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'OSCAR'&
+         dip_titu$primer_apellido == 'VIERA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'LUIS'&
+         dip_titu$primer_apellido == 'BOTANA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JAVIER'&
+         dip_titu$primer_apellido == 'GARCIA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'CARLOS'&
+         dip_titu$primer_apellido == 'ENCISO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JAIME'&
+         dip_titu$primer_apellido == 'TROBO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'ALVARO'&
+         dip_titu$primer_apellido == 'DELGADO',
+         "status"] <- 'Suplente'
+
+dip_titu %>% filter(cargo == 'Diputado' & status == 'Titular') %>% group_by(partido) %>%  distinct(id_politico) %>% count()
+dip_titu %>% filter(cargo == 'Diputado' & status == 'Titular') %>%  distinct(id_politico) %>% count()
+# MIRAR TITULARES POR PARTIDO
+dip_titu %>% filter(cargo == 'Diputado' & status == 'Titular' & partido == 'Partido Colorado') %>%
+  distinct(id_politico, primer_nombre, primer_apellido)
+
+pegado_final <- rbind(dip_titu, pegado_final)
+
+pegado_final <- pegado_final %>%
+  mutate(fecha_inicio_l = as.Date(fecha_inicio_l), fecha_fin_l = as.Date(fecha_fin_l),
+         fecha_intermedia = fecha_inicio_l + (fecha_fin_l - fecha_inicio_l) / 2)
+
+titular <- pegado_final %>% filter(status == 'Titular')
+titular$ed_asumir <- trunc((titular$fecha_nac %--% titular$fecha_inicio_l) / years(1))
+no_titular <- pegado_final %>% filter(status != 'Titular')
+no_titular$ed_asumir_1 <- trunc((no_titular$fecha_nac %--% no_titular$fecha_intermedia) / years(1))
+
+titular <- titular %>% mutate(ed_asumir_1 = NA)
+no_titular <- no_titular %>% mutate(ed_asumir = NA)
+pegado_final <- rbind(titular, no_titular)
+pegado_final <- pegado_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
+pegado_final <- pegado_final %>% mutate(agregado = ifelse(id_politico > 4730, 1, 0))
+pegado_final <- pegado_final %>% select(-c(nombre, id_fuente))
+
+pegado_final[pegado_final$primer_nombre == 'GUILLERMO'&
+             pegado_final$primer_apellido == 'BESOZZI',
+            "status"] <- 'Suplente'
+
+pegado_final %>% filter(status == 'Titular' & cargo == 'Senador') %>% group_by(partido) %>% 
+  distinct(id_politico) %>% count()
+
+# PEGAR circunscripcion
+
+ids_politicos <- dbGetQuery(
+  con,
+  "
+  SELECT fpp.id_politico,
+         fpp.circunscripcion, fpp.cargo
+  FROM public.\"fact_politicos_PASANTIA_23_09\" fpp
+  WHERE fpp.eliminada = 0
+    AND fpp.legislatura = 48
+    AND fpp.cargo = 'Diputado'
+    AND fpp.status = 'Titular'
+    AND fpp.circunscripcion IS NOT NULL
+  "
+)
+
+pegado_final <- pegado_final %>% left_join(ids_politicos, by = c("id_politico", "cargo"))
+
+pegado_final <- pegado_final %>% select(-circunscripcion.x) %>% rename(circunscripcion = circunscripcion.y)
+
+#dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
+#             , pegado_final, append = TRUE, row.names = FALSE)
+
+################# levanto legislatura 49
+
+leg49_biblio <- read.csv('leg49_biblioteca.csv')
+
+leg49_biblio <- leg49_biblio %>% mutate(
+  segundo_nombre = na_if(segundo_nombre, ""),
+  segundo_apellido = na_if(segundo_apellido, ""),
+  primer_apellido = na_if(primer_apellido, ""),
+  primer_nombre = na_if(primer_nombre, ""))
+
+# pegado del id politico con hub de biblio
+
+### PRIMER PEGADO: nombre, apellido y fecha de nacimiento (base biblioteca)
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+leg49_biblio <- leg49_biblio %>% mutate(fecha_nac = as.Date(fecha_nac))
+
+leg49_biblio <- leg49_biblio %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                                'primer_apellido', 'fecha_nac'))
+
+### SEGUNDO PEGADO: nombre, apellido y fecha de nacimiento
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg49_biblio_id <- leg49_biblio %>% filter(!is.na(id_politico))
+leg49_biblio_sin_id <- leg49_biblio %>% filter(is.na(id_politico)) %>% select(-id_politico)
+
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                                              'primer_apellido', 'fecha_nac'))
+
+leg49_biblio_id2 <- leg49_biblio_sin_id %>% filter(!is.na(id_politico))
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>% filter(is.na(id_politico)) %>% select(-id_politico)
+
+### TERCER PEGADO: apellido, nombre y partido
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  partido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre','partido',
+                                                                              'primer_apellido')) %>% select(-ends_with(".y")) %>% 
+  rename(fecha_nac = fecha_nac.x)
+
+
+leg49_biblio_sin_id[leg49_biblio_sin_id$primer_nombre == 'NORMA'&
+                    leg49_biblio_sin_id$primer_apellido == 'KECHICHIAN',
+                    "id_politico"] <- 2370
+
+leg49_biblio_sin_id[leg49_biblio_sin_id$primer_nombre == 'ANA'&
+                    leg49_biblio_sin_id$primer_apellido == 'COSSE',
+                    "id_politico"] <- 2350
+
+leg49_biblio_sin_id[leg49_biblio_sin_id$primer_nombre == 'ANA'&
+                    leg49_biblio_sin_id$primer_apellido == 'ARISMENDI',
+                    "id_politico"] <- 99
+
+leg49_biblio_sin_id[leg49_biblio_sin_id$primer_nombre == 'ANA'&
+                    leg49_biblio_sin_id$primer_apellido == 'CAIRO',
+                    "id_politico"] <- 2345
+
+leg49_biblio_id3 <- leg49_biblio_sin_id %>%
+  filter(!is.na(id_politico))
+
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>%
+  filter(is.na(id_politico))
+
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>%
+  mutate(
+    key = paste(primer_nombre, primer_apellido, fecha_nac, sep = "|"),
+    id_politico = dense_rank(key) + 4871L
+  ) %>%
+  select(-key)   
+
+leg49_biblio_sin_id <- leg49_biblio_sin_id %>% mutate(agregado = 1)
+leg49_biblio_ag <- rbind(leg49_biblio_id, leg49_biblio_id2, leg49_biblio_id3)
+leg49_biblio_ag <- leg49_biblio_ag %>% mutate(agregado = 0)
+pegado_final <- rbind(leg49_biblio_ag, leg49_biblio_sin_id)
+pegado_final <- pegado_final %>% mutate(id_fuente = 2)
+
+# subo un hub politicos
+hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre,
+                                         segundo_nombre, fecha_nac, id_politico, agregado,id_fuente) %>% distinct()
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+nuevos <- anti_join(hub_politicos, ids_politicos,
+                    by=c("primer_nombre", "primer_apellido",
+                         "fecha_nac"))
+
+nuevos[nuevos$segundo_apellido == 'VIDAL'&
+       nuevos$primer_apellido == 'LARRANAGA',
+       "id_politico"] <- 5087
+
+#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+#             , nuevos, append = TRUE,row.names = FALSE)
+
+## legislatura 49
+
+pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>% distinct(id_politico) %>% count()
+
+# correccion a mano DIPUTADOS (colocar los suplentes que por error en la tabla del
+# parlamento aparecen como titulares)
+
+dip_titu <- pegado_final %>% filter(cargo == "Diputado" & status == 'Titular')
+pegado_final <- pegado_final %>% filter(cargo == "Senador" | (cargo == 'Diputado' & status == 'Suplente'))
+
+
+pegado_final[pegado_final$primer_nombre == 'SEBASTIAN'&
+             pegado_final$primer_apellido == 'SABINI',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'ALEJANDRO'&
+             pegado_final$primer_apellido == 'SANCHEZ',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'DANIEL'&
+             pegado_final$primer_apellido == 'CAGGIANI',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'GRACIELA'&
+             pegado_final$primer_apellido == 'GARCIA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'SILVIA'&
+             pegado_final$primer_apellido == 'NANE',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JOSE'&
+             pegado_final$primer_apellido == 'NUNES',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JOSE'&
+             pegado_final$primer_apellido == 'MAHIA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'AMIN'&
+             pegado_final$primer_apellido == 'NIFFOURI',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'GUSTAVO'&
+             pegado_final$primer_apellido == 'PENADES',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'RODRIGO'&
+             pegado_final$primer_apellido == 'BLAS',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'SERGIO'&
+             pegado_final$primer_apellido == 'ABREU',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'SEBASTIAN'&
+             pegado_final$primer_apellido == 'DA SILVA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'CARLOS'&
+             pegado_final$primer_apellido == 'CAMY',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'CARMEN'&
+             pegado_final$primer_apellido == 'SANGUINETTI',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'TABARE'&
+             pegado_final$primer_apellido == 'VIERA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'PEDRO'&
+             pegado_final$primer_apellido == 'IRIGOIN',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'GONZALO'&
+             pegado_final$primer_apellido == 'CIVILA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'MARIA'&
+             pegado_final$primer_apellido == 'LUSTEMBERG',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'MARIA'&
+             pegado_final$primer_apellido == 'FAJARDO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'LUCIA'&
+             pegado_final$primer_apellido == 'ETCHEVERRY',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'LUCIA'&
+             pegado_final$primer_apellido == 'ETCHEVERRY',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'LUIS'&
+             pegado_final$primer_apellido == 'FRATTI',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'AMANDA'&
+             pegado_final$primer_apellido == 'DELLA',
+             "status"] <- 'Titular'
+
+pegado_final[pegado_final$primer_nombre == 'GERMAN'&
+             pegado_final$primer_apellido == 'COUTINHO',
+             "status"] <- 'Titular'
+
+pegado_final[pegado_final$primer_nombre == 'NICOLAS'&
+             pegado_final$primer_apellido == 'OLIVERA',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'ALEJO'&
+             pegado_final$primer_apellido == 'UMPIERREZ',
+             "status"] <- 'Suplente'
+
+pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>%
+  distinct(primer_apellido, primer_nombre, partido) %>% count()
+
+## diputados
+
+pegado_final[pegado_final$primer_nombre == 'ANDRES'&
+             pegado_final$primer_apellido == 'ABT',
+             "status"] <- 'Titular'
+
+dip_titu[dip_titu$primer_nombre == 'OSCAR'&
+         dip_titu$primer_apellido == 'AMIGO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'MARIA'&
+         dip_titu$primer_apellido == 'FAJARDO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'MIGUEL'&
+         dip_titu$primer_apellido == 'IRRAZABAL',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'EDUARDO'&
+         dip_titu$primer_apellido == 'LORENZO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JOSE'&
+         dip_titu$primer_apellido == 'MAHIA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'SYLVIA'&
+         dip_titu$primer_apellido == 'IBARGUREN',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JUAN'&
+         dip_titu$primer_apellido == 'LERETE',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JUAN'&
+         dip_titu$primer_apellido == 'OLAIZOLA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'PEDRO'&
+         dip_titu$primer_apellido == 'JISDONIAN',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'NANCY'&
+         dip_titu$primer_apellido == 'NUNEZ',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'DANIEL'&
+         dip_titu$primer_apellido == 'MARTINEZ',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'AGUSTIN'&
+         dip_titu$primer_apellido == 'MAZZINI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'AGUSTIN'&
+         dip_titu$primer_apellido == 'MAZZINI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'MILTON'&
+         dip_titu$primer_apellido == 'CORBO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JORGE'&
+         dip_titu$primer_apellido == 'VIVIANO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'GRACIELA'&
+         dip_titu$primer_apellido == 'BIANCHI',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'ALVARO'&
+         dip_titu$primer_apellido == 'DELGADO',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'JAVIER'&
+         dip_titu$primer_apellido == 'GARCIA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'DANIEL'&
+         dip_titu$primer_apellido == 'GERHARD',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'ESTELA'&
+         dip_titu$primer_apellido == 'PEREYRA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'HECTOR'&
+         dip_titu$primer_apellido == 'PEREYRA',
+         "status"] <- 'Suplente'
+
+dip_titu[dip_titu$primer_nombre == 'LUIS'&
+         dip_titu$primer_apellido == 'BOTANA',
+         "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'NELSON'&
+             pegado_final$primer_apellido == 'TIERNO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'NELSON'&
+             pegado_final$primer_apellido == 'TIERNO',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'JORGE'&
+             pegado_final$primer_apellido == 'SCHUSMAN',
+             "status"] <- 'Titular'
+
+pegado_final[pegado_final$primer_nombre == 'ELSA'&
+             pegado_final$primer_apellido == 'CAPILLERA',
+             "partido"] <- 'Cabildo Abierto'
+
+pegado_final[pegado_final$primer_nombre == 'ELSA'&
+             pegado_final$primer_apellido == 'CAPILLERA',
+             "status"] <- 'Titular'
+
+pegado_final[pegado_final$primer_nombre == 'MARIA'&
+             pegado_final$primer_apellido == 'CORTES',
+             "status"] <- 'Suplente'
+
+pegado_final[pegado_final$primer_nombre == 'GRACIELA'&
+             pegado_final$primer_apellido == 'ECHENIQUE',
+             "status"] <- 'Suplente'
+
+diputados <- pegado_final %>% filter(cargo == 'Diputado' & status == 'Titular') %>%
+  distinct(id_politico, primer_nombre, primer_apellido, partido)
+
+pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>%
+  distinct(id_politico, primer_nombre, primer_apellido, partido) %>% count()
+
+pegado_final %>% filter(cargo == 'Diputado' & status == 'Titular') %>%
+  distinct(id_politico, primer_nombre, primer_apellido, partido) %>% count()
+
+pegado_final <- rbind(pegado_final, dip_titu)
+
+pegado_final <- pegado_final %>%
+  mutate(fecha_inicio_l = as.Date(fecha_inicio_l), fecha_fin_l = as.Date(fecha_fin_l),
+         fecha_intermedia = fecha_inicio_l + (fecha_fin_l - fecha_inicio_l) / 2)
+
+titular <- pegado_final %>% filter(status == 'Titular')
+titular$ed_asumir <- trunc((titular$fecha_nac %--% titular$fecha_inicio_l) / years(1))
+no_titular <- pegado_final %>% filter(status != 'Titular')
+no_titular$ed_asumir_1 <- trunc((no_titular$fecha_nac %--% no_titular$fecha_intermedia) / years(1))
+
+titular <- titular %>% mutate(ed_asumir_1 = NA)
+no_titular <- no_titular %>% mutate(ed_asumir = NA)
+pegado_final <- rbind(titular, no_titular)
+pegado_final <- pegado_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
+pegado_final <- pegado_final %>% mutate(agregado = ifelse(id_politico > 4730, 1, 0))
+pegado_final <- pegado_final %>% select(-c(X, nombre, id_fuente))
+
+# PEGAR circunscripcion
+
+ids_politicos <- dbGetQuery(
+  con,
+  "
+  SELECT fpp.id_politico,
+         fpp.circunscripcion, fpp.cargo
+  FROM public.\"fact_politicos_PASANTIA_23_09\" fpp
+  WHERE fpp.eliminada = 0
+    AND fpp.legislatura = 49
+    AND fpp.cargo = 'Diputado'
+    AND fpp.status = 'Titular'
+    AND fpp.circunscripcion IS NOT NULL
+  "
+)
+
+pegado_final <- pegado_final %>% left_join(ids_politicos, by = c("id_politico", "cargo"))
+
+# subo al DW
+#dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
+#             , pegado_final, append = TRUE, row.names = FALSE)
+
+
+###### legislatura 46 #####
+
+leg46_biblio <- read.csv('leg46_biblioteca.csv')
+
+leg46_biblio <- leg46_biblio %>% mutate(
+  segundo_nombre = na_if(segundo_nombre, ""),
+  segundo_apellido = na_if(segundo_apellido, ""),
+  primer_apellido = na_if(primer_apellido, ""),
+  primer_nombre = na_if(primer_nombre, ""))
+
+# pegado del id politico con hub de biblio
+
+### PRIMER PEGADO: nombre, apellido y fecha de nacimiento (base biblioteca)
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+leg46_biblio <- leg46_biblio %>% mutate(fecha_nac = as.Date(fecha_nac))
+
+leg46_biblio <- leg46_biblio %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                                'primer_apellido', 'fecha_nac'))
+
+### SEGUNDO PEGADO: nombre, apellido y fecha de nacimiento
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg46_biblio_id <- leg46_biblio %>% filter(!is.na(id_politico))
+leg46_biblio_sin_id <- leg46_biblio %>% filter(is.na(id_politico)) %>% select(-id_politico)
+
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre',
+                                                                              'primer_apellido', 'fecha_nac'))
+
+leg46_biblio_id2 <- leg46_biblio_sin_id %>% filter(!is.na(id_politico))
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>% filter(is.na(id_politico)) %>% select(-id_politico)
+
+### TERCER PEGADO: apellido, nombre y partido
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct id_politico,
+                  primer_nombre,
+                  primer_apellido,
+                  partido,
+                  fecha_nac
+   from public.\"fact_politicos_PASANTIA_23_09\"
+   where legislaturas_agrupadas like '%1985-2020%' and eliminada = 0"
+)
+
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>% left_join(ids_politicos, by =c('primer_nombre','partido',
+                                                                              'primer_apellido')) %>% select(-ends_with(".y")) %>% 
+  rename(fecha_nac = fecha_nac.x)
+
+leg46_biblio_sin_id[leg46_biblio_sin_id$primer_nombre == 'LEON'&
+                   leg46_biblio_sin_id$primer_apellido == 'LEV',
+                   "id_politico"] <- 1889
+
+leg46_biblio_id3 <- leg46_biblio_sin_id %>%
+  filter(!is.na(id_politico))
+
+leg46_biblio_id3 <- leg46_biblio_id3 %>% filter(id_politico != 4378)
+
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>%
+  filter(is.na(id_politico))
+
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>%
+  mutate(
+    key = paste(primer_nombre, primer_apellido, fecha_nac, sep = "|"),
+    id_politico = dense_rank(key) + 5087L
+  ) %>%
+  select(-key)   
+
+leg46_biblio_sin_id <- leg46_biblio_sin_id %>% mutate(agregado = 1)
+leg46_biblio_ag <- rbind(leg46_biblio_id, leg46_biblio_id2, leg46_biblio_id3)
+leg46_biblio_ag <- leg46_biblio_ag %>% mutate(agregado = 0)
+pegado_final <- rbind(leg46_biblio_ag, leg46_biblio_sin_id)
+pegado_final <- pegado_final %>% mutate(id_fuente = 2)
+
+# subo un hub politicos
+hub_politicos <- pegado_final %>% select(primer_apellido, segundo_apellido, primer_nombre,
+                                         segundo_nombre, fecha_nac, id_politico, agregado,id_fuente) %>% distinct()
+
+ids_politicos <- dbGetQuery(
+  con,
+  "select distinct
+                  primer_nombre,
+                  primer_apellido,
+                  fecha_nac
+   from public.\"hub_politicos\"
+"
+)
+
+nuevos <- anti_join(hub_politicos, ids_politicos,
+                    by=c("primer_nombre", "primer_apellido",
+                         "fecha_nac"))
+
+#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+#             , nuevos, append = TRUE,row.names = FALSE)
+
+
+########## legislatura 46 ##############
+
+# correccion a mano DIPUTADOS (colocar los suplentes que por error en la tabla del
+# parlamento aparecen como titulares)
+
+dip_titu <- pegado_final %>% filter(cargo == "Diputado" & status == 'Titular')
+
+dip_titu[dip_titu$primer_apellido == 'MUJICA' &
+         dip_titu$primer_nombre == 'JOSE', "partido"]<- "Frente Amplio"
+
+pegado_final <- pegado_final %>% filter(cargo == "Senador" | (cargo == 'Diputado' & status == 'Suplente'))
+diputados <- dip_titu %>% distinct(id_politico, primer_apellido, primer_nombre, partido) %>%
+  arrange(primer_apellido)
+
+dip_titu[dip_titu$primer_apellido == 'AGAZZI' &
+         dip_titu$primer_nombre == 'ERNESTO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'CANEPA' &
+         dip_titu$primer_nombre == 'DIEGO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'BERNINI' &
+         dip_titu$primer_nombre == 'GUSTAVO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'COCCO' &
+         dip_titu$primer_nombre == 'ALBA', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'PEREZ' &
+         dip_titu$primer_nombre == 'PABLO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'ALVAREZ' &
+         dip_titu$primer_nombre == 'PABLO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'MANANA' &
+         dip_titu$primer_nombre == 'DANIEL', "status"]<- "Titular"
+
+dip_titu[dip_titu$primer_apellido == 'CARAM' &
+         dip_titu$primer_nombre == 'RODOLFO', "status"]<- "Titular"
+
+dip_titu[dip_titu$primer_apellido == 'CHARAMELO' &
+         dip_titu$primer_nombre == 'RICHARD', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'CARDOZO' &
+           dip_titu$primer_nombre == 'JULIO', "status"]<- "Titular"
+
+dip_titu[dip_titu$primer_apellido == 'ASTI' &
+         dip_titu$primer_nombre == 'ALFREDO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'MAGURNO' &
+         dip_titu$primer_nombre == 'OSCAR', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'FERNANDEZ' &
+         dip_titu$segundo_apellido == 'HUIDOBRO', "status"]<- "Suplente"
+
+dip_titu[dip_titu$primer_apellido == 'PEREZ' &
+         dip_titu$primer_nombre == 'ESTEBAN', "status"]<- "Suplente"
+
+pegado_final[pegado_final$primer_apellido == 'CARLOS' &
+             pegado_final$primer_nombre == 'MAZZULO', "status"]<- "Titular"
+
+#### SENADORES
+
+senadores <- pegado_final %>% filter(cargo == 'Senador' & status == 'Titular') %>%
+  distinct(primer_apellido, primer_nombre, partido, id_politico)
+
+pegado_final[pegado_final$primer_apellido == 'KORZENIAK' &
+             pegado_final$primer_nombre == 'JOSE' &
+             pegado_final$cargo == 'Senador', "status"]<- "Suplente"
+
+pegado_final[pegado_final$primer_apellido == 'PERCOVICH' &
+             pegado_final$primer_nombre == 'MARIA' &
+             pegado_final$cargo == 'Senador', "status"]<- "Suplente"
+
+pegado_final[pegado_final$primer_apellido == 'PINTADO' &
+             pegado_final$primer_nombre == 'ENRIQUE' &
+             pegado_final$cargo == 'Senador', "status"]<- "Titular"
+
+pegado_final[pegado_final$primer_apellido == 'NICOLINI' &
+             pegado_final$primer_nombre == 'LEONARDO' &
+             pegado_final$cargo == 'Senador', "status"]<- "Suplente"
+
+pegado_final[pegado_final$primer_apellido == 'LAPAZ' &
+             pegado_final$primer_nombre == 'GUSTAVO' &
+             pegado_final$cargo == 'Senador', "status"]<- "Suplente"
+
+pegado_final[pegado_final$primer_apellido == 'XAVIER' &
+             pegado_final$primer_nombre == 'MONICA' &
+             pegado_final$cargo == 'Senador', "status"]<- "Titular"
+
+pegado_final <- pegado_final %>% filter(primer_apellido != 'NIN')
+
+pegado_final <- rbind(pegado_final, dip_titu)
+
+pegado_final <- pegado_final %>%
+  mutate(fecha_inicio_l = as.Date(fecha_inicio_l), fecha_fin_l = as.Date(fecha_fin_l),
+         fecha_intermedia = fecha_inicio_l + (fecha_fin_l - fecha_inicio_l) / 2)
+
+titular <- pegado_final %>% filter(status == 'Titular')
+titular$ed_asumir <- trunc((titular$fecha_nac %--% titular$fecha_inicio_l) / years(1))
+no_titular <- pegado_final %>% filter(status != 'Titular')
+no_titular$ed_asumir_1 <- trunc((no_titular$fecha_nac %--% no_titular$fecha_intermedia) / years(1))
+
+titular <- titular %>% mutate(ed_asumir_1 = NA)
+no_titular <- no_titular %>% mutate(ed_asumir = NA)
+pegado_final <- rbind(titular, no_titular)
+pegado_final <- pegado_final %>% mutate(edad_asumir = ifelse(is.na(ed_asumir), ed_asumir_1, ed_asumir))
+pegado_final <- pegado_final %>% mutate(agregado = ifelse(id_politico > 4730, 1, 0))
+pegado_final <- pegado_final %>% select(-c(X, nombre, id_fuente))
+
+# PEGAR circunscripcion
+
+ids_politicos <- dbGetQuery(
+  con,
+  "
+  SELECT fpp.id_politico,
+         fpp.circunscripcion, fpp.cargo
+  FROM public.\"fact_politicos_PASANTIA_23_09\" fpp
+  WHERE fpp.eliminada = 0
+    AND fpp.legislatura = 46
+    AND fpp.cargo = 'Diputado'
+    AND fpp.status = 'Titular'
+    AND fpp.circunscripcion IS NOT NULL
+  "
+)
+
+ids_politicos <- ids_politicos %>% mutate(id_politico = as.character(id_politico)) 
+pegado_final <- pegado_final %>% left_join(ids_politicos, by = c("id_politico", "cargo"))
+pegado_final <- pegado_final %>% mutate(id_politico = as.integer(id_politico)) 
+pegado_final[pegado_final$primer_apellido == 'PEREYRA' &
+             pegado_final$segundo_apellido == 'HUELMO',"id_politico"] <- 4022
+
+# subo al DW
+#dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
+#             , pegado_final, append = TRUE, row.names = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # identificar errores en el id politico
 ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
 ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
