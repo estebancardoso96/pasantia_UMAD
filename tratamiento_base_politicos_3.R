@@ -2797,15 +2797,13 @@ pegado_final[pegado_final$primer_apellido == 'PEREYRA' &
 #dbWriteTable(con, Id(schema = "leg_biblioteca_parlamento", table = "fact_legisladores_biblio_parla")
 #             , pegado_final, append = TRUE, row.names = FALSE)
 
+# SUBIR AL HUB POLITICOS EL RESTO DE LOS POLITICOS DE LA BASE UMADA
 
 
 
 
 
-
-
-
-
+df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
 
 
 
@@ -2816,6 +2814,7 @@ ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
 
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
+write.csv(df_fact_parlamento_biblioteca, 'df_fact_parlamento_biblioteca.csv', row.names = FALSE)
 write.csv(pegado_final, 'leg47_biblio.csv', row.names = FALSE)
 
 
