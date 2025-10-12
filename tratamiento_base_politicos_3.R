@@ -2799,14 +2799,36 @@ pegado_final[pegado_final$primer_apellido == 'PEREYRA' &
 
 # SUBIR AL HUB POLITICOS EL RESTO DE LOS POLITICOS DE LA BASE UMADA
 
+df_final <- dbGetQuery(con, 'select distinct fpp.primer_apellido,fpp.segundo_apellido, fpp.primer_nombre, fpp.segundo_nombre, fpp.fecha_nac, fpp.id_politico    
+from "public"."fact_politicos_PASANTIA_23_09" fpp')
+
+hub <- dbGetQuery(con, 'SELECT * FROM "public"."hub_politicos"')
+
+nuevos <- anti_join(df_final, hub, by = c('id_politico'))
+
+nuevos <- nuevos %>% mutate(agregado = 0, id_fuente = 1)
+
+repes <- nuevos %>% group_by(id_politico) %>% filter(n()>1) %>% arrange(id_politico) %>% ungroup()
+unicos <- nuevos %>% group_by(id_politico) %>% filter(n()<=1) %>% arrange(id_politico) %>% ungroup()
+
+unicos <- unicos %>% filter(id_politico != 1)
+
+unicos <- unicos %>%
+  mutate(
+    fecha_desde = Sys.time(),                        # fecha y hora actual
+    fecha_hasta = as.POSIXct("2100-12-31 23:59:59")  # fecha fija
+  )
+
+#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
+#             , unicos, append = TRUE, row.names = FALSE)
+
+
+
 
 
 
 
 df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
-
-
-
 
 # identificar errores en el id politico
 ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
@@ -2815,6 +2837,6 @@ ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
 
 write.csv(df_final, 'df_final.csv', row.names = FALSE)
 write.csv(df_fact_parlamento_biblioteca, 'df_fact_parlamento_biblioteca.csv', row.names = FALSE)
-write.csv(pegado_final, 'leg47_biblio.csv', row.names = FALSE)
+write.csv(hub, 'hub_politicos.csv', row.names = FALSE)
 
 
