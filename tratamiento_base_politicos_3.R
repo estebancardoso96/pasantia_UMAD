@@ -2811,13 +2811,28 @@ nuevos <- nuevos %>% mutate(agregado = 0, id_fuente = 1)
 repes <- nuevos %>% group_by(id_politico) %>% filter(n()>1) %>% arrange(id_politico) %>% ungroup()
 unicos <- nuevos %>% group_by(id_politico) %>% filter(n()<=1) %>% arrange(id_politico) %>% ungroup()
 
-unicos <- unicos %>% filter(id_politico != 1)
-
 unicos <- unicos %>%
   mutate(
     fecha_desde = Sys.time(),                        # fecha y hora actual
     fecha_hasta = as.POSIXct("2100-12-31 23:59:59")  # fecha fija
   )
+
+##### REPES
+
+repes_2 <- repes %>% distinct(primer_apellido, primer_nombre, id_politico)
+repes_2 <- repes_2 %>% group_by(id_politico) %>% filter(n()>1) %>% arrange(id_politico) %>% ungroup()
+
+repes_final <- repes_2 %>% filter(!id_politico %in%c(13,84, 117, 146, 200, 344, 432, 505, 861, 869,
+                                      916, 1091, 1146, 1286, 1310, 1312, 1330, 1629, 1650,
+                                      1680, 1690, 1719, 1741, 1779, 1991, 1997, 2003, 2238, 
+                                      2457, 2523, 2674, 2692, 2698, 2738, 2742, 2818, 2834, 
+                                      2864, 2908, 2914, 2916, 3538, 3593, 3804, 4152, 4213, 4186, 
+                                      4506, 515, 887, 2609,2690))
+
+
+max(df_final$id_politico) # 5228
+max(hub$id_politico) # 5211
+
 
 #dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
 #             , unicos, append = TRUE, row.names = FALSE)
