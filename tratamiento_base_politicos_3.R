@@ -2829,16 +2829,25 @@ repes_final <- repes_2 %>% filter(!id_politico %in%c(13,84, 117, 146, 200, 344, 
                                       2864, 2908, 2914, 2916, 3538, 3593, 3804, 4152, 4213, 4186, 
                                       4506, 515, 887, 2609,2690))
 
-
 max(df_final$id_politico) # 5228
 max(hub$id_politico) # 5211
+
+repes$segundo_nombre <- gsub("\\.", "", repes$segundo_nombre)
+repes <- repes %>% arrange(primer_apellido, segundo_apellido, primer_nombre, fecha_nac, desc(segundo_nombre))
+
+repes <- repes %>% distinct(id_politico, agregado, id_fuente, .keep_all = TRUE)
+repes$segundo_nombre <- ifelse(
+  nchar(repes$segundo_nombre) == 1 & repes$segundo_nombre != "",
+  paste0(repes$segundo_nombre, "."),
+  repes$segundo_nombre
+)
 
 
 #dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
 #             , unicos, append = TRUE, row.names = FALSE)
 
 
-
+### SUBIR LOS REPETIDOS
 
 
 
