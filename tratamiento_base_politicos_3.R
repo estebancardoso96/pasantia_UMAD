@@ -2835,16 +2835,24 @@ max(hub$id_politico) # 5211
 repes$segundo_nombre <- gsub("\\.", "", repes$segundo_nombre)
 repes <- repes %>% arrange(primer_apellido, segundo_apellido, primer_nombre, fecha_nac, desc(segundo_nombre))
 
-repes <- repes %>% distinct(id_politico, agregado, id_fuente, .keep_all = TRUE)
-repes$segundo_nombre <- ifelse(
-  nchar(repes$segundo_nombre) == 1 & repes$segundo_nombre != "",
-  paste0(repes$segundo_nombre, "."),
-  repes$segundo_nombre
+repes_subida <- repes %>% distinct(id_politico, agregado, id_fuente, .keep_all = TRUE)
+repes_subida$segundo_nombre <- ifelse(
+  nchar(repes_subida$segundo_nombre) == 1 & repes_subida$segundo_nombre != "",
+  paste0(repes_subida$segundo_nombre, "."),
+  repes_subida$segundo_nombre
 )
 
+repes_subida <- repes_subida %>%
+  mutate(
+    fecha_desde = Sys.time(),                        # fecha y hora actual
+    fecha_hasta = as.POSIXct("2100-12-31 23:59:59")  # fecha fija
+  )
+
+repes_subida <- repes_subida %>% mutate(formas_de_escribir = 1)
+repes_subida <- repes_subida %>% filter(id_politico != 3973)
 
 #dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
-#             , unicos, append = TRUE, row.names = FALSE)
+#             , repes_subida, append = TRUE, row.names = FALSE)
 
 
 ### SUBIR LOS REPETIDOS
