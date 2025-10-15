@@ -2851,15 +2851,32 @@ repes_subida <- repes_subida %>%
 repes_subida <- repes_subida %>% mutate(formas_de_escribir = 1)
 repes_subida <- repes_subida %>% filter(id_politico != 3973)
 
-#dbWriteTable(con, Id(schema = "public", table = "hub_politicos")
-#             , repes_subida, append = TRUE, row.names = FALSE)
+#dbWriteTable(con, Id(schema = "public", table = "aux_hub_politicos")
+#             , repes, append = TRUE, row.names = FALSE)
+
+###### UNION DE LAS DOS TABLAS UMAD + PARLAMENTO (LEGISLATURAS 46, 47, 48 Y 49) ########
+
+df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
+df_umad <- dbGetQuery(con, 'SELECT * FROM public."fact_politicos_PASANTIA_23_09"')
+
+df_umad <- df_umad %>% filter(eliminada != 1)
+df_umad <- df_umad %>% select(-c(eliminada, modificada)) %>% rename(id_fuente = fuente) %>% 
+  mutate(id_fuente = 1)
+
+df_fact_parlamento_biblioteca <- df_fact_parlamento_biblioteca %>%
+  select(-c(agregado)) %>% mutate(id_fuente = 2)
+
+# elimino senadores y diputados de las legislaturas 46, 47, 48 y 49
+df_umad <- df_umad %>% filter((cargo != 'Senador' & cargo != 'Diputado') | !legislatura %in%c(46, 47, 48, 49))
+
+df_umad <- df_umad %>% mutate(inicio = as.integer(NA), fin = as.integer(NA))
+df_fact_parlamento_biblioteca <- df_fact_parlamento_biblioteca %>% mutate(fecha_inicio = as.Date(NA), fecha_fin = as.Date(NA))
+
+df_union <- rbind(df_umad, df_fact_parlamento_biblioteca)
 
 
-### SUBIR LOS REPETIDOS
 
-
-
-
+hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
 df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
 
 # identificar errores en el id politico
