@@ -2874,8 +2874,14 @@ df_fact_parlamento_biblioteca <- df_fact_parlamento_biblioteca %>% mutate(fecha_
 
 df_union <- rbind(df_umad, df_fact_parlamento_biblioteca)
 
+df_union[df_union$legislaturas_agrupadas == "1985-2020", "legislaturas_agrupadas"] <- "1985-2025"
 
 
+#dbWriteTable(con, Id(schema = "public", table = "fact_politicos_final")
+#             , df_union, append = TRUE, row.names = FALSE)
+
+
+############################################################################################################
 hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
 df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
 
@@ -2884,8 +2890,8 @@ ids <- ids_politicos %>% group_by(id_politico) %>% count() %>% filter(n > 1)
 ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
 
 
-write.csv(df_final, 'df_final.csv', row.names = FALSE)
-write.csv(df_fact_parlamento_biblioteca, 'df_fact_parlamento_biblioteca.csv', row.names = FALSE)
-write.csv(hub, 'hub_politicos.csv', row.names = FALSE)
-
+#write.csv(df_final, 'df_final.csv', row.names = FALSE)
+#write.csv(df_fact_parlamento_biblioteca, 'df_fact_parlamento_biblioteca.csv', row.names = FALSE)
+#write.csv(hub, 'hub_politicos.csv', row.names = FALSE)
+write.csv(df_union, 'fact_politicos_final.csv', row.names = FALSE)
 
