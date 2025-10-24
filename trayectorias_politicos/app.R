@@ -116,7 +116,6 @@ aplicar_etiquetas <- function(df) {
 
 
 
-
 ui <- dashboardPage(
   dashboardHeader(title = "Visualizador de políticos y políticas del Uruguay"),
   
@@ -175,9 +174,11 @@ ui <- dashboardPage(
                   
                   tabsetPanel(
                     tabPanel("Cantidad de mujeres por partido",
-                             DTOutput("tabla_mujeres_partido")
+                             DTOutput("tabla_mujeres_partido"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))
                     ),
-                    tabPanel("Cantidad de mujeres por cargo",
+                    tabPanel("Cantidad de mujeres por cargo (se incluyen suplentes)",
                              DTOutput("tabla_mujeres_cargo")
                     ),
                     tabPanel("Tabla de Cargos",
@@ -221,7 +222,15 @@ server <- function(input, output, session) {
     df <- tabla_sexos
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
+  ### permite al usuario descargar los csv
+  output$descargar_tabla_mujeres_1 <- downloadHandler(
+    filename = function() {
+      "tabla_mujeres_por_partido.csv"
+    },
+    content = function(file) {
+      write.csv(tabla_sexos, file, row.names = FALSE, fileEncoding = "UTF-8")
   
+  })    
   output$tabla_mujeres_cargo <- renderDT({
     df <- tabla_sexos_cargos
     datatable(aplicar_etiquetas(df), rownames = FALSE)
