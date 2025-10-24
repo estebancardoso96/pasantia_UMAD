@@ -41,12 +41,46 @@ if (!is.null(con)) {
 
 politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_final"')
 
-# Etiquetas para la pagina
-
-library(labelled)
 library(shiny)
 library(shinydashboard)
 
+##### Generacion de tablas
+
+### Cantidad de mujeres por partido
+m <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                        'Cabildo Abierto') & sexo == 0) %>%
+  group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
+  ungroup() %>%  select(-sexo)
+
+h <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                        'Cabildo Abierto') & sexo == 1) %>%
+  group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
+  ungroup() %>% select(-sexo)
+
+tabla_sexos <- inner_join(h,m,by =('partido'))
+
+tabla_sexos <- tabla_sexos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`) %>% 
+   mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
+
+### Cantidad de mujeres por cargo (incluye suplencias)
+m_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                          'Cabildo Abierto') & sexo == 0 ) %>%
+  group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
+  ungroup() %>%  select(-sexo)
+
+h_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                          'Cabildo Abierto') & sexo == 1) %>%
+  group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de hombres'=n) %>%
+  ungroup() %>% select(-sexo)
+
+tabla_sexos_cargos <- left_join(h_1,m_1,by =('cargo'))
+tabla_sexos_cargos <- tabla_sexos_cargos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
+  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
+
+
+# Etiquetas para la pagina
+
+library(labelled)
 politicos <- politicos %>%
   set_variable_labels(
     primer_apellido = "Primer apellido",
@@ -59,10 +93,28 @@ politicos <- politicos %>%
     status          = "Estatus"
   )
 
+tabla_sexos_cargos <- tabla_sexos_cargos %>%
+  set_variable_labels(
+    'Cantidad de hombres' = "Cantidad de hombres",
+    'Cantidad de mujeres' = "Cantidad de mujeres",
+    'Hombres por cada mujer' = "Hombres por cada mujer",
+     cargo = 'Cargo'
+  )
+
+tabla_sexos <- tabla_sexos %>%
+  set_variable_labels(
+    'Cantidad de hombres' = "Cantidad de hombres",
+    'Cantidad de mujeres' = "Cantidad de mujeres",
+    'Hombres por cada mujer' = "Hombres por cada mujer",
+     partido = 'Partido'
+  )
+
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
   df
 }
+
+
 
 
 ui <- dashboardPage(
@@ -125,8 +177,8 @@ ui <- dashboardPage(
                     tabPanel("Cantidad de mujeres por partido",
                              DTOutput("tabla_mujeres_partido")
                     ),
-                    tabPanel("Tabla de Partidos",
-                             DTOutput("tabla_partidos")
+                    tabPanel("Cantidad de mujeres por cargo",
+                             DTOutput("tabla_mujeres_cargo")
                     ),
                     tabPanel("Tabla de Cargos",
                              DTOutput("tabla_cargos_detalle")
@@ -164,9 +216,22 @@ server <- function(input, output, session) {
       select(primer_apellido, primer_nombre, id_politico,partido,status, fecha_inicio, fecha_fin)
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
   })
+  
+  output$tabla_mujeres_partido <- renderDT({
+    df <- tabla_sexos
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+  })
+  
+  output$tabla_mujeres_cargo <- renderDT({
+    df <- tabla_sexos_cargos
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+  })
+  
 }
 
 shinyApp(ui = ui, server = server)
+
+
 
 
 
