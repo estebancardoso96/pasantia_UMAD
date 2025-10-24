@@ -70,10 +70,12 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Búsqueda en la base", tabName = "busqueda", icon = icon("search"))
+      menuItem("Búsqueda en la base", tabName = "busqueda", icon = icon("search")),
+      menuItem("Tablas", tabName = "tablas", icon = icon("table")),
+      menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar"))
     )
   ),
-  
+  # -- pestana 1: busqueda -- 
   dashboardBody(
     tabItems(
       tabItem(tabName = "busqueda",
@@ -108,10 +110,35 @@ ui <- dashboardPage(
                   )
                 )
               )
+      ),
+      
+      # --- pestana 2: Tablas ---
+      tabItem(tabName = "tablas",
+              fluidRow(
+                box(
+                  width = 12,
+                  title = "Tablas",
+                  solidHeader = TRUE,
+                  status = "primary",
+                  
+                  tabsetPanel(
+                    tabPanel("Cantidad de mujeres por partido",
+                             DTOutput("tabla_mujeres_partido")
+                    ),
+                    tabPanel("Tabla de Partidos",
+                             DTOutput("tabla_partidos")
+                    ),
+                    tabPanel("Tabla de Cargos",
+                             DTOutput("tabla_cargos_detalle")
+                    )
+                  )
+                )
+              )
       )
     )
   )
 )
+
 
 
 server <- function(input, output, session) {
@@ -140,45 +167,6 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui = ui, server = server)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
