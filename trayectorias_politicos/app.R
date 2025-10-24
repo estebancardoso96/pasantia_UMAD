@@ -41,9 +41,29 @@ if (!is.null(con)) {
 
 politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_final"')
 
+# Etiquetas para la pagina
 
+library(labelled)
 library(shiny)
 library(shinydashboard)
+
+politicos <- politicos %>%
+  set_variable_labels(
+    primer_apellido = "Primer apellido",
+    primer_nombre   = "Primer nombre",
+    id_politico     = "ID político",
+    partido         = "Partido político",
+    cargo           = "Cargo",
+    fecha_inicio    = "Inicio",
+    fecha_fin       = "Fin",
+    status          = "Estatus"
+  )
+
+aplicar_etiquetas <- function(df) {
+  names(df) <- var_label(df)
+  df
+}
+
 
 ui <- dashboardPage(
   dashboardHeader(title = "Visualizador de políticos y políticas del Uruguay"),
@@ -85,41 +105,60 @@ ui <- dashboardPage(
                                          "Seleccionar cargo",
                                          choices = sort(unique(politicos$cargo))),
                              DTOutput("tabla_cargos"))         
-                    )
                   )
                 )
               )
       )
     )
   )
+)
 
 
 server <- function(input, output, session) {
   
   output$tabla_leg <- renderDT({
-    politicos %>%
+    df <- politicos %>%
       filter(legislatura == input$legislatura) %>%
-      select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin) %>%
-      datatable(filter = "top", rownames = FALSE)
+      select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin)
+    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
   })
   
   output$tabla_part <- renderDT({
-    politicos %>%
+    df <- politicos %>%
       filter(partido == input$partido) %>%
-      select(primer_apellido, primer_nombre, id_politico, cargo, fecha_inicio, fecha_fin) %>%
-      datatable(filter = "top", rownames = FALSE)
-  
+      select(primer_apellido, primer_nombre, id_politico, cargo, fecha_inicio, fecha_fin)
+    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
+    
   })
   
   output$tabla_cargos <- renderDT({
-    politicos %>%
+    df <- politicos %>%
       filter(cargo == input$cargo) %>%
-      select(primer_apellido, primer_nombre, id_politico,partido,status, fecha_inicio, fecha_fin) %>%
-      datatable(filter = "top", rownames = FALSE)
+      select(primer_apellido, primer_nombre, id_politico,partido,status, fecha_inicio, fecha_fin)
+    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
   })
 }
 
 shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
