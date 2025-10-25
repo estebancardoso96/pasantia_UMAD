@@ -40,6 +40,10 @@ if (!is.null(con)) {
 }
 
 politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_final"')
+legislaturas <- dbGetQuery(con, 'SELECT legislatura, periodo FROM "politicos_uy"."legislaturas"')
+
+politicos <- politicos %>% left_join(legislaturas, by=("legislatura")) %>% select(-legislatura) %>%
+  rename(legislatura = periodo)
 
 library(shiny)
 library(shinydashboard)
@@ -346,7 +350,14 @@ shinyApp(ui = ui, server = server)
 
 
 
-## mejoras: colocar anios en la legislatura
+## mejoras:
+
+### decidir si separo cargos de candidatos
+### colocar anios en la legislatura
+### colocar filtro de legislaturas agrupadas en la edades promedio
+### estandarizar y agrupar ministerios
+### agregar pestana con nota metodologica 
+
 
 library(bslib)
 
