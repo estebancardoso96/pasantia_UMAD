@@ -48,12 +48,12 @@ library(shinydashboard)
 
 ### Cantidad de mujeres por partido
 m <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto') & sexo == 0) %>%
+                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 0) %>%
   group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
   ungroup() %>%  select(-sexo)
 
 h <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto') & sexo == 1) %>%
+                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 1) %>%
   group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
   ungroup() %>% select(-sexo)
 
@@ -64,12 +64,12 @@ tabla_sexos <- tabla_sexos %>% mutate('Hombres por cada mujer' = `Cantidad de ho
 
 ### Cantidad de mujeres por cargo (incluye suplencias)
 m_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto') & sexo == 0 ) %>%
+                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 0 ) %>%
   group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
   ungroup() %>%  select(-sexo)
 
 h_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto') & sexo == 1) %>%
+                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 1) %>%
   group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de hombres'=n) %>%
   ungroup() %>% select(-sexo)
 
@@ -77,10 +77,36 @@ tabla_sexos_cargos <- left_join(h_1,m_1,by =('cargo'))
 tabla_sexos_cargos <- tabla_sexos_cargos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
   mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
 
+### Cantidad de mujeres por cargo (titulares del cargo)
+#### responde preguntas: en que cargos tiene la mujer menor disparidad respecto al hombre?
+
+m_2 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 0 & status == 'Titular') %>%
+  group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
+  ungroup() %>%  select(-sexo)
+
+h_2 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 1 & status == 'Titular') %>%
+  group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
+  ungroup() %>% select(-sexo)
+
+tabla_sexos_cargos_2 <- left_join(h_2,m_2,by =('cargo'))
+
+tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
+  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
+
+
+### Promedio general de edades por cargo ###
+tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo) %>% 
+  reframe('Edad promedio al asumir el cargo' = round(mean(edad_asumir),1),
+          'Desvío estándar de la edad' = round(sd(edad_asumir),1),
+          'Cargos analizados' = n()) %>%
+  ungroup()
 
 # Etiquetas para la pagina
 
 library(labelled)
+
 politicos <- politicos %>%
   set_variable_labels(
     primer_apellido = "Primer apellido",
@@ -90,7 +116,8 @@ politicos <- politicos %>%
     cargo           = "Cargo",
     fecha_inicio    = "Inicio",
     fecha_fin       = "Fin",
-    status          = "Estatus"
+    status          = "Estatus",
+    legislatura     = "Legislatura"
   )
 
 tabla_sexos_cargos <- tabla_sexos_cargos %>%
@@ -109,20 +136,38 @@ tabla_sexos <- tabla_sexos %>%
      partido = 'Partido'
   )
 
+tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>%
+  set_variable_labels(
+    'Cantidad de hombres' = "Cantidad de hombres",
+    'Cantidad de mujeres' = "Cantidad de mujeres",
+    'Hombres por cada mujer' = "Hombres por cada mujer",
+    cargo = 'Cargo'
+  )
+
+tabla_edad  <- tabla_edad %>%
+  set_variable_labels(
+    'Edad promedio al asumir el cargo' = 'Edad promedio al asumir el cargo',
+    'Desvío estándar de la edad' = 'Desvío estándar de la edad',
+    'Cargos analizados' = 'Cargos analizados')
+
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
   df
 }
 
 
-
 ui <- dashboardPage(
-  dashboardHeader(title = "Visualizador de políticos y políticas del Uruguay"),
-  
+  dashboardHeader(
+    title = span(
+      img(src = "logo_fcs_umad.png", height = "40px", style = "margin-right:10px;"),
+      "Visualizador de políticos y políticas del Uruguay"
+    )
+  ),
   dashboardSidebar(
     sidebarMenu(
       menuItem("Búsqueda en la base", tabName = "busqueda", icon = icon("search")),
       menuItem("Tablas", tabName = "tablas", icon = icon("table")),
+      menuItem("Métricas", tabName = "metricas", icon = icon("tachometer-alt")),
       menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar"))
     )
   ),
@@ -134,7 +179,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 12,
-                  title = "Búsqueda en la base",
+                  title = tagList(icon("search"),"Búsqueda en la base"),
                   solidHeader = TRUE,
                   status = "primary",
                   
@@ -163,36 +208,58 @@ ui <- dashboardPage(
               )
       ),
       
-      # --- pestana 2: Tablas ---
+      # --- Pestaña 2: Tablas ---
       tabItem(tabName = "tablas",
               fluidRow(
                 box(
                   width = 12,
-                  title = "Tablas",
+                  title = tagList(icon("table"),"Distribución por sexo"),
                   solidHeader = TRUE,
                   status = "primary",
                   
                   tabsetPanel(
-                    tabPanel("Cantidad de mujeres por partido",
+                    tabPanel("Cantidad de mujeres y hombres por partido",
                              DTOutput("tabla_mujeres_partido"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))
                     ),
-                    tabPanel("Cantidad de mujeres por cargo (se incluyen suplentes)",
-                             DTOutput("tabla_mujeres_cargo")
+                    tabPanel("Cantidad de mujeres y hombres por cargo (se incluyen suplentes)",
+                             DTOutput("tabla_mujeres_cargo"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_mujeres_2", "Descargar CSV"))
                     ),
-                    tabPanel("Tabla de Cargos",
-                             DTOutput("tabla_cargos_detalle")
+                    tabPanel("Cantidad de mujeres y hombres por cargo (titulares)",
+                             DTOutput("tabla_mujeres_cargo_2"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_mujeres_3", "Descargar CSV"))
                     )
                   )
+                )
+              )
+            ),
+      # --- Pestaña 3: Métricas ---
+      tabItem(tabName = "metricas",
+              fluidRow(
+                box(
+                  width = 12,
+                  title = tagList(icon("tachometer-alt"), "Indicadores generales"),
+                  solidHeader = TRUE,
+                  status = "primary",
+                  
+                  tabsetPanel(
+                    tabPanel("Edad promedio de asunción por cargo",
+                             DTOutput("tabla_edades"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_edades", "Descargar CSV"))
+                    )
                 )
               )
       )
     )
   )
-)
-
-
+  ))
+                                           
+                                         
 
 server <- function(input, output, session) {
   
@@ -206,7 +273,7 @@ server <- function(input, output, session) {
   output$tabla_part <- renderDT({
     df <- politicos %>%
       filter(partido == input$partido) %>%
-      select(primer_apellido, primer_nombre, id_politico, cargo, fecha_inicio, fecha_fin)
+      select(primer_apellido, primer_nombre, id_politico, legislatura,cargo, fecha_inicio, fecha_fin)
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
     
   })
@@ -236,6 +303,39 @@ server <- function(input, output, session) {
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
   
+  ### permite al usuario descargar los csv
+  output$descargar_tabla_mujeres_2 <- downloadHandler(
+    filename = function() {
+      "tabla_mujeres_por_cargo.csv"
+    },
+    content = function(file) {
+      write.csv(tabla_sexos_cargos, file, row.names = FALSE, fileEncoding = "UTF-8")
+  })
+  output$tabla_mujeres_cargo_2 <- renderDT({
+    df <- tabla_sexos_cargos_2
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+    
+  })
+  output$descargar_tabla_mujeres_3 <- downloadHandler(
+    filename = function() {
+      "tabla_mujeres_por_cargo_titulares.csv"
+    },
+    content = function(file) {
+      write.csv(tabla_sexos_cargos_2, file, row.names = FALSE, fileEncoding = "UTF-8")
+  })
+  output$tabla_edades <- renderDT({
+    df <- tabla_edad
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+    
+  })
+  output$descargar_tabla_edades <- downloadHandler(
+    filename = function() {
+      "tabla_edades_por_cargo.csv"
+    },
+    content = function(file) {
+      write.csv(tabla_edad, file, row.names = FALSE, fileEncoding = "UTF-8")
+    
+  })  
 }
 
 shinyApp(ui = ui, server = server)
@@ -244,6 +344,9 @@ shinyApp(ui = ui, server = server)
 
 
 
+
+
+## mejoras: colocar anios en la legislatura
 
 library(bslib)
 
