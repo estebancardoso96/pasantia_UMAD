@@ -101,7 +101,7 @@ tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>% mutate('Hombres por cada mujer'
 
 
 ### Promedio general de edades por cargo ###
-tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo) %>% 
+tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, legislaturas_agrupadas) %>% 
   reframe('Edad promedio al asumir el cargo' = round(mean(edad_asumir),1),
           'Desvío estándar de la edad' = round(sd(edad_asumir),1),
           'Cargos analizados' = n()) %>%
@@ -152,7 +152,9 @@ tabla_edad  <- tabla_edad %>%
   set_variable_labels(
     'Edad promedio al asumir el cargo' = 'Edad promedio al asumir el cargo',
     'Desvío estándar de la edad' = 'Desvío estándar de la edad',
-    'Cargos analizados' = 'Cargos analizados')
+    'Cargos analizados' = 'Cargos analizados',
+    "cargo" = "Cargo",
+    "legislaturas_agrupadas" = "Legislaturas agrupadas")
 
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
@@ -192,21 +194,29 @@ ui <- dashboardPage(
                              selectInput("legislatura",
                                          "Seleccionar Legislatura",
                                          choices = sort(unique(politicos$legislatura))),
-                             DTOutput("tabla_leg")
+                             DTOutput("tabla_leg"),
+                             div(
+                               style = "margin-top: 20px; text-align: center;",
+                               downloadButton("descargar_tabla_leg", "Descargar CSV"))
                     ),
                     
                     tabPanel("Filtro por Partido",
                              selectInput("partido",
                                          "Seleccionar Partido Político",
                                          choices = sort(unique(politicos$partido))),
-                             DTOutput("tabla_part")
+                             DTOutput("tabla_part"),
+                             div(
+                               style = "margin-top: 20px; text-align: center;",
+                               downloadButton("descargar_tabla_partido", "Descargar CSV"))
                     ),         
                     
                     tabPanel("Filtro por Cargo",
                              selectInput("cargo",
                                          "Seleccionar cargo",
                                          choices = sort(unique(politicos$cargo))),
-                             DTOutput("tabla_cargos"))         
+                             DTOutput("tabla_cargos")),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_cargos", "Descargar CSV"))  
                   )
                 )
               )
@@ -252,7 +262,10 @@ ui <- dashboardPage(
                   
                   tabsetPanel(
                     tabPanel("Edad promedio de asunción por cargo",
-                             DTOutput("tabla_edades"),
+                             selectInput("legislaturas_agrupadas",
+                                         "Seleccionar Legislaturas agrupadas",
+                                         choices = sort(unique(tabla_edad$legislaturas_agrupadas))),
+                             DTOutput("edades_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_edades", "Descargar CSV"))
                     )
@@ -266,7 +279,14 @@ ui <- dashboardPage(
                                          
 
 server <- function(input, output, session) {
+  # --- Data reactiva filtrada por legislatura ---
+  df_leg <- reactive({
+    politicos %>%
+      filter(legislatura == input$legislatura) %>%
+      select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin)
+  })
   
+  ## se muestra la tabla
   output$tabla_leg <- renderDT({
     df <- politicos %>%
       filter(legislatura == input$legislatura) %>%
@@ -274,13 +294,34 @@ server <- function(input, output, session) {
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
   })
   
-  output$tabla_part <- renderDT({
-    df <- politicos %>%
+  output$descargar_tabla_leg <- downloadHandler(
+    filename = function() {
+      paste0("politicos_legislatura_", input$legislatura, ".csv")
+    },
+    content = function(file) {
+      write.csv(df_leg(), file, row.names = FALSE, fileEncoding = "UTF-8")
+      
+    })
+  
+  df_part <- reactive({
+    politicos %>%
       filter(partido == input$partido) %>%
-      select(primer_apellido, primer_nombre, id_politico, legislatura,cargo, fecha_inicio, fecha_fin)
-    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
-    
+      select(primer_apellido, primer_nombre, id_politico, legislatura, cargo, fecha_inicio, fecha_fin)
   })
+  
+  ## Mostrar tabla por partido
+  output$tabla_part <- renderDT({
+    datatable(aplicar_etiquetas(df_part()), filter = "top", rownames = FALSE)
+  })
+  
+  ## Descargar CSV por partido
+  output$descargar_tabla_partido <- downloadHandler(
+    filename = function() {
+      paste0("politicos_partido_", input$partido, ".csv")
+    },
+    content = function(file) {
+      write.csv(df_part(), file, row.names = FALSE, fileEncoding = "UTF-8")
+    })
   
   output$tabla_cargos <- renderDT({
     df <- politicos %>%
@@ -327,8 +368,9 @@ server <- function(input, output, session) {
     content = function(file) {
       write.csv(tabla_sexos_cargos_2, file, row.names = FALSE, fileEncoding = "UTF-8")
   })
-  output$tabla_edades <- renderDT({
-    df <- tabla_edad
+  output$edades_cargo <- renderDT({
+    df <- tabla_edad %>%
+    filter(legislaturas_agrupadas == input$legislaturas_agrupadas)
     datatable(aplicar_etiquetas(df), rownames = FALSE)
     
   })
