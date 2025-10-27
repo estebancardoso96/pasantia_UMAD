@@ -104,8 +104,15 @@ tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>% mutate('Hombres por cada mujer'
 tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, legislaturas_agrupadas) %>% 
   reframe('Edad promedio al asumir el cargo' = round(mean(edad_asumir),1),
           'Desvío estándar de la edad' = round(sd(edad_asumir),1),
-          'Cargos analizados' = n()) %>%
+          'Casos analizados' = n()) %>%
   ungroup()
+
+### edades por partido por legislatura
+tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado") & !is.na(edad_asumir) & partido
+                     %in%c("Partido Nacional", "Partido Colorado", "Frente Amplio", "Cabildo Abierto",
+                           "Partido Independiente", "Asamblea Popular")) %>%
+  group_by(partido, cargo,legislatura) %>% reframe("Edad promedio" = round(mean(edad_asumir),1),
+                                                   'Casos analizados' = n()) %>% ungroup()
 
 # Etiquetas para la pagina
 
@@ -152,9 +159,17 @@ tabla_edad  <- tabla_edad %>%
   set_variable_labels(
     'Edad promedio al asumir el cargo' = 'Edad promedio al asumir el cargo',
     'Desvío estándar de la edad' = 'Desvío estándar de la edad',
-    'Cargos analizados' = 'Cargos analizados',
+    'Casos analizados' = 'Casos analizados',
     "cargo" = "Cargo",
     "legislaturas_agrupadas" = "Legislaturas agrupadas")
+
+tabla_edad_legislatura <- tabla_edad_legislatura %>%
+  set_variable_labels(
+    'Edad promedio' = 'Edad promedio al asumir el cargo',
+    'cargo' = 'Cargo',
+    "partido" = "Partido",
+    "legislatura" = "Legislatura",
+    "Casos analizados" = "Casos analizados")
 
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
@@ -268,6 +283,16 @@ ui <- dashboardPage(
                              DTOutput("edades_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_edades", "Descargar CSV"))
+                    ),
+                    
+                    tabPanel("Edad promedio por partido de los legisladores",
+                             selectInput("legislatura_partido",
+                                         "Seleccionar Legislatura",
+                                         choices = sort(unique(tabla_edad_legislatura$legislatura))),
+                             DTOutput("legislatura_part"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_legislatura_part", "Descargar CSV"))
+                                             
                     )
                 )
               )
@@ -382,53 +407,29 @@ server <- function(input, output, session) {
       write.csv(tabla_edad, file, row.names = FALSE, fileEncoding = "UTF-8")
     
   })  
-}
-
-shinyApp(ui = ui, server = server)
-
-
-
-
-
-
-
-## mejoras:
-
-### decidir si separo cargos de candidatos
-### colocar anios en la legislatura
-### colocar filtro de legislaturas agrupadas en la edades promedio
-### estandarizar y agrupar ministerios
-### agregar pestana con nota metodologica 
-
-
-library(bslib)
-
-# Definir la interfaz de usuario
-ui <- page_sidebar(
-  title = "Datos Políticos de Uruguay",
-  
-  # Barra lateral con enlaces
-  sidebar = sidebar(
-    navlistPanel(
-      "Secciones",
-      tabPanel("Inicio", icon = icon("home")),
-      tabPanel("Elecciones", icon = icon("vote-yea")),
-      tabPanel("Opinión Pública", icon = icon("comments"))
-    )
-  ),
-  
-  # Contenido principal
-  main = div(
-    h2("Bienvenida/o a la app de datos políticos de Uruguay"),
-    p("Esta aplicación permite explorar datos de elecciones y opinión pública desde 1989 hasta la actualidad."),
-    p("Utiliza los menús laterales para navegar entre las diferentes secciones.")
+  output$legislatura_part <- renderDT({
+    df <- tabla_edad_legislatura %>%
+      filter(legislatura == input$legislatura_partido)
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+    
+  })
+  output$descargar_tabla_legislatura_part <- downloadHandler(
+    filename = function() {
+      paste0("tabla_edades_partido_legislatura_", input$legislatura_partido, ".csv")
+    },
+    content = function(file) {
+      df <- tabla_edad_legislatura %>%
+        filter(legislatura == input$legislatura_partido)
+      write.csv(df, file, row.names = FALSE, fileEncoding = "UTF-8")
+    }
   )
-)
-
-# Definir la lógica del servidor
-server <- function(input, output, session) {
-  # Aquí se puede agregar la lógica para renderizar gráficos, tablas, etc.
 }
 
-# Ejecutar la aplicación
 shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
