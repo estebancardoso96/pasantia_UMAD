@@ -128,7 +128,8 @@ politicos <- politicos %>%
     fecha_inicio    = "Inicio",
     fecha_fin       = "Fin",
     status          = "Estatus",
-    legislatura     = "Legislatura"
+    legislatura     = "Legislatura",
+    circunscripcion = "Circunscripción"
   )
 
 tabla_sexos_cargos <- tabla_sexos_cargos %>%
@@ -205,6 +206,11 @@ ui <- dashboardPage(
                   status = "primary",
                   
                   tabsetPanel(
+                    tabPanel("Búsqueda en toda la base",
+                             DTOutput("tabla_base"),
+                             
+                    ),
+                    
                     tabPanel("Filtro por Legislatura",
                              selectInput("legislatura",
                                          "Seleccionar Legislatura",
@@ -304,6 +310,14 @@ ui <- dashboardPage(
                                          
 
 server <- function(input, output, session) {
+  
+  output$tabla_base <- renderDT({
+    df <- politicos %>%
+      select(primer_apellido, primer_nombre, id_politico, partido, cargo, status,circunscripcion,
+             fecha_inicio, fecha_fin)
+    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
+  })
+  
   # --- Data reactiva filtrada por legislatura ---
   df_leg <- reactive({
     politicos %>%
