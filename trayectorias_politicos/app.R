@@ -271,7 +271,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 12,
-                  title = tagList(icon("tachometer-alt"), "Indicadores generales"),
+                  title = tagList(icon("tachometer-alt"), "Indicadores etarios"),
                   solidHeader = TRUE,
                   status = "primary",
                   
