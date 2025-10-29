@@ -2876,10 +2876,24 @@ df_union <- rbind(df_umad, df_fact_parlamento_biblioteca)
 
 df_union[df_union$legislaturas_agrupadas == "1985-2020", "legislaturas_agrupadas"] <- "1985-2025"
 
+### UNION DE FECHAS
+
+politicos <- politicos %>% mutate(fecha_inicio = as.character(fecha_inicio),
+                                  fecha_fin = as.character(fecha_fin),
+                                  inicio = as.character(inicio),fin = as.character(fin))
+
+politicos <- politicos %>% mutate(fecha_inicio = ifelse(is.na(fecha_inicio), inicio, fecha_inicio),
+                     fecha_fin = ifelse(is.na(fecha_fin), fin, fecha_fin))
+
+
+
+### ESTANDARIZACION DE CARGOS ###
+
+ministerios <- politicos %>% filter(grepl("Ministro", cargo)) %>% group_by(cargo) %>% count()
+
 
 #dbWriteTable(con, Id(schema = "public", table = "fact_politicos_final")
 #             , df_union, append = TRUE, row.names = FALSE)
-
 
 ############################################################################################################
 hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')

@@ -132,6 +132,8 @@ politicos <- politicos %>%
     circunscripcion = "Circunscripción"
   )
 
+politicos <- politicos %>% arrange(primer_apellido)
+
 tabla_sexos_cargos <- tabla_sexos_cargos %>%
   set_variable_labels(
     'Cantidad de hombres' = "Cantidad de hombres",
@@ -214,7 +216,8 @@ ui <- dashboardPage(
                     tabPanel("Filtro por Legislatura",
                              selectInput("legislatura",
                                          "Seleccionar Legislatura",
-                                         choices = sort(unique(politicos$legislatura))),
+                                         choices = sort(unique(politicos$legislatura)),
+                                         selected = max(politicos$legislatura, na.rm = TRUE)),
                              DTOutput("tabla_leg"),
                              div(
                                style = "margin-top: 20px; text-align: center;",
@@ -327,7 +330,7 @@ server <- function(input, output, session) {
   
   ## se muestra la tabla
   output$tabla_leg <- renderDT({
-    df <- politicos %>%
+    df <- politicos %>% arrange(desc(legislatura)) %>% 
       filter(legislatura == input$legislatura) %>%
       select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin)
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
@@ -370,7 +373,7 @@ server <- function(input, output, session) {
   })
   
   output$tabla_mujeres_partido <- renderDT({
-    df <- tabla_sexos
+    df <- tabla_sexos %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
   ### permite al usuario descargar los csv
@@ -383,7 +386,7 @@ server <- function(input, output, session) {
   
   })    
   output$tabla_mujeres_cargo <- renderDT({
-    df <- tabla_sexos_cargos
+    df <- tabla_sexos_cargos %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
   
@@ -396,7 +399,7 @@ server <- function(input, output, session) {
       write.csv(tabla_sexos_cargos, file, row.names = FALSE, fileEncoding = "UTF-8")
   })
   output$tabla_mujeres_cargo_2 <- renderDT({
-    df <- tabla_sexos_cargos_2
+    df <- tabla_sexos_cargos_2 %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
     
   })
@@ -440,6 +443,7 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui = ui, server = server)
+
 
 
 
