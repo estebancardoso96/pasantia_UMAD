@@ -2892,6 +2892,56 @@ politicos <- politicos %>% mutate(fecha_inicio = ifelse(is.na(fecha_inicio), ini
 ministerios <- politicos %>% filter(grepl("Ministro", cargo)) %>% group_by(cargo) %>% count()
 
 
+ministerios <- data.frame(
+  Cargo = c(
+    "Ministro Ambiente", "Ministro Corte Electoral", "Ministro Defensa Nacional",
+    "Ministro Deporte y Juventud", "Ministro Desarrollo Social", "Ministro Economia y Finanzas",
+    "Ministro Educacion y Cultura", "Ministro Fomento", "Ministro Ganaderia y Agricultura",
+    "Ministro Ganaderia, Agricultura y Pesca", "Ministro Gobierno", "Ministro Guerra y Marina",
+    "Ministro Hacienda", "Ministro Industria y Comercio", "Ministro Industria y Energia",
+    "Ministro Industria y Trabajo", "Ministro Industria, Energia y Mineria",
+    "Ministro Industria, Trabajo e Instruccion Publica", "Ministro Industrias, Trabajo y Comunicacion",
+    "Ministro Instruccion Publica y Prevision Social", "Ministro Interior",
+    "Ministro Justicia e Instruccion Publica", "Ministro Obras Publicas",
+    "Ministro Proteccion a la infancia", "Ministro Relaciones Exteriores",
+    "Ministro Salud Publica", "Ministro Trabajo y Prevision Social",
+    "Ministro Trabajo y Seguridad Social", "Ministro Transporte y Obras Publicas",
+    "Ministro Transporte, Comunicacion y Turismo", "Ministro Turismo",
+    "Ministro Turismo y Deportes", "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"
+  ),
+  Cantidad = c(
+    1, 35, 46, 1, 5, 22, 24, 2, 16, 26, 2, 17, 36, 8, 3, 19, 18, 4, 14, 18,
+    75, 16, 37, 1, 53, 38, 3, 23, 14, 9, 7, 5, 13
+  ),
+  Cargo_estandarizado = c(
+    "Ministro Ambiente", "Ministro Corte Electoral", "Ministro Defensa Nacional",
+    "Ministro Turismo", "Ministro Desarrollo Social", "Ministro Economia y Finanzas",
+    "Ministro Educacion y Cultura", "Ministro Transporte y Obras Publicas",
+    "Ministro Ganaderia, Agricultura y Pesca", "Ministro Ganaderia, Agricultura y Pesca",
+    "Ministro Gobierno", "Ministro Defensa Nacional", "Ministro Economia y Finanzas",
+    "Ministro Industria, Energia y Mineria", "Ministro Industria, Energia y Mineria",
+    "Ministro Industria, Energia y Mineria", "Ministro Industria, Energia y Mineria",
+    "Ministro Trabajo y Seguridad Social", "Ministro Industria, Energia y Mineria",
+    "Ministro Trabajo y Seguridad Social", "Ministro Interior",
+    "Ministro Educacion y Cultura", "Ministro Transporte y Obras Publicas",
+    "Ministro Proteccion a la infancia", "Ministro Relaciones Exteriores",
+    "Ministro Salud Publica", "Ministro Trabajo y Seguridad Social",
+    "Ministro Trabajo y Seguridad Social", "Ministro Transporte y Obras Publicas",
+    "Ministro Transporte y Obras Publicas", "Ministro Turismo",
+    "Ministro Turismo", "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"
+  ),
+  Ministerio_vigente = c(
+    "SI", "SI", "SI", "NO", "SI", "SI", "SI", "NO", "NO", "SI", "NO", "NO", "NO", "NO", "NO", "NO",
+    "SI", "NO", "NO", "NO", "SI", "NO", "NO", "NO", "SI", "SI", "NO", "SI", "SI", "NO", "SI", "NO", "SI"
+  ),
+  stringsAsFactors = FALSE
+)
+
+
+
+ministerios
+
+
 #dbWriteTable(con, Id(schema = "public", table = "fact_politicos_final")
 #             , df_union, append = TRUE, row.names = FALSE)
 
