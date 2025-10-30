@@ -2889,11 +2889,17 @@ politicos <- politicos %>% mutate(fecha_inicio = ifelse(is.na(fecha_inicio), ini
 
 ### ESTANDARIZACION DE CARGOS ###
 
-ministerios <- politicos %>% filter(grepl("Ministro", cargo)) %>% group_by(cargo) %>% count()
+ministerios <- politicos %>% filter(grepl("Ministro", cargo)) %>% group_by(cargo) %>% count() %>% ungroup()
+cargos <- politicos %>% filter(!grepl("Ministro", cargo)) %>% group_by(cargo) %>% count() %>%
+  rename(cantidad = n) %>% ungroup()
 
+cargos <- cargos %>% mutate(cargo_estandarizado = cargo)
+
+cargos <- cargos %>% mutate(cargo_vigente =c("SI", "NO", "SI", "SI", "SI", "SI", "NO", "NO", "SI","SI","NO",
+                                  "NO","SI","SI","NO","NO","SI", "SI", "SI", "SI"))
 
 ministerios <- data.frame(
-  Cargo = c(
+  cargo = c(
     "Ministro Ambiente", "Ministro Corte Electoral", "Ministro Defensa Nacional",
     "Ministro Deporte y Juventud", "Ministro Desarrollo Social", "Ministro Economia y Finanzas",
     "Ministro Educacion y Cultura", "Ministro Fomento", "Ministro Ganaderia y Agricultura",
@@ -2909,11 +2915,11 @@ ministerios <- data.frame(
     "Ministro Transporte, Comunicacion y Turismo", "Ministro Turismo",
     "Ministro Turismo y Deportes", "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"
   ),
-  Cantidad = c(
+  cantidad = c(
     1, 35, 46, 1, 5, 22, 24, 2, 16, 26, 2, 17, 36, 8, 3, 19, 18, 4, 14, 18,
     75, 16, 37, 1, 53, 38, 3, 23, 14, 9, 7, 5, 13
   ),
-  Cargo_estandarizado = c(
+  cargo_estandarizado = c(
     "Ministro Ambiente", "Ministro Corte Electoral", "Ministro Defensa Nacional",
     "Ministro Turismo", "Ministro Desarrollo Social", "Ministro Economia y Finanzas",
     "Ministro Educacion y Cultura", "Ministro Transporte y Obras Publicas",
@@ -2930,7 +2936,7 @@ ministerios <- data.frame(
     "Ministro Transporte y Obras Publicas", "Ministro Turismo",
     "Ministro Turismo", "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"
   ),
-  Ministerio_vigente = c(
+  cargo_vigente = c(
     "SI", "SI", "SI", "NO", "SI", "SI", "SI", "NO", "NO", "SI", "NO", "NO", "NO", "NO", "NO", "NO",
     "SI", "NO", "NO", "NO", "SI", "NO", "NO", "NO", "SI", "SI", "NO", "SI", "SI", "NO", "SI", "NO", "SI"
   ),
@@ -2938,12 +2944,64 @@ ministerios <- data.frame(
 )
 
 
+ministerios %>% distinct(Cargo_estandarizado, Cantidad) %>% group_by(Cargo_estandarizado) %>%
+  summarise(sum(Cantidad))
 
-ministerios
+ministerios <- ministerios %>% select(-cantidad) %>% rename_with(tolower)
+
+ministerios$cargo_estandarizado <- c(
+  "Ministro Ambiente",
+  "Ministro Corte Electoral",
+  "Ministro Defensa Nacional",
+  "Ministro Turismo",
+  "Ministro Desarrollo Social",
+  "Ministro Economía y Finanzas",
+  "Ministro Educación y Cultura",
+  "Ministro Transporte y Obras Públicas",
+  "Ministro Ganadería, Agricultura y Pesca",
+  "Ministro Ganadería, Agricultura y Pesca",
+  "Ministro Gobierno",
+  "Ministro Defensa Nacional",
+  "Ministro Economía y Finanzas",
+  "Ministro Industria, Energía y Minería",
+  "Ministro Industria, Energía y Minería",
+  "Ministro Industria, Energía y Minería",
+  "Ministro Industria, Energía y Minería",
+  "Ministro Trabajo y Seguridad Social",
+  "Ministro Industria, Energía y Minería",
+  "Ministro Trabajo y Seguridad Social",
+  "Ministro Interior",
+  "Ministro Educación y Cultura",
+  "Ministro Transporte y Obras Públicas",
+  "Ministro Protección a la infancia",
+  "Ministro Relaciones Exteriores",
+  "Ministro Salud Pública",
+  "Ministro Trabajo y Seguridad Social",
+  "Ministro Trabajo y Seguridad Social",
+  "Ministro Transporte y Obras Públicas",
+  "Ministro Transporte y Obras Públicas",
+  "Ministro Turismo",
+  "Ministro Turismo",
+  "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"
+)
 
 
-#dbWriteTable(con, Id(schema = "public", table = "fact_politicos_final")
-#             , df_union, append = TRUE, row.names = FALSE)
+cargos[cargos$cargo_estandarizado == 'Presidente de la Republica',
+       'cargo_estandarizado'] <- "Presidente de la República"
+
+cargos[cargos$cargo_estandarizado == 'Vicepresidente de la Republica',
+       'cargo_estandarizado'] <- "Vicepresidente de la República"
+
+cargos<-cargos %>% select(-cantidad)
+
+hub_cargos <- rbind(cargos, ministerios)
+
+politicos
+
+
+#dbWriteTable(con, Id(schema = "public", table = "hub_cargos")
+#             , hub_cargos, append = TRUE, row.names = FALSE)
+
 
 ############################################################################################################
 hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
