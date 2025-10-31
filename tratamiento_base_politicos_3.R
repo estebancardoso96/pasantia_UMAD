@@ -2996,8 +2996,7 @@ cargos<-cargos %>% select(-cantidad)
 
 hub_cargos <- rbind(cargos, ministerios)
 
-politicos
-
+politicos <- politicos %>% left_join(hub_cargos, by = ('cargo'))
 
 #dbWriteTable(con, Id(schema = "public", table = "hub_cargos")
 #             , hub_cargos, append = TRUE, row.names = FALSE)
@@ -3006,7 +3005,7 @@ politicos
 ############################################################################################################
 hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
 df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
-hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
+hub <- dbGetQuery(con, 'SELECT * FROM public."fact_politicos_final"')
 
 
 # identificar errores en el id politico
@@ -3017,5 +3016,5 @@ ids <- ids %>% left_join(ids_politicos, by = 'id_politico')
 #write.csv(df_final, 'df_final.csv', row.names = FALSE)
 #write.csv(df_fact_parlamento_biblioteca, 'df_fact_parlamento_biblioteca.csv', row.names = FALSE)
 #write.csv(hub, 'hub_politicos.csv', row.names = FALSE)
-#write.csv(final, 'fact_politicos_final.csv', row.names = FALSE)
+write.csv(politicos, 'fact_politicos_final.csv', row.names = FALSE)
 
