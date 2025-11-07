@@ -66,6 +66,35 @@ tabla_sexos <- inner_join(h,m,by =('partido'))
 tabla_sexos <- tabla_sexos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`) %>% 
    mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
 
+### Cantidad de mujeres legisladoras por partido y legislatura
+
+### Cantidad de hombres y mujeres legisladores por partido
+
+m <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 0 & cargo %in%c('Diputado', 'Senador')) %>%
+  group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
+  ungroup() %>%  select(-sexo)
+
+h <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
+                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 1 & cargo %in%c('Diputado', 'Senador')) %>%
+  group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
+  ungroup() %>% select(-sexo)
+
+tabla_sexos_leg <- left_join(h,m,by =c('partido', 'cargo', 'legislatura'))
+tabla_sexos_leg <- tabla_sexos_leg %>%
+  mutate(`Cantidad de mujeres` = ifelse(is.na((`Cantidad de mujeres`)), 0, `Cantidad de mujeres`))
+
+options(digits = 2)
+tabla_sexos_leg <- tabla_sexos_leg %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)
+tabla_sexos_leg <- tabla_sexos_leg %>%
+  mutate(`Hombres por cada mujer` = 
+           ifelse(is.infinite(`Hombres por cada mujer`), 
+                  NA, 
+                  `Hombres por cada mujer`))
+
+tabla_sexos_leg <- tabla_sexos_leg %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
+  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,2))
+
 ### Cantidad de mujeres por cargo (incluye suplencias)
 m_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
                                           'Cabildo Abierto', 'Partido Independiente') & sexo == 0 ) %>%
@@ -148,6 +177,16 @@ tabla_sexos <- tabla_sexos %>%
     'Cantidad de mujeres' = "Cantidad de mujeres",
     'Hombres por cada mujer' = "Hombres por cada mujer",
      partido = 'Partido'
+  )
+
+tabla_sexos_leg <- tabla_sexos_leg %>%
+  set_variable_labels(
+    'Cantidad de hombres' = "Cantidad de hombres",
+    'Cantidad de mujeres' = "Cantidad de mujeres",
+    'Hombres por cada mujer' = "Hombres por cada mujer",
+    cargo = 'Cargo',
+    legislatura = 'Legislatura',
+    partido = 'Partido'
   )
 
 tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>%
@@ -261,12 +300,20 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))
                     ),
-                    tabPanel("Cantidad de mujeres y hombres por cargo (se incluyen suplentes)",
+                    tabPanel("Cantidad de legisladores y legisladoras por partido",
+                             selectInput("legislaturas",
+                                         "Seleccionar Legislatura",
+                                         choices = sort(unique(tabla_sexos_leg$legislatura))),
+                             DTOutput("tabla_mujeres_partido_leg"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_mujeres_1_1", "Descargar CSV"))
+                    ),
+                    tabPanel("Cantidad de mujeres y hombres por cargo",
                              DTOutput("tabla_mujeres_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_2", "Descargar CSV"))
                     ),
-                    tabPanel("Cantidad de mujeres y hombres por cargo (titulares)",
+                    tabPanel("Cantidad de mujeres y hombres por cargo (solo titulares)",
                              DTOutput("tabla_mujeres_cargo_2"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_3", "Descargar CSV"))
@@ -314,36 +361,20 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   
+  # --- 1. Tabla base ---
   output$tabla_base <- renderDT({
     df <- politicos %>%
-      select(primer_apellido, primer_nombre, id_politico, partido, cargo, status,circunscripcion,
+      select(primer_apellido, primer_nombre, id_politico, partido, cargo, status, circunscripcion,
              fecha_inicio, fecha_fin)
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
   })
   
-  # --- Data reactiva filtrada por legislatura ---
+  # --- 2. Reactivos principales ---
   df_leg <- reactive({
     politicos %>%
       filter(legislatura == input$legislatura) %>%
       select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin)
   })
-  
-  ## se muestra la tabla
-  output$tabla_leg <- renderDT({
-    df <- politicos %>% arrange(desc(legislatura)) %>% 
-      filter(legislatura == input$legislatura) %>%
-      select(primer_apellido, primer_nombre, id_politico, partido, cargo, fecha_inicio, fecha_fin)
-    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
-  })
-  
-  output$descargar_tabla_leg <- downloadHandler(
-    filename = function() {
-      paste0("politicos_legislatura_", input$legislatura, ".csv")
-    },
-    content = function(file) {
-      write.csv(df_leg(), file, row.names = FALSE, fileEncoding = "UTF-8")
-      
-    })
   
   df_part <- reactive({
     politicos %>%
@@ -351,103 +382,114 @@ server <- function(input, output, session) {
       select(primer_apellido, primer_nombre, id_politico, legislatura, cargo, fecha_inicio, fecha_fin)
   })
   
-  ## Mostrar tabla por partido
+  df_cargo <- reactive({
+    politicos %>%
+      filter(cargo == input$cargo) %>%
+      select(primer_apellido, primer_nombre, id_politico, partido, status, fecha_inicio, fecha_fin)
+  })
+  
+  df_tabla_mujeres_leg <- reactive({
+    tabla_sexos_leg %>%
+      filter(legislatura == input$legislaturas) %>%
+      arrange(desc(`Hombres por cada mujer`))
+  })
+  
+  df_edades_cargo <- reactive({
+    tabla_edad %>%
+      filter(legislaturas_agrupadas == input$legislaturas_agrupadas)
+  })
+  
+  df_legislatura_partido <- reactive({
+    tabla_edad_legislatura %>%
+      filter(legislatura == input$legislatura_partido)
+  })
+  
+  # --- 3. Render de tablas ---
+  output$tabla_leg <- renderDT({
+    datatable(aplicar_etiquetas(df_leg()), filter = "top", rownames = FALSE)
+  })
+  
   output$tabla_part <- renderDT({
     datatable(aplicar_etiquetas(df_part()), filter = "top", rownames = FALSE)
   })
   
-  ## Descargar CSV por partido
-  output$descargar_tabla_partido <- downloadHandler(
-    filename = function() {
-      paste0("politicos_partido_", input$partido, ".csv")
-    },
-    content = function(file) {
-      write.csv(df_part(), file, row.names = FALSE, fileEncoding = "UTF-8")
-    })
-  
   output$tabla_cargos <- renderDT({
-    df <- politicos %>%
-      filter(cargo == input$cargo) %>%
-      select(primer_apellido, primer_nombre, id_politico,partido,status, fecha_inicio, fecha_fin)
-    datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)
+    datatable(aplicar_etiquetas(df_cargo()), filter = "top", rownames = FALSE)
   })
   
   output$tabla_mujeres_partido <- renderDT({
     df <- tabla_sexos %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
-  ### permite al usuario descargar los csv
-  output$descargar_tabla_mujeres_1 <- downloadHandler(
-    filename = function() {
-      "tabla_mujeres_por_partido.csv"
-    },
-    content = function(file) {
-      write.csv(tabla_sexos, file, row.names = FALSE, fileEncoding = "UTF-8")
   
-  })    
+  output$tabla_mujeres_partido_leg <- renderDT({
+    datatable(aplicar_etiquetas(df_tabla_mujeres_leg()), rownames = FALSE)
+  })
+  
   output$tabla_mujeres_cargo <- renderDT({
     df <- tabla_sexos_cargos %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
   
-  ### permite al usuario descargar los csv
-  output$descargar_tabla_mujeres_2 <- downloadHandler(
-    filename = function() {
-      "tabla_mujeres_por_cargo.csv"
-    },
-    content = function(file) {
-      write.csv(tabla_sexos_cargos, file, row.names = FALSE, fileEncoding = "UTF-8")
-  })
   output$tabla_mujeres_cargo_2 <- renderDT({
     df <- tabla_sexos_cargos_2 %>% arrange(desc(`Hombres por cada mujer`))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
-    
   })
-  output$descargar_tabla_mujeres_3 <- downloadHandler(
-    filename = function() {
-      "tabla_mujeres_por_cargo_titulares.csv"
-    },
-    content = function(file) {
-      write.csv(tabla_sexos_cargos_2, file, row.names = FALSE, fileEncoding = "UTF-8")
-  })
+  
   output$edades_cargo <- renderDT({
-    df <- tabla_edad %>%
-    filter(legislaturas_agrupadas == input$legislaturas_agrupadas)
-    datatable(aplicar_etiquetas(df), rownames = FALSE)
-    
+    datatable(aplicar_etiquetas(df_edades_cargo()), rownames = FALSE)
   })
-  output$descargar_tabla_edades <- downloadHandler(
-    filename = function() {
-      "tabla_edades_por_cargo.csv"
-    },
-    content = function(file) {
-      write.csv(tabla_edad, file, row.names = FALSE, fileEncoding = "UTF-8")
-    
-  })  
+  
   output$legislatura_part <- renderDT({
-    df <- tabla_edad_legislatura %>%
-      filter(legislatura == input$legislatura_partido)
-    datatable(aplicar_etiquetas(df), rownames = FALSE)
-    
+    datatable(aplicar_etiquetas(df_legislatura_partido()), rownames = FALSE)
   })
+  
+  # --- 4. Descargas ---
+  output$descargar_tabla_leg <- downloadHandler(
+    filename = function() paste0("politicos_legislatura_", input$legislatura, ".csv"),
+    content = function(file) write.csv(df_leg(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_partido <- downloadHandler(
+    filename = function() paste0("politicos_partido_", input$partido, ".csv"),
+    content = function(file) write.csv(df_part(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_cargos <- downloadHandler(
+    filename = function() paste0("politicos_cargo_", input$cargo, ".csv"),
+    content = function(file) write.csv(df_cargo(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_mujeres_1 <- downloadHandler(
+    filename = function() "tabla_mujeres_por_partido.csv",
+    content = function(file) write.csv(tabla_sexos, file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_mujeres_1_1 <- downloadHandler(
+    filename = function() paste0("tabla_mujeres_legislatura_", input$legislaturas, ".csv"),
+    content = function(file) write.csv(df_tabla_mujeres_leg(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_mujeres_2 <- downloadHandler(
+    filename = function() "tabla_mujeres_por_cargo.csv",
+    content = function(file) write.csv(tabla_sexos_cargos, file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_mujeres_3 <- downloadHandler(
+    filename = function() "tabla_mujeres_por_cargo_titulares.csv",
+    content = function(file) write.csv(tabla_sexos_cargos_2, file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  output$descargar_tabla_edades <- downloadHandler(
+    filename = function() "tabla_edades_por_cargo.csv",
+    content = function(file) write.csv(df_edades_cargo(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
   output$descargar_tabla_legislatura_part <- downloadHandler(
-    filename = function() {
-      paste0("tabla_edades_partido_legislatura_", input$legislatura_partido, ".csv")
-    },
-    content = function(file) {
-      df <- tabla_edad_legislatura %>%
-        filter(legislatura == input$legislatura_partido)
-      write.csv(df, file, row.names = FALSE, fileEncoding = "UTF-8")
-    }
+    filename = function() paste0("tabla_edades_partido_legislatura_", input$legislatura_partido, ".csv"),
+    content = function(file) write.csv(df_legislatura_partido(), file, row.names = FALSE, fileEncoding = "UTF-8")
   )
 }
 
-shinyApp(ui = ui, server = server)
-
-
-
-
-
-
-
+shinyApp(ui, server)
 
