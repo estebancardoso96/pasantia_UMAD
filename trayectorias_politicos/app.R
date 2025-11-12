@@ -222,8 +222,9 @@ aplicar_etiquetas <- function(df) {
 ui <- dashboardPage(
   dashboardHeader(
     title = span(
-      img(src = "logo_fcs_umad.png", height = "40px", style = "margin-right:10px;"),
-      "Visualizador de políticos y políticas del Uruguay"
+      img(#src = "logo_fcs_umad.png"# logo no funciona,
+          height = "40px", style = "margin-right:10px;"),
+      "Visualizador"
     )
   ),
   dashboardSidebar(
@@ -234,8 +235,24 @@ ui <- dashboardPage(
       menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar"))
     )
   ),
-  # -- pestana 1: busqueda -- 
+  
+  # --- cuerpo principal ---
   dashboardBody(
+    
+    # Estilos del título (centrado y en negrita)
+    tags$head(tags$style(HTML("
+      h2.dashboard-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 28px;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        margin-top: 10px;
+      }
+    "))),
+    
+    # Título general visible arriba del contenido
+    h2("Visualizador de políticos y políticas del Uruguay", class = "dashboard-title"),
     tabItems(
       tabItem(tabName = "busqueda",
               
@@ -295,7 +312,7 @@ ui <- dashboardPage(
                   status = "primary",
                   
                   tabsetPanel(
-                    tabPanel("Cantidad de mujeres y hombres por partido",
+                    tabPanel("Cantidad de mujeres y hombres por partido (histórico)",
                              DTOutput("tabla_mujeres_partido"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))
@@ -344,7 +361,8 @@ ui <- dashboardPage(
                     tabPanel("Edad promedio por partido de los legisladores",
                              selectInput("legislatura_partido",
                                          "Seleccionar Legislatura",
-                                         choices = sort(unique(tabla_edad_legislatura$legislatura))),
+                                         choices = sort(unique(tabla_edad_legislatura$legislatura)),
+                                         selected = max(tabla_edad_legislatura$legislatura, na.rm = TRUE)),
                              DTOutput("legislatura_part"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_legislatura_part", "Descargar CSV"))
