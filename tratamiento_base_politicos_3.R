@@ -3005,7 +3005,7 @@ politicos <- politicos %>% left_join(hub_cargos, by = ('cargo'))
 ############################################################################################################
 hub <- dbGetQuery(con, 'SELECT * FROM public."hub_politicos"')
 df_fact_parlamento_biblioteca <- dbGetQuery(con, 'SELECT * FROM leg_biblioteca_parlamento."fact_legisladores_biblio_parla"')
-hub <- dbGetQuery(con, 'SELECT * FROM public."fact_politicos_final"')
+fact_politicos_final <- dbGetQuery(con, 'SELECT * FROM public."fact_politicos_final"')
 
 
 # identificar errores en el id politico
