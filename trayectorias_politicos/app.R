@@ -9,6 +9,7 @@ library(DBI)
 library(RPostgres)
 library(RPostgreSQL)
 library(DT) # tablas interactivas
+library(plotly)
 
 options(scipen = 2)
 options(digits = 1)
@@ -42,8 +43,8 @@ if (!is.null(con)) {
 politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_final"')
 legislaturas <- dbGetQuery(con, 'SELECT legislatura, periodo FROM "politicos_uy"."legislaturas"')
 
-politicos <- politicos %>% left_join(legislaturas, by=("legislatura")) %>% select(-legislatura) %>%
-  rename(legislatura = periodo)
+politicos <- politicos %>% left_join(legislaturas, by=("legislatura")) %>% select(-legislatura, -cargo) %>%
+  rename(legislatura = periodo, cargo = cargo_estandarizado)
 
 library(shiny)
 library(shinydashboard)
@@ -143,6 +144,48 @@ tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado"
   group_by(partido, cargo,legislatura) %>% reframe("Edad promedio" = round(mean(edad_asumir),1),
                                                    'Casos analizados' = n()) %>% ungroup()
 
+## METRICAS INDIVIDUALES
+### politicos mas jovenes y mas viejos por cargo
+
+edad_max <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, partido, circunscripcion) %>%
+  summarise(edad_max = max(edad_asumir)) %>% arrange(desc(edad_max)) %>% group_by(cargo) %>%
+  slice_head(n = 1) %>% ungroup()
+
+edad_min <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, partido, circunscripcion) %>%
+  summarise(edad_min = min(edad_asumir)) %>% arrange((edad_min)) %>% group_by(cargo) %>%
+  slice_head(n = 1) %>% ungroup()
+
+## GRAFICOS
+### Distribucion por sexo de los legisladores
+
+s_1 <- politicos %>%
+  filter(cargo %in% c("Senador", "Diputado") & status == "Titular") %>%
+  select(id_politico, sexo, legislatura) %>%
+  mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>%
+  group_by(legislatura, sexo) %>%
+  distinct(id_politico) %>%  # cuenta cada político una sola vez por legislatura y sexo
+  summarise(cantidad = n(), .groups = "drop_last") %>%
+  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
+  ungroup() %>% mutate(status = 'Titular')
+
+s_2 <- politicos %>%
+  filter(cargo %in% c("Senador", "Diputado") & status == "Suplente") %>%
+  select(id_politico, sexo, legislatura) %>%
+  mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>%
+  group_by(legislatura, sexo) %>%
+  distinct(id_politico) %>%  # cuenta cada político una sola vez por legislatura y sexo
+  summarise(cantidad = n(), .groups = "drop_last") %>%
+  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
+  ungroup() %>% mutate(status = 'Suplente')
+
+grafico_sexo_leg <- rbind(s_1, s_2)
+
+## promedio de edad del legislador
+
+grafico_edad <- politicos %>% filter(cargo %in%c('Diputado', 'Senador') & !is.na(edad_asumir)) %>%
+  group_by(legislatura, cargo) %>% distinct(id_politico, legislatura, edad_asumir,cargo) %>% 
+  mutate(promedio_edad = mean(edad_asumir)) %>% distinct(legislatura, promedio_edad, cargo) %>% ungroup()
+
 # Etiquetas para la pagina
 
 library(labelled)
@@ -213,33 +256,63 @@ tabla_edad_legislatura <- tabla_edad_legislatura %>%
     "legislatura" = "Legislatura",
     "Casos analizados" = "Casos analizados")
 
+edad_min <- edad_min %>%
+  set_variable_labels(
+    'edad_min' = 'Edad al asumir el cargo')
+    
+edad_max <- edad_max %>%
+  set_variable_labels(
+    'edad_max' = 'Edad al asumir el cargo')
+
+grafico_sexo_leg <- grafico_sexo_leg %>%
+  set_variable_labels(
+    'sexo' = 'Sexo',
+    'cantidad' = 'Cantidad',
+    'porcentaje' = 'Porcentaje',
+    'status' = 'Status')
+
+grafico_edad <- grafico_edad %>%
+  set_variable_labels(
+    'cargo' = 'Cargo',
+    'legislatura' = 'Legislatura',
+    'promedio_edad' = 'Promedio de edad')
+
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
   df
 }
 
+library(shiny)
+library(shinydashboard)
+library(DT)
+library(dplyr)
+
+### UI ###
 
 ui <- dashboardPage(
   dashboardHeader(
     title = span(
-      img(#src = "logo_fcs_umad.png"# logo no funciona,
-          height = "40px", style = "margin-right:10px;"),
+      img(
+        # src = "logo_fcs_umad.png",  # (descomentar cuando funcione el logo)
+        height = "40px", 
+        style = "margin-right:10px;"
+      ),
       "Visualizador"
     )
   ),
+  
   dashboardSidebar(
     sidebarMenu(
       menuItem("Búsqueda en la base", tabName = "busqueda", icon = icon("search")),
       menuItem("Tablas", tabName = "tablas", icon = icon("table")),
       menuItem("Métricas", tabName = "metricas", icon = icon("tachometer-alt")),
+      menuItem("Métricas individuales", tabName = "metricas2", icon = icon("user")),
       menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar"))
     )
   ),
   
-  # --- cuerpo principal ---
   dashboardBody(
-    
-    # Estilos del título (centrado y en negrita)
+    # ---- estilos generales ----
     tags$head(tags$style(HTML("
       h2.dashboard-title {
         text-align: center;
@@ -251,95 +324,84 @@ ui <- dashboardPage(
       }
     "))),
     
-    # Título general visible arriba del contenido
-    h2("Visualizador de políticos y políticas del Uruguay", class = "dashboard-title"),
+    h2("Visualizador de políticos y políticas del Uruguay (1902-2025)", class = "dashboard-title"),
+    
     tabItems(
+      
+      # --- 1. BÚSQUEDA ---
       tabItem(tabName = "busqueda",
-              
               fluidRow(
                 box(
                   width = 12,
-                  title = tagList(icon("search"),"Búsqueda en la base"),
+                  title = tagList(icon("search"), "Búsqueda en la base"),
                   solidHeader = TRUE,
                   status = "primary",
-                  
                   tabsetPanel(
                     tabPanel("Búsqueda en toda la base",
-                             DTOutput("tabla_base"),
-                             
-                    ),
+                             DTOutput("tabla_base")),
                     
                     tabPanel("Filtro por Legislatura",
-                             selectInput("legislatura",
-                                         "Seleccionar Legislatura",
+                             selectInput("legislatura", "Seleccionar Legislatura",
                                          choices = sort(unique(politicos$legislatura)),
                                          selected = max(politicos$legislatura, na.rm = TRUE)),
                              DTOutput("tabla_leg"),
-                             div(
-                               style = "margin-top: 20px; text-align: center;",
-                               downloadButton("descargar_tabla_leg", "Descargar CSV"))
-                    ),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_leg", "Descargar CSV"))),
                     
                     tabPanel("Filtro por Partido",
-                             selectInput("partido",
-                                         "Seleccionar Partido Político",
+                             selectInput("partido", "Seleccionar Partido Político",
                                          choices = sort(unique(politicos$partido))),
                              DTOutput("tabla_part"),
-                             div(
-                               style = "margin-top: 20px; text-align: center;",
-                               downloadButton("descargar_tabla_partido", "Descargar CSV"))
-                    ),         
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_partido", "Descargar CSV"))),
                     
                     tabPanel("Filtro por Cargo",
-                             selectInput("cargo",
-                                         "Seleccionar cargo",
+                             selectInput("cargo", "Seleccionar cargo",
                                          choices = sort(unique(politicos$cargo))),
-                             DTOutput("tabla_cargos")),
+                             DTOutput("tabla_cargos"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_cargos", "Descargar CSV"))  
+                                 downloadButton("descargar_tabla_cargos", "Descargar CSV")))
                   )
                 )
               )
       ),
       
-      # --- Pestaña 2: Tablas ---
+      # --- 2. TABLAS ---
       tabItem(tabName = "tablas",
               fluidRow(
                 box(
                   width = 12,
-                  title = tagList(icon("table"),"Distribución por sexo"),
+                  title = tagList(icon("table"), "Distribución por sexo"),
                   solidHeader = TRUE,
                   status = "primary",
-                  
                   tabsetPanel(
                     tabPanel("Cantidad de mujeres y hombres por partido (histórico)",
                              DTOutput("tabla_mujeres_partido"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))
-                    ),
+                                 downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))),
+                    
                     tabPanel("Cantidad de legisladores y legisladoras por partido",
-                             selectInput("legislaturas",
-                                         "Seleccionar Legislatura",
+                             selectInput("legislaturas", "Seleccionar Legislatura",
                                          choices = sort(unique(tabla_sexos_leg$legislatura))),
                              DTOutput("tabla_mujeres_partido_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_mujeres_1_1", "Descargar CSV"))
-                    ),
+                                 downloadButton("descargar_tabla_mujeres_1_1", "Descargar CSV"))),
+                    
                     tabPanel("Cantidad de mujeres y hombres por cargo",
                              DTOutput("tabla_mujeres_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_mujeres_2", "Descargar CSV"))
-                    ),
+                                 downloadButton("descargar_tabla_mujeres_2", "Descargar CSV"))),
+                    
                     tabPanel("Cantidad de mujeres y hombres por cargo (solo titulares)",
                              DTOutput("tabla_mujeres_cargo_2"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_mujeres_3", "Descargar CSV"))
-                    )
+                                 downloadButton("descargar_tabla_mujeres_3", "Descargar CSV")))
                   )
                 )
               )
-            ),
-      # --- Pestaña 3: Métricas ---
+      ),
+      
+      # --- 3. MÉTRICAS ---
       tabItem(tabName = "metricas",
               fluidRow(
                 box(
@@ -347,7 +409,6 @@ ui <- dashboardPage(
                   title = tagList(icon("tachometer-alt"), "Indicadores etarios"),
                   solidHeader = TRUE,
                   status = "primary",
-                  
                   tabsetPanel(
                     tabPanel("Edad promedio de asunción por cargo",
                              selectInput("legislaturas_agrupadas",
@@ -355,8 +416,7 @@ ui <- dashboardPage(
                                          choices = sort(unique(tabla_edad$legislaturas_agrupadas))),
                              DTOutput("edades_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_edades", "Descargar CSV"))
-                    ),
+                                 downloadButton("descargar_tabla_edades", "Descargar CSV"))),
                     
                     tabPanel("Edad promedio por partido de los legisladores",
                              selectInput("legislatura_partido",
@@ -365,17 +425,68 @@ ui <- dashboardPage(
                                          selected = max(tabla_edad_legislatura$legislatura, na.rm = TRUE)),
                              DTOutput("legislatura_part"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_legislatura_part", "Descargar CSV"))
-                                             
+                                 downloadButton("descargar_tabla_legislatura_part", "Descargar CSV")))
+                  )
+                )
+              )
+      ),
+      
+      # --- 4. MÉTRICAS INDIVIDUALES ---
+      tabItem(tabName = "metricas2",
+              fluidRow(
+                box(
+                  width = 12,
+                  title = tagList(icon("user"), "Indicadores etarios individuales"),
+                  solidHeader = TRUE,
+                  status = "primary",
+                  tabsetPanel(
+                    tabPanel("Los políticos más jóvenes en asumir cada cargo",
+                             DTOutput("edad_minima"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_edad_minima", "Descargar CSV"))),
+                    
+                    tabPanel("Los políticos más viejos en asumir cada cargo",
+                             DTOutput("edad_maxima"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_edad_maxima", "Descargar CSV"))
                     )
+                  )
+                )
+              )
+      ),
+      # --- 5. GRAFICOS ---
+      tabItem(tabName = "graficos",
+              fluidRow(
+                box(
+                  width = 12,
+                  title = tagList(icon("chart-bar"), "Gráficos interactivos"),
+                  solidHeader = TRUE,
+                  status = "primary",
+                  tabsetPanel(
+                    tabPanel("Distribución por sexo de los legisladores",
+                             selectInput("leg_status",
+                                         "Seleccionar status",
+                                         choices = sort(unique(grafico_sexo_leg$status)),
+                                         selected = max(grafico_sexo_leg$status)),
+                             plotlyOutput("grafico_sexo_leg_out"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_grafico_sexo_leg", "Descargar CSV"))),
+                    
+                    tabPanel("Promedio de edad de los legisladores por legislatura",
+                             plotlyOutput("grafico_edad_leg"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))
+                    )
+                  )
                 )
               )
       )
     )
   )
-  ))
-                                           
-                                         
+)
+
+
+# --- SERVER ---
 
 server <- function(input, output, session) {
   
@@ -422,6 +533,12 @@ server <- function(input, output, session) {
       filter(legislatura == input$legislatura_partido)
   })
   
+  df_grafico_sexo_leg <- reactive({
+    grafico_sexo_leg %>% 
+      filter(status == input$leg_status)%>% 
+      mutate(sexo = factor(sexo, levels = c("Mujer", "Hombre")))
+  })
+  
   # --- 3. Render de tablas ---
   output$tabla_leg <- renderDT({
     datatable(aplicar_etiquetas(df_leg()), filter = "top", rownames = FALSE)
@@ -460,6 +577,58 @@ server <- function(input, output, session) {
   
   output$legislatura_part <- renderDT({
     datatable(aplicar_etiquetas(df_legislatura_partido()), rownames = FALSE)
+  })
+  
+  output$edad_maxima <- renderDT({
+    df <- edad_max %>% arrange(desc(edad_max))
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+  })
+  
+  output$edad_minima <- renderDT({
+    df <- edad_min %>% arrange((edad_min))
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+  })
+  
+  # grafico sexo legisladores
+  output$grafico_sexo_leg_out <- renderPlotly({
+    
+    plot_ly(
+      data = df_grafico_sexo_leg(),
+      x = ~legislatura,
+      y = ~porcentaje,
+      color = ~sexo,
+      type = "bar"
+    ) %>%
+      layout(
+        title = "Distribución por sexo de los legisladores por legislatura",
+        barmode = "stack",
+        xaxis = list(
+          title = "Legislatura",
+          tickangle = 90
+        ),
+        yaxis = list(title = "Porcentaje")
+      )
+  })
+  # edad legisladores
+  output$grafico_edad_leg <- renderPlotly({
+    
+    plot_ly(
+      data = grafico_edad,
+      x = ~legislatura,
+      y = ~promedio_edad,
+      color = ~cargo,
+      type = "scatter",
+      mode = 'markers',
+      marker = list(size = 10)
+    ) %>%
+      layout(
+        title = "Promedio de edad del legislador",
+        xaxis = list(
+          title = "Legislatura",
+          tickangle = 90
+        ),
+        yaxis = list(title = "Promedio de edad")
+      )
   })
   
   # --- 4. Descargas ---
@@ -506,6 +675,22 @@ server <- function(input, output, session) {
   output$descargar_tabla_legislatura_part <- downloadHandler(
     filename = function() paste0("tabla_edades_partido_legislatura_", input$legislatura_partido, ".csv"),
     content = function(file) write.csv(df_legislatura_partido(), file, row.names = FALSE, fileEncoding = "UTF-8")
+  )
+  
+  # Descargar tabla de los más jóvenes
+  output$descargar_tabla_edad_minima <- downloadHandler(
+    filename = function() "edad_minima_por_cargo.csv",
+    content = function(file) {
+      write.csv(edad_min, file, row.names = FALSE, fileEncoding = "UTF-8")
+    }
+  )
+  
+  # Descargar tabla de los más viejos
+  output$descargar_tabla_edad_maxima <- downloadHandler(
+    filename = function() "edad_maxima_por_cargo.csv",
+    content = function(file) {
+      write.csv(edad_max, file, row.names = FALSE, fileEncoding = "UTF-8")
+    }
   )
 }
 
