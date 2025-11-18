@@ -71,13 +71,11 @@ tabla_sexos <- tabla_sexos %>% mutate('Hombres por cada mujer' = `Cantidad de ho
 
 ### Cantidad de hombres y mujeres legisladores por partido
 
-m <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 0 & cargo %in%c('Diputado', 'Senador')) %>%
+m <- politicos %>% filter(sexo == 0 & cargo %in%c('Diputado', 'Senador')) %>%
   group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
   ungroup() %>%  select(-sexo)
 
-h <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 1 & cargo %in%c('Diputado', 'Senador')) %>%
+h <- politicos %>% filter(sexo == 1 & cargo %in%c('Diputado', 'Senador')) %>%
   group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
   ungroup() %>% select(-sexo)
 
@@ -114,13 +112,11 @@ tabla_sexos_cargos <- tabla_sexos_cargos %>% mutate('Hombres por cada mujer' = `
 ### Cantidad de mujeres por cargo (titulares del cargo)
 #### responde preguntas: en que cargos tiene la mujer menor disparidad respecto al hombre?
 
-m_2 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 0 & status == 'Titular') %>%
+m_2 <- politicos %>% filter(sexo == 0 & status == 'Titular') %>%
   group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
   ungroup() %>%  select(-sexo)
 
-h_2 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 1 & status == 'Titular') %>%
+h_2 <- politicos %>% filter(sexo == 1 & status == 'Titular') %>%
   group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
   ungroup() %>% select(-sexo)
 
@@ -138,9 +134,7 @@ tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, leg
   ungroup()
 
 ### edades por partido por legislatura
-tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado") & !is.na(edad_asumir) & partido
-                     %in%c("Partido Nacional", "Partido Colorado", "Frente Amplio", "Cabildo Abierto",
-                           "Partido Independiente", "Asamblea Popular")) %>%
+tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado") & !is.na(edad_asumir)) %>%
   group_by(partido, cargo,legislatura) %>% reframe("Edad promedio" = round(mean(edad_asumir),1),
                                                    'Casos analizados' = n()) %>% ungroup()
 
