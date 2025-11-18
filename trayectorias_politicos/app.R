@@ -180,6 +180,13 @@ s_2 <- politicos %>%
 
 grafico_sexo_leg <- rbind(s_1, s_2)
 
+## Distribucion del sexo por cargos
+
+grafico_sexo_cargos <- politicos %>% mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>% 
+  distinct(cargo, sexo, id_politico) %>% group_by(cargo, sexo) %>% summarise(cantidad = n(), .groups = "drop_last") %>%
+  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
+  ungroup()
+
 ## promedio de edad del legislador
 
 grafico_edad <- politicos %>% filter(cargo %in%c('Diputado', 'Senador') & !is.na(edad_asumir)) %>%
@@ -276,6 +283,13 @@ grafico_edad <- grafico_edad %>%
     'cargo' = 'Cargo',
     'legislatura' = 'Legislatura',
     'promedio_edad' = 'Promedio de edad')
+
+grafico_sexo_cargos <- grafico_sexo_cargos %>%
+  set_variable_labels(
+    'cargo' = 'Cargo',
+    'sexo' = 'Sexo',
+    'cantidad' = 'Cantidad',
+    'porcentaje' = 'Porcentaje')
 
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
@@ -472,6 +486,11 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_grafico_sexo_leg", "Descargar CSV"))),
                     
+                    tabPanel("Distribución por sexo de los cargos",
+                             plotlyOutput("grafico_sexo_cargo"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
+                    
                     tabPanel("Promedio de edad de los legisladores por legislatura",
                              plotlyOutput("grafico_edad_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
@@ -630,7 +649,29 @@ server <- function(input, output, session) {
         yaxis = list(title = "Promedio de edad")
       )
   })
-  
+  # graficos sexo cargos
+  output$grafico_sexo_cargo <- renderPlotly({
+    plot_ly(
+      data = grafico_sexo_cargos,
+      x = ~cargo,
+      y = ~porcentaje,
+      color = ~sexo,
+      type = "bar",
+      hovertemplate = paste(
+        "<b>Cargo:</b> %{x}<br>",
+        "<b>Sexo:</b> %{color}<br>",
+        "<b>Porcentaje:</b> %{y:.2f}%<br>",
+        "<b>Cantidad:</b> %{customdata}<extra></extra>"
+      ),
+      customdata = ~cantidad  # etiqueta adicional
+    ) %>%
+      layout(
+        title = "Distribución por sexo de los cargos",
+        barmode = 'stack',
+        xaxis = list(title = "Cargo", tickangle = 90),
+        yaxis = list(title = "Porcentaje")
+      )
+  }) 
   # --- 4. Descargas ---
   output$descargar_tabla_leg <- downloadHandler(
     filename = function() paste0("politicos_legislatura_", input$legislatura, ".csv"),
