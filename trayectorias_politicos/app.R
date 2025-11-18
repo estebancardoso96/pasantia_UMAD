@@ -197,6 +197,29 @@ grafico_edad <- politicos %>% filter(cargo %in%c('Diputado', 'Senador') & !is.na
   group_by(legislatura, cargo) %>% distinct(id_politico, legislatura, edad_asumir,cargo) %>% 
   mutate(promedio_edad = mean(edad_asumir)) %>% distinct(legislatura, promedio_edad, cargo) %>% ungroup()
 
+## Calculos de renovacion de la legislatura, tasa de rotacion TITULARES
+
+leg_por_leg  <- politicos %>% filter(cargo %in%c('Senador', 'Diputado') & status=='Titular') %>% 
+  group_by(legislatura) %>%
+  summarise(lista = list(unique(id_politico)))
+
+leg_join <- leg_por_leg %>%
+  arrange(legislatura) %>%
+  mutate(lista_anterior = lag(lista))
+
+
+renovacion_titulares <- leg_join %>%
+  rowwise() %>%
+  mutate(
+    nuevos = if (is.null(lista_anterior)) NA else sum(!lista %in% lista_anterior),
+    total = length(lista),
+    tasa_de_rotacion = (nuevos / total) * 100
+  ) %>%
+  ungroup()
+
+df_plot <- renovacion_titulares %>%
+  mutate(custom = Map(c, total, nuevos))
+
 # Etiquetas para la pagina
 
 library(labelled)
@@ -294,6 +317,13 @@ grafico_sexo_cargos <- grafico_sexo_cargos %>%
     'sexo' = 'Sexo',
     'cantidad' = 'Cantidad',
     'porcentaje' = 'Porcentaje')
+
+renovacion_titulares <- renovacion_titulares %>%
+  set_variable_labels(
+    'legislatura' = 'Legislatura',
+    'nuevos' = 'Nuevos legisladores',
+    'total' = 'Total de legisladores',
+    'tasa_de_rotacion' = 'Tasa de rotación')
 
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
@@ -495,6 +525,11 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
                     
+                    tabPanel("Rotación parlamentaria por legislatura",
+                             plotlyOutput("grafico_renovacion_titulares"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
+                    
                     tabPanel("Promedio de edad de los legisladores por legislatura",
                              plotlyOutput("grafico_edad_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
@@ -675,7 +710,28 @@ server <- function(input, output, session) {
         xaxis = list(title = "Cargo", tickangle = 90),
         yaxis = list(title = "Porcentaje")
       )
-  }) 
+  })
+  
+  output$grafico_renovacion_titulares <- renderPlotly({
+    plot_ly(
+      data = df_plot,
+      x = ~legislatura,
+      y = ~tasa_de_rotacion,
+      type = "bar",
+      customdata = ~custom,
+      hovertemplate = paste(
+        "<b>Legislatura:</b> %{x}<br>",
+        "<b>Tasa de rotación:</b> %{y:.2f}%<br>",
+        "<b>Total legisladores:</b> %{customdata[0]}<br>",
+        "<b>Nuevos legisladores:</b> %{customdata[1]}<extra></extra>"
+      )
+    )    %>% 
+      layout(
+        title = "Tasa de rotación parlamentaria (titulares)",
+        xaxis = list(title = "Legislatura", tickangle = 90),
+        yaxis = list(title = "Tasa de rotación")
+      )
+  })  
   # --- 4. Descargas ---
   output$descargar_tabla_leg <- downloadHandler(
     filename = function() paste0("politicos_legislatura_", input$legislatura, ".csv"),
