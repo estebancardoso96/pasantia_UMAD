@@ -179,7 +179,17 @@ grafico_sexo_leg <- rbind(s_1, s_2)
 grafico_sexo_cargos <- politicos %>% mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>% 
   distinct(cargo, sexo, id_politico) %>% group_by(cargo, sexo) %>% summarise(cantidad = n(), .groups = "drop_last") %>%
   mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
-  ungroup()
+  ungroup() %>% arrange(sexo, porcentaje)
+
+orden_cargos <- grafico_sexo_cargos %>%
+  filter(sexo == "Mujer") %>% 
+  select(cargo, porcentaje) %>%
+  rename(pct_mujeres = porcentaje)
+
+grafico_sexo_cargos_ordenado <- grafico_sexo_cargos %>%
+  left_join(orden_cargos, by = "cargo") %>%
+  arrange(desc(pct_mujeres)) %>%              # ordenar filas
+  mutate(cargo = factor(cargo, unique(cargo)))
 
 ## promedio de edad del legislador
 
@@ -646,7 +656,7 @@ server <- function(input, output, session) {
   # graficos sexo cargos
   output$grafico_sexo_cargo <- renderPlotly({
     plot_ly(
-      data = grafico_sexo_cargos,
+      data = grafico_sexo_cargos_ordenado,
       x = ~cargo,
       y = ~porcentaje,
       color = ~sexo,
