@@ -149,6 +149,13 @@ edad_min <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer
   summarise(edad_min = min(edad_asumir)) %>% arrange((edad_min)) %>% group_by(cargo) %>%
   slice_head(n = 1) %>% ungroup()
 
+### politicos mas exitosos
+
+tabla_politicos_exitosos <- politicos %>% group_by(primer_apellido, primer_nombre, partido, id_politico, cargo) %>% 
+                                   distinct(legislatura)%>% count() %>% rename(cantidad = n)  %>% arrange(desc(cantidad)) %>% 
+  filter(cantidad >= 6)
+
+
 ## GRAFICOS
 ### Distribucion por sexo de los legisladores
 
@@ -325,6 +332,10 @@ renovacion_titulares <- renovacion_titulares %>%
     'total' = 'Total de legisladores',
     'tasa_de_rotacion' = 'Tasa de rotación')
 
+tabla_politicos_exitosos <- tabla_politicos_exitosos %>%
+  set_variable_labels(
+    'cantidad' = 'Veces que ocupó el cargo en diferentes legislaturas')
+
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
   df
@@ -423,10 +434,6 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
-                    tabPanel("Cantidad de mujeres y hombres por partido (histórico)",
-                             DTOutput("tabla_mujeres_partido"),
-                             div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_mujeres_1", "Descargar CSV"))),
                     
                     tabPanel("Cantidad de legisladores y legisladoras por partido",
                              selectInput("legislaturas", "Seleccionar Legislatura",
@@ -484,7 +491,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 12,
-                  title = tagList(icon("user"), "Indicadores etarios individuales"),
+                  title = tagList(icon("user"), "Indicadores individuales"),
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
@@ -496,7 +503,13 @@ ui <- dashboardPage(
                     tabPanel("Los políticos más viejos en asumir cada cargo",
                              DTOutput("edad_maxima"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_edad_maxima", "Descargar CSV"))
+                                 downloadButton("descargar_tabla_edad_maxima", "Descargar CSV"))),
+                    
+                    tabPanel("Los legisladores más exitosos: legisladores que fueron electos seis veces o más",
+                             DTOutput("politicos_exitosos"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_tabla_pol_exitoso", "Descargar CSV"))
+                    
                     )
                   )
                 )
@@ -610,11 +623,6 @@ server <- function(input, output, session) {
     datatable(aplicar_etiquetas(df_cargo()), filter = "top", rownames = FALSE)
   })
   
-  output$tabla_mujeres_partido <- renderDT({
-    df <- tabla_sexos %>% arrange(desc(`Hombres por cada mujer`))
-    datatable(aplicar_etiquetas(df), rownames = FALSE)
-  })
-  
   output$tabla_mujeres_partido_leg <- renderDT({
     datatable(aplicar_etiquetas(df_tabla_mujeres_leg()), rownames = FALSE)
   })
@@ -644,6 +652,11 @@ server <- function(input, output, session) {
   
   output$edad_minima <- renderDT({
     df <- edad_min %>% arrange((edad_min))
+    datatable(aplicar_etiquetas(df), rownames = FALSE)
+  })
+  
+  output$politicos_exitosos <- renderDT({
+    df <- tabla_politicos_exitosos %>% arrange(desc(cantidad))
     datatable(aplicar_etiquetas(df), rownames = FALSE)
   })
   
