@@ -14,40 +14,13 @@ library(plotly)
 options(scipen = 2)
 options(digits = 1)
 
-readRenviron("~/.Renviron")
-
-usuario <- Sys.getenv("DB_USER")
-password <- Sys.getenv("DB_PASS")
-host     <- Sys.getenv("DB_HOST")
-dbname   <- Sys.getenv("DB_NAME")
-
-# Conectar
-con <- tryCatch({
-  dbConnect(
-    Postgres(),
-    dbname   = Sys.getenv("DB_NAME"),
-    host     = Sys.getenv("DB_HOST"),
-    user     = Sys.getenv("DB_USER"),
-    password = Sys.getenv("DB_PASS"),
-    port     = 5432
-  )
-}, error = function(e) {
-  message("❌ No se pudo conectar a la base de datos: ", e$message)
-  NULL
-})
-
-if (!is.null(con)) {
-  message("✅ Conexión exitosa a la base de datos")
-}
-
-politicos <- dbGetQuery(con, 'SELECT * FROM "public"."fact_politicos_final"')
-legislaturas <- dbGetQuery(con, 'SELECT legislatura, periodo FROM "politicos_uy"."legislaturas"')
-
-politicos <- politicos %>% left_join(legislaturas, by=("legislatura")) %>% select(-legislatura, -cargo) %>%
-  rename(legislatura = periodo, cargo = cargo_estandarizado)
-
 library(shiny)
 library(shinydashboard)
+
+#saveRDS(politicos,'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/trayectorias_politicos/politicos.rds')
+
+politicos <- readRDS('politicos.rds')
+
 
 ##### Generacion de tablas
 
