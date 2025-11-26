@@ -17,6 +17,7 @@ options(digits = 1)
 library(shiny)
 library(shinydashboard)
 
+# guardar la base nuevamente
 #saveRDS(politicos,'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/trayectorias_politicos/politicos.rds')
 
 politicos <- readRDS('politicos.rds')
@@ -114,11 +115,11 @@ tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado"
 ## METRICAS INDIVIDUALES
 ### politicos mas jovenes y mas viejos por cargo
 
-edad_max <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, partido, circunscripcion) %>%
+edad_max <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, fecha_inicio,partido, circunscripcion) %>%
   summarise(edad_max = max(edad_asumir)) %>% arrange(desc(edad_max)) %>% group_by(cargo) %>%
   slice_head(n = 1) %>% ungroup()
 
-edad_min <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, partido, circunscripcion) %>%
+edad_min <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, fecha_inicio,partido, circunscripcion) %>%
   summarise(edad_min = min(edad_asumir)) %>% arrange((edad_min)) %>% group_by(cargo) %>%
   slice_head(n = 1) %>% ungroup()
 
@@ -170,6 +171,60 @@ grafico_sexo_cargos_ordenado <- grafico_sexo_cargos %>%
   left_join(orden_cargos, by = "cargo") %>%
   arrange(desc(pct_mujeres)) %>%              # ordenar filas
   mutate(cargo = factor(cargo, unique(cargo)))
+
+# cambio de nombres a cargo (para acortar)
+
+diccio <- grafico_sexo_cargos_ordenado %>% select(cargo)
+
+diccio <- diccio %>% 
+  distinct(cargo) %>% 
+  mutate(
+    desc = case_when(
+      cargo == "Ministro Desarrollo Social" ~ "MIDES",
+      cargo == "Secretario Corte Electoral" ~ "Secretario Corte Electoral",
+      cargo == "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente" ~ "MVOTMA",
+      cargo == "Concejal" ~ "Concejal",
+      cargo == "Alcalde" ~ "Alcalde",
+      cargo == "Candidato Vicepresidente" ~ "Candidato Vice",
+      cargo == "Ministro Corte Electoral" ~ "Ministro CE",
+      cargo == "Vicepresidente de la República" ~ "Vicepresidente",
+      cargo == "Candidato Vicepresidente" ~ "Candidato Vice",
+      cargo == "Diputado" ~ "Diputado",
+      cargo == "Ministro Turismo" ~ "Ministro Turismo",
+      cargo == "Senador" ~ "Senador",
+      cargo == "Ministro Salud Pública" ~ "MSP",
+      cargo == "Candidato Precandidato Presidente" ~ "CPP",
+      cargo == "Ministro Educación y Cultura" ~ "MEC",
+      cargo == "Intendente" ~ "Intendente",
+      cargo == "Candidato Presidente" ~ "CP",
+      cargo == "Ministro Economía y Finanzas" ~ "MEF",
+      cargo == "Candidato Consejo Nacional de Gobierno" ~ "CCNG",
+      cargo == "Ministro Trabajo y Seguridad Social" ~ "MTSS",
+      cargo == "Ministro Interior" ~ "MI",
+      cargo == "Concejal Departamental" ~ "Conc Departamental",
+      cargo == "Consejero Departamental" ~ "Cons Departamental",
+      cargo == "Intendente Interventor" ~ "II",
+      cargo == "Miembro del Consejo Nacional de Gobierno" ~ "MCNG",
+      cargo == "Ministro Ambiente" ~ "MA",
+      cargo == "Ministro Defensa Nacional" ~ "MDN",
+      cargo == "Ministro Ganadería, Agricultura y Pesca" ~ "MGAP",
+      cargo == "Ministro Gobierno" ~ "MG",
+      cargo == "Ministro Industria, Energía y Minería" ~ "MIEM",
+      cargo == "Ministro Protección a la infancia" ~ "MPI",
+      cargo == "Ministro Relaciones Exteriores" ~ "MRREE",
+      cargo == "Ministro Transporte y Obras Públicas" ~ "MTOP",
+      cargo == "Presidente Corte Electoral" ~ "PCE",
+      cargo == "Presidente de la República" ~ "Presidente",
+      cargo == "Presidente del Concejo Departamental" ~ "PCD",
+      cargo == "Presidente del Consejo Nacional de Gobierno" ~ "PCNG",
+      cargo == "Vicepresidente Corte Electoral" ~ "Vice Corte Electoral",
+      TRUE ~ NA_character_
+    )
+  )
+
+grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% mutate(etiqueta = cargo) %>% select(-cargo)
+grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% left_join(diccio, by=c('etiqueta'='cargo'))
+grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% rename(cargo = desc)
 
 ## promedio de edad del legislador
 
@@ -272,11 +327,23 @@ tabla_edad_legislatura <- tabla_edad_legislatura %>%
 
 edad_min <- edad_min %>%
   set_variable_labels(
-    'edad_min' = 'Edad al asumir el cargo')
+    'edad_min' = 'Edad al asumir el cargo',
+    'cargo' = 'Cargo',
+    'fecha_inicio' = 'Fecha inicio',
+    'primer_apellido' = 'Primer apellido',
+    'primer_nombre' = 'Primer nombre',
+    'partido' = 'Partido',
+    'circunscripcion' = 'Circunscripción')
     
 edad_max <- edad_max %>%
   set_variable_labels(
-    'edad_max' = 'Edad al asumir el cargo')
+    'edad_max' = 'Edad al asumir el cargo',
+    'cargo' = 'Cargo',
+    'fecha_inicio' = 'Fecha inicio',
+    'primer_apellido' = 'Primer apellido',
+    'primer_nombre' = 'Primer nombre',
+    'partido' = 'Partido político',
+    'circunscripcion' = 'Circunscripción')
 
 grafico_sexo_leg <- grafico_sexo_leg %>%
   set_variable_labels(
@@ -298,7 +365,7 @@ grafico_sexo_cargos <- grafico_sexo_cargos %>%
     'cantidad' = 'Cantidad',
     'porcentaje' = 'Porcentaje')
 
-renovacion_titulares <- renovacion_titulares %>%
+  renovacion_titulares <- renovacion_titulares %>%
   set_variable_labels(
     'legislatura' = 'Legislatura',
     'nuevos' = 'Nuevos legisladores',
@@ -307,7 +374,12 @@ renovacion_titulares <- renovacion_titulares %>%
 
 tabla_politicos_exitosos <- tabla_politicos_exitosos %>%
   set_variable_labels(
-    'cantidad' = 'Veces que ocupó el cargo en diferentes legislaturas')
+    'cantidad' = 'Veces que ocupó el cargo en diferentes legislaturas',
+    'primer_apellido' = 'Primer apellido',
+    'primer_nombre' = 'Primer nombre',
+    'partido' = 'Partido',
+    'id_politico' = 'Id político',
+    'cargo' = 'Cargo')
 
 aplicar_etiquetas <- function(df) {
   names(df) <- var_label(df)
@@ -325,8 +397,8 @@ ui <- dashboardPage(
   dashboardHeader(
     title = span(
       img(
-        # src = "logo_fcs_umad.png",  # (descomentar cuando funcione el logo)
-        height = "40px", 
+        # src = "logo_fcs_umad.png",
+        height = "40px",
         style = "margin-right:10px;"
       ),
       "Visualizador"
@@ -337,14 +409,15 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Búsqueda en la base", tabName = "busqueda", icon = icon("search")),
       menuItem("Tablas", tabName = "tablas", icon = icon("table")),
-      menuItem("Métricas", tabName = "metricas", icon = icon("tachometer-alt")),
+      menuItem("Métricas etarias", tabName = "metricas", icon = icon("tachometer-alt")),
       menuItem("Métricas individuales", tabName = "metricas2", icon = icon("user")),
-      menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar"))
+      menuItem("Gráficos", tabName = "graficos", icon = icon("chart-bar")),
+      menuItem("Nota metodológica", tabName = "nota", icon = icon("file-alt"))
     )
   ),
   
   dashboardBody(
-    # ---- estilos generales ----
+    
     tags$head(tags$style(HTML("
       h2.dashboard-title {
         text-align: center;
@@ -360,7 +433,9 @@ ui <- dashboardPage(
     
     tabItems(
       
-      # --- 1. BÚSQUEDA ---
+      # -------------------
+      # 1. BÚSQUEDA
+      # -------------------
       tabItem(tabName = "busqueda",
               fluidRow(
                 box(
@@ -369,6 +444,7 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
+                    
                     tabPanel("Búsqueda en toda la base",
                              DTOutput("tabla_base")),
                     
@@ -398,7 +474,9 @@ ui <- dashboardPage(
               )
       ),
       
-      # --- 2. TABLAS ---
+      # -------------------
+      # 2. TABLAS
+      # -------------------
       tabItem(tabName = "tablas",
               fluidRow(
                 box(
@@ -429,7 +507,9 @@ ui <- dashboardPage(
               )
       ),
       
-      # --- 3. MÉTRICAS ---
+      # -------------------
+      # 3. MÉTRICAS ETARIAS
+      # -------------------
       tabItem(tabName = "metricas",
               fluidRow(
                 box(
@@ -438,6 +518,7 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
+                    
                     tabPanel("Edad promedio de asunción por cargo",
                              selectInput("legislaturas_agrupadas",
                                          "Seleccionar Legislaturas agrupadas",
@@ -459,7 +540,9 @@ ui <- dashboardPage(
               )
       ),
       
-      # --- 4. MÉTRICAS INDIVIDUALES ---
+      # -------------------
+      # 4. MÉTRICAS INDIVIDUALES
+      # -------------------
       tabItem(tabName = "metricas2",
               fluidRow(
                 box(
@@ -468,6 +551,7 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
+                    
                     tabPanel("Los políticos más jóvenes en asumir cada cargo",
                              DTOutput("edad_minima"),
                              div(style = "margin-top: 20px; text-align: center;",
@@ -478,17 +562,18 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_edad_maxima", "Descargar CSV"))),
                     
-                    tabPanel("Los legisladores más exitosos: legisladores que fueron electos seis veces o más",
+                    tabPanel("Los legisladores más exitosos",
                              DTOutput("politicos_exitosos"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_tabla_pol_exitoso", "Descargar CSV"))
-                    
-                    )
+                                 downloadButton("descargar_tabla_pol_exitoso", "Descargar CSV")))
                   )
                 )
               )
       ),
-      # --- 5. GRAFICOS ---
+      
+      # -------------------
+      # 5. GRAFICOS
+      # -------------------
       tabItem(tabName = "graficos",
               fluidRow(
                 box(
@@ -497,6 +582,7 @@ ui <- dashboardPage(
                   solidHeader = TRUE,
                   status = "primary",
                   tabsetPanel(
+                    
                     tabPanel("Distribución por sexo de los legisladores",
                              selectInput("leg_status",
                                          "Seleccionar status",
@@ -516,18 +602,148 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
                     
-                    tabPanel("Promedio de edad de los legisladores por legislatura",
+                    tabPanel("Promedio de edad por legislatura",
                              plotlyOutput("grafico_edad_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))
+                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV")))
+                  )
+                )
+              )
+      ),
+      
+      # -------------------
+      # 6. NOTA METODOLÓGICA
+      # -------------------
+      tabItem(
+        tabName = "nota",
+        fluidRow(
+          box(
+            width = 12,
+            title = tagList(icon("file-alt"), "Nota metodológica"),
+            solidHeader = TRUE,
+            status = "primary",
+            tabsetPanel(
+              
+              # 1. ACLARACIONES
+              tabPanel(
+                "Aclaraciones metodológicas",
+                div(
+                  style = "text-align: justify;",
+                  p("Este visualizador se alimenta de dos fuentes: la base de datos del paquete de R puy (mantenido por la Unidad de Métodos y Acceso a Datos de la Facultad de Ciencias Sociales) y de datos obtenidos mediante web scraping de la página de la biblioteca del parlamento https://biblioteca.parlamento.gub.uy:8008/biografias/busqueda
+Cada fila de la tabla alojada en la pestaña de búsqueda representa un cargo o una candidatura de un político con una fecha de inicio y una fecha de fin, teniendo información específica sobre el cargo, el partido por el cual asume (o se postula), la edad al asumir del político, el sexo y la circunscripción en caso de que corresponda. A su vez cada político se identifica con un id político único que permite seguir su trayectoria a lo largo de la base.")
+                )
+              ),
+              
+              # 2. DICCIONARIO (completo)
+              tabPanel(
+                "Diccionario de variables",
+                div(
+                  style = "padding: 15px;",
+                  
+                  div(
+                    style = "text-align: center; margin-bottom: 12px;",
+                    downloadButton("descargar_diccionario", "Descargar diccionario CSV")
+                  ),
+                  tags$table(
+                    class = "table table-striped table-bordered",
+                    tags$thead(
+                      tags$tr(
+                        tags$th("Variable"),
+                        tags$th("Etiqueta"),
+                        tags$th("Descripción")
+                      )
+                    ),
+                    tags$tbody(
+                      tags$tr(tags$td("primer_apellido"), tags$td("Primer apellido"), tags$td("Primer apellido del político/a")),
+                      tags$tr(tags$td("segundo_apellido"), tags$td("Segundo apellido"), tags$td("Segundo apellido del político/a")),
+                      tags$tr(tags$td("primer_nombre"), tags$td("Primer nombre"), tags$td("Primer nombre del político/a")),
+                      tags$tr(tags$td("segundo_nombre"), tags$td("Segundo nombre"), tags$td("Segundo nombre del político/a")),
+                      tags$tr(tags$td("id_politico"), tags$td("Id político"), tags$td("Identificador único del político")),
+                      tags$tr(tags$td("partido"), tags$td("Partido"), tags$td("Partido político por el que asume o se postula")),
+                      tags$tr(tags$td("fecha_inicio"), tags$td("Inicio"), tags$td("Fecha (formato año-mes-día) en la que el político asume su cargo o postulación")),
+                      tags$tr(tags$td("fecha_fin"), tags$td("Fin"), tags$td("Fecha (formato año-mes-día) en la que el político finaliza el ejercicio en su cargo")),
+                      tags$tr(tags$td("status"), tags$td("Estatus"), tags$td("Titular o suplente en el cargo asumido")),
+                      tags$tr(tags$td("circunscripcion"), tags$td("Circunscripción"), tags$td("Circunscripción del cargo (en caso de que corresponda)")),
+                      tags$tr(tags$td("sexo"), tags$td("Sexo"), tags$td("Sexo del político, 1 si es hombre y 0 si es mujer")),
+                      tags$tr(tags$td("id_fuente"), tags$td("id_fuente"), tags$td("Fuente de donde proviene el dato, 1 = paquete R puy ; 2 = web scraping de la biblioteca del parlamento")),
+                      tags$tr(tags$td("fecha_nac"), tags$td("fecha_nac"), tags$td("Fecha de nacimiento del político/a")),
+                      tags$tr(tags$td("fecha_inicio_l"), tags$td("fecha_inicio_l"), tags$td("Fecha de inicio de la Legislatura que actúa el político")),
+                      tags$tr(tags$td("fecha_fin_l"), tags$td("fecha_fin_l"), tags$td("Fecha de fin de la Legislatura que actúa el político")),
+                      tags$tr(tags$td("fecha_intermedia"), tags$td("fecha_intermedia"), tags$td("Fecha intermedia (en la mitad entre la fecha de fin y la fecha de inicio de la Legislatura)")),
+                      tags$tr(tags$td("ed_asumir"), tags$td("ed_asumir"), tags$td("Edad en la que asume el cargo el político calculada con la fecha de inicio del cargo")),
+                      tags$tr(tags$td("ed_asumir_1"), tags$td("ed_asumir_1"), tags$td("Edad en la que asume el cargo calculada con la fecha intermedia cuando la fecha de inicio del cargo está missing")),
+                      tags$tr(tags$td("edad_asumir"), tags$td("edad_asumir"), tags$td("Integración de ed_asumir con ed_asumir_1")),
+                      tags$tr(tags$td("legislaturas_agrupadas"), tags$td("legislaturas_agrupadas"), tags$td("Asume 3 valores que agrupan legislaturas: 1902-1933, 1934-1973 y 1985-2025")),
+                      tags$tr(tags$td("inicio"), tags$td("inicio"), tags$td("Año de inicio del cargo (datos obtenidos de la página del parlamento)")),
+                      tags$tr(tags$td("fin"), tags$td("fin"), tags$td("Año de fin del cargo (datos obtenidos de la página del parlamento)")),
+                      tags$tr(tags$td("cargo"), tags$td("Cargo"), tags$td("Cargo o candidatura")),
+                      tags$tr(tags$td("cargo_vigente"), tags$td("cargo_vigente"), tags$td("Asume SI si el cargo está vigente en la actualidad y NO si el cargo no está vigente en la actualidad")),
+                      tags$tr(tags$td("legislatura"), tags$td("Legislatura"), tags$td("Legislatura en que se asume el cargo o se postula la candidatura"))
+                    )
+                  )
+                )
+              ),
+              # 3. ESTANDARIZACIÓN DE MINISTERIOS
+              tabPanel(
+                "Estandarización de Ministerios",
+                div(
+                  style = "padding: 15px;",
+                  tags$table(
+                    class = "table table-striped table-bordered",
+                    tags$thead(
+                      tags$tr(
+                        tags$th("Cargo"),
+                        tags$th("Cantidad"),
+                        tags$th("Cargo estandarizado"),
+                        tags$th("Ministerio vigente")
+                      )
+                    ),
+                    tags$tbody(
+                      tags$tr(tags$td("Ministro Ambiente"), tags$td("1"), tags$td("Ministro Ambiente"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Corte Electoral"), tags$td("35"), tags$td("Ministro Corte Electoral"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Defensa Nacional"), tags$td("46"), tags$td("Ministro Defensa Nacional"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Deporte y Juventud"), tags$td("1"), tags$td("Ministro Turismo"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Desarrollo Social"), tags$td("5"), tags$td("Ministro Desarrollo Social"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Economia y Finanzas"), tags$td("22"), tags$td("Ministro Economia y Finanzas"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Educación y Cultura"), tags$td("24"), tags$td("Ministro Educación y Cultura"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Fomento"), tags$td("2"), tags$td("Ministro Transporte y Obras Públicas"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Ganadería y Agricultura"), tags$td("16"), tags$td("Ministro Ganadería, Agricultura y Pesca"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Ganadería, Agricultura y Pesca"), tags$td("26"), tags$td("Ministro Ganadería, Agricultura y Pesca"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Gobierno"), tags$td("2"), tags$td(""), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Guerra y Marina"), tags$td("17"), tags$td("Ministro Defensa Nacional"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Hacienda"), tags$td("36"), tags$td("Ministro Economia y Finanzas"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Industria y Comercio"), tags$td("8"), tags$td("Ministro Industria, Energia y Mineria"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Industria y Energía"), tags$td("3"), tags$td("Ministro Industria, Energia y Mineria"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Industria y Trabajo"), tags$td("19"), tags$td("Ministro Industria, Energia y Mineria"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Industria, Energia y Mineria"), tags$td("18"), tags$td("Ministro Industria, Energia y Mineria"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Industria, Trabajo e Instrucción Pública"), tags$td("4"), tags$td("Ministro Trabajo y Seguridad Social"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Industrias, Trabajo y Comunicación"), tags$td("14"), tags$td("Ministro Industria, Energia y Mineria"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Instruccion Publica y Prevision Social"), tags$td("18"), tags$td("Ministro Trabajo y Seguridad Social"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Interior"), tags$td("75"), tags$td("Ministro Interior"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Justicia e Instrucción Pública"), tags$td("16"), tags$td("Ministro Educación y Cultura"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Obras Públicas"), tags$td("37"), tags$td("Ministro Transporte y Obras Públicas"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Protección a la infancia"), tags$td("1"), tags$td("Ministro Protección a la infancia"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Relaciones Exteriores"), tags$td("53"), tags$td("Ministro Relaciones Exteriores"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Salud Pública"), tags$td("38"), tags$td("Ministro Salud Pública"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Trabajo y Previsión Social"), tags$td("3"), tags$td("Ministro Trabajo y Seguridad Social"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Trabajo y Seguridad Social"), tags$td("23"), tags$td("Ministro Trabajo y Seguridad Social"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Transporte y Obras Públicas"), tags$td("14"), tags$td("Ministro Transporte y Obras Públicas"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Transporte, Comunicación y Turismo"), tags$td("9"), tags$td("Ministro Transporte y Obras Públicas"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Turismo"), tags$td("7"), tags$td("Ministro Turismo"), tags$td("SI")),
+                      tags$tr(tags$td("Ministro Turismo y Deportes"), tags$td("5"), tags$td("Ministro Turismo"), tags$td("NO")),
+                      tags$tr(tags$td("Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"), tags$td("13"), tags$td("Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente"), tags$td("SI"))
                     )
                   )
                 )
               )
+            ) 
+          )
+        )
       )
     )
   )
 )
+
 
 
 # --- SERVER ---
@@ -682,6 +898,8 @@ server <- function(input, output, session) {
       y = ~porcentaje,
       color = ~sexo,
       type = "bar",
+      colors = c("Hombre" = "#9AA9D9",
+                 "Mujer"  = "#6CC8B9"), 
       hovertemplate = paste(
         "<b>Cargo:</b> %{x}<br>",
         "<b>Sexo:</b> %{color}<br>",
@@ -697,7 +915,6 @@ server <- function(input, output, session) {
         yaxis = list(title = "Porcentaje")
       )
   })
-  
   output$grafico_renovacion_titulares <- renderPlotly({
     plot_ly(
       data = df_plot,
@@ -711,7 +928,7 @@ server <- function(input, output, session) {
         "<b>Total legisladores:</b> %{customdata[0]}<br>",
         "<b>Nuevos legisladores:</b> %{customdata[1]}<extra></extra>"
       )
-    )    %>% 
+    ) %>%   
       layout(
         title = "Tasa de rotación parlamentaria (titulares)",
         xaxis = list(title = "Legislatura", tickangle = 90),
@@ -782,4 +999,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
