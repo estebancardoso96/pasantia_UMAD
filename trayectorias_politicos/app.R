@@ -255,6 +255,95 @@ renovacion_titulares <- leg_join %>%
 df_plot <- renovacion_titulares %>%
   mutate(custom = Map(c, total, nuevos))
 
+# diccionario 
+
+diccio_variables <- data.frame(
+  Variable = c(
+    "primer_apellido",
+    "segundo_apellido",
+    "primer_nombre",
+    "segundo_nombre",
+    "id_politico",
+    "partido",
+    "fecha_inicio",
+    "fecha_fin",
+    "status",
+    "circunscripcion",
+    "sexo",
+    "id_fuente",
+    "fecha_nac",
+    "fecha_inicio_l",
+    "fecha_fin_l",
+    "fecha_intermedia",
+    "ed_asumir",
+    "ed_asumir_1",
+    "edad_asumir",
+    "legislaturas_agrupadas",
+    "inicio",
+    "fin",
+    "cargo",
+    "cargo_vigente",
+    "legislatura"
+  ),
+  
+  Etiqueta = c(
+    "Primer apellido",
+    "Segundo apellido",
+    "Primer nombre",
+    "Segundo nombre",
+    "Id político",
+    "Partido",
+    "Inicio",
+    "Fin",
+    "Estatus",
+    "Circunscripción",
+    "Sexo",
+    "id_fuente",
+    "fecha_nac",
+    "fecha_inicio_l",
+    "fecha_fin_l",
+    "fecha_intermedia",
+    "ed_asumir",
+    "ed_asumir_1",
+    "edad_asumir",
+    "legislaturas_agrupadas",
+    "inicio",
+    "fin",
+    "Cargo",
+    "cargo_vigente",
+    "Legislatura"
+  ),
+  
+  Descripción = c(
+    "Primer apellido del político/a",
+    "Segundo apellido del político/a",
+    "Primer nombre del político/a",
+    "Segundo nombre del político/a",
+    "Identificador único del político",
+    "Partido político por el que el político asume o se postula a un cargo",
+    "Fecha (formato año-mes-día) en la que el político asume su cargo o postulación",
+    "Fecha (formato año-mes-día) en la que el político finaliza el ejercicio en su cargo",
+    "Titular o suplente en el cargo asumido",
+    "Circunscripción del cargo (en caso de que corresponda)",
+    "Sexo del político, 1 si es hombre y 0 si es mujer",
+    "Fuente del dato: 1 = paquete R puy, 2 = web del Parlamento",
+    "Fecha de nacimiento del político/a",
+    "Fecha de inicio de la Legislatura que actúa el político",
+    "Fecha de fin de la Legislatura que actúa el político",
+    "Fecha intermedia entre inicio y fin de la Legislatura",
+    "Edad al asumir el cargo (con fecha de inicio del cargo)",
+    "Edad al asumir cuando falta fecha de inicio (usando fecha intermedia)",
+    "Integración de ed_asumir y ed_asumir_1",
+    "Agrupa legislaturas en 3 períodos: 1902-1933, 1934-1973, 1985-2025",
+    "Año de inicio del cargo (obtenido de la web del Parlamento)",
+    "Año de fin del cargo (obtenido de la web del Parlamento)",
+    "Cargo o candidatura",
+    "SI si el cargo está vigente en la actualidad, NO si no lo está",
+    "Legislatura en que se asume el cargo o se postula la candidatura"
+  ),
+  stringsAsFactors = FALSE
+)
+
 # Etiquetas para la pagina
 
 library(labelled)
@@ -418,7 +507,42 @@ ui <- dashboardPage(
   
   dashboardBody(
     
-    tags$head(tags$style(HTML("
+    # --- Estilos para el tooltip ---
+    tags$style(HTML("
+    .tooltip-box {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      font-size: 20px;
+      color: #1e88e5;
+      margin-left: 10px;
+    }
+
+    .tooltip-box .tooltip-content {
+      visibility: hidden;
+      width: 420px;
+      background-color: white;
+      color: #2c3e50;
+      text-align: left;
+      padding: 15px;
+      border-radius: 10px;
+      position: absolute;
+      z-index: 999;
+      top: 28px;
+      left: 0;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.15);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .tooltip-box:hover .tooltip-content {
+      visibility: visible;
+    }
+  ")),  
+    
+    # --- Estilos para el título ---
+    tags$head(
+      tags$style(HTML("
       h2.dashboard-title {
         text-align: center;
         font-weight: bold;
@@ -427,10 +551,17 @@ ui <- dashboardPage(
         margin-bottom: 25px;
         margin-top: 10px;
       }
-    "))),
+    "))
+    ),
     
-    h2("Visualizador de políticos y políticas del Uruguay (1902-2025)", class = "dashboard-title"),
+    # --- Título principal ---
+    h2("Visualizador de políticos y políticas del Uruguay (1902-2025)", 
+       class = "dashboard-title"),
     
+    
+    # ----------------------------------------------------
+    #  TAB ITEMS 
+    # ----------------------------------------------------
     tabItems(
       
       # -------------------
@@ -446,7 +577,9 @@ ui <- dashboardPage(
                   tabsetPanel(
                     
                     tabPanel("Búsqueda en toda la base",
-                             DTOutput("tabla_base")),
+                             DTOutput("tabla_base"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_base_completa", "Descargar base completa CSV"))),
                     
                     tabPanel("Filtro por Legislatura",
                              selectInput("legislatura", "Seleccionar Legislatura",
@@ -597,10 +730,32 @@ ui <- dashboardPage(
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
                     
-                    tabPanel("Rotación parlamentaria por legislatura",
-                             plotlyOutput("grafico_renovacion_titulares"),
-                             div(style = "margin-top: 20px; text-align: center;",
-                                 downloadButton("descargar_grafico_edad_cargo", "Descargar CSV"))),
+                    tabPanel(
+                      "Rotación parlamentaria por legislatura",
+                      
+                      # Título + tooltip
+                      div(
+                        style = "display: flex; align-items: center; gap: 10px; margin-bottom: 10px;",
+                        
+                        h3("Tasa de rotación parlamentaria (titulares)",
+                           style = "margin: 0; padding: 0;"),
+                        
+                        # Tooltip
+                        div(
+                          class = "tooltip-box",
+                          icon("book"),
+                          div(
+                            class = "tooltip-content",
+                            HTML("
+                            <b>Metodología:</b><br>
+                            La tasa de rotación se calcula como el porcentaje de legisladores titulares nuevos (que no estuvieron en la legislatura n-1)
+                            respecto al total de titulares que integran cada legislatura.
+                          ")
+                          )
+                        )
+                      ),
+                      plotlyOutput("grafico_renovacion_titulares")
+                    ),
                     
                     tabPanel("Promedio de edad por legislatura",
                              plotlyOutput("grafico_edad_leg"),
@@ -609,8 +764,7 @@ ui <- dashboardPage(
                   )
                 )
               )
-      ),
-      
+      ),    
       # -------------------
       # 6. NOTA METODOLÓGICA
       # -------------------
@@ -629,21 +783,39 @@ ui <- dashboardPage(
                 "Aclaraciones metodológicas",
                 div(
                   style = "text-align: justify;",
-                  p("Este visualizador se alimenta de dos fuentes: la base de datos del paquete de R puy (mantenido por la Unidad de Métodos y Acceso a Datos de la Facultad de Ciencias Sociales) y de datos obtenidos mediante web scraping de la página de la biblioteca del parlamento https://biblioteca.parlamento.gub.uy:8008/biografias/busqueda
-Cada fila de la tabla alojada en la pestaña de búsqueda representa un cargo o una candidatura de un político con una fecha de inicio y una fecha de fin, teniendo información específica sobre el cargo, el partido por el cual asume (o se postula), la edad al asumir del político, el sexo y la circunscripción en caso de que corresponda. A su vez cada político se identifica con un id político único que permite seguir su trayectoria a lo largo de la base.")
+                  br(),
+                  # Párrafo original
+                  HTML("<b>Interpretación de la tabla y fuentes:</b>"),
+                  br(),
+                  p("Este visualizador se alimenta de dos fuentes: la base de datos del paquete de R puy (mantenido por la Unidad de Métodos y Acceso a Datos de la Facultad de Ciencias Sociales) y de datos obtenidos mediante web scraping de la página de la biblioteca del parlamento https://biblioteca.parlamento.gub.uy:8008/biografias/busqueda ",
+strong("Cada fila de la tabla alojada en la pestaña de búsqueda representa un cargo o una candidatura de un político con una fecha de inicio y una fecha de fin,"),
+ " teniendo información específica sobre el cargo, el partido por el cual asume (o se postula), la edad al asumir del político, el sexo y la circunscripción en caso de que corresponda. A su vez cada político se identifica con un id político único que permite seguir su trayectoria a lo largo de la base."),
+                  
+                  br(),
+                  
+                  # Nuevo bloque solicitado
+                  HTML("<b>Creación y mantenimiento del visualizador:</b>"),
+                  br(),
+                  HTML('Esteban Cardoso y <a href="https://umad.cienciassociales.edu.uy/" target="_blank">UMAD</a>'),
+                  
+                  br(), br(),
+                  
+                  HTML("<b>Acceso del código (GitHub):</b>"),
+                  br(),
+                  HTML('<a href=\"https://github.com/estebancardoso96/pasantia_UMAD\" target=\"_blank\">https://github.com/estebancardoso96/pasantia_UMAD</a>'),
+                  
+                  br(), br(),
+                  
+                  HTML("<b>Contacto (consultas y notificación de errores):</b>"),
+                  br(),
+                  "esteban.cardoso96@gmail.com"
                 )
               ),
-              
               # 2. DICCIONARIO (completo)
               tabPanel(
                 "Diccionario de variables",
                 div(
                   style = "padding: 15px;",
-                  
-                  div(
-                    style = "text-align: center; margin-bottom: 12px;",
-                    downloadButton("descargar_diccionario", "Descargar diccionario CSV")
-                  ),
                   tags$table(
                     class = "table table-striped table-bordered",
                     tags$thead(
@@ -680,6 +852,10 @@ Cada fila de la tabla alojada en la pestaña de búsqueda representa un cargo o 
                       tags$tr(tags$td("cargo_vigente"), tags$td("cargo_vigente"), tags$td("Asume SI si el cargo está vigente en la actualidad y NO si el cargo no está vigente en la actualidad")),
                       tags$tr(tags$td("legislatura"), tags$td("Legislatura"), tags$td("Legislatura en que se asume el cargo o se postula la candidatura"))
                     )
+                  ),
+                  div(
+                    style = "text-align: center; margin-top: 20px;",
+                    downloadButton("descargar_diccionario", "Descargar diccionario CSV")
                   )
                 )
               ),
@@ -754,7 +930,7 @@ server <- function(input, output, session) {
   output$tabla_base <- renderDT({
     df <- politicos %>%
       select(primer_apellido, primer_nombre, id_politico, partido, cargo, status, circunscripcion,
-             fecha_inicio, fecha_fin)
+             fecha_inicio, fecha_fin, legislatura) %>% distinct()
     datatable(aplicar_etiquetas(df), filter = "top", rownames = FALSE)    
   })
   
@@ -994,6 +1170,20 @@ server <- function(input, output, session) {
     filename = function() "edad_maxima_por_cargo.csv",
     content = function(file) {
       write.csv(edad_max, file, row.names = FALSE, fileEncoding = "UTF-8")
+    }
+  )
+  # Descargar diccionario
+  output$descargar_diccionario <- downloadHandler(
+    filename = function() "diccionario_de_variables.csv",
+    content = function(file) {
+      write.csv(diccio_variables, file, row.names = FALSE, fileEncoding = "UTF-8")
+    }
+  )
+  # Descargar base completa
+  output$descargar_base_completa <- downloadHandler(
+    filename = function() "base_completa.csv",
+    content = function(file) {
+      write.csv(politicos, file, row.names = FALSE, fileEncoding = "UTF-8")
     }
   )
 }
