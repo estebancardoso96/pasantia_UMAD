@@ -1,487 +1,3 @@
-library(shiny)
-library(DBI)
-library(RPostgres)
-library(tidyverse)
-library(dplyr)
-library(lubridate)
-library(ggplot2)
-library(DBI)
-library(RPostgres)
-library(RPostgreSQL)
-library(DT) # tablas interactivas
-library(plotly)
-
-options(scipen = 2)
-options(digits = 1)
-
-library(shiny)
-library(shinydashboard)
-
-# guardar la base nuevamente
-#saveRDS(politicos,'C:/Users/PC/Desktop/pasantia_CP/pasantia_UMAD/trayectorias_politicos/politicos.rds')
-
-politicos <- readRDS('politicos.rds')
-
-
-##### Generacion de tablas
-
-### Cantidad de mujeres por partido
-m <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 0) %>%
-  group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
-  ungroup() %>%  select(-sexo)
-
-h <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                        'Cabildo Abierto', 'Partido Independiente') & sexo == 1) %>%
-  group_by(sexo, partido) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
-  ungroup() %>% select(-sexo)
-
-tabla_sexos <- inner_join(h,m,by =('partido'))
-
-tabla_sexos <- tabla_sexos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`) %>% 
-   mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
-
-### Cantidad de mujeres legisladoras por partido y legislatura
-
-### Cantidad de hombres y mujeres legisladores por partido
-
-m <- politicos %>% filter(sexo == 0 & cargo %in%c('Diputado', 'Senador')) %>%
-  group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
-  ungroup() %>%  select(-sexo)
-
-h <- politicos %>% filter(sexo == 1 & cargo %in%c('Diputado', 'Senador')) %>%
-  group_by(sexo, partido, cargo,legislatura) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
-  ungroup() %>% select(-sexo)
-
-tabla_sexos_leg <- left_join(h,m,by =c('partido', 'cargo', 'legislatura'))
-tabla_sexos_leg <- tabla_sexos_leg %>%
-  mutate(`Cantidad de mujeres` = ifelse(is.na((`Cantidad de mujeres`)), 0, `Cantidad de mujeres`))
-
-options(digits = 2)
-tabla_sexos_leg <- tabla_sexos_leg %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)
-tabla_sexos_leg <- tabla_sexos_leg %>%
-  mutate(`Hombres por cada mujer` = 
-           ifelse(is.infinite(`Hombres por cada mujer`), 
-                  NA, 
-                  `Hombres por cada mujer`))
-
-tabla_sexos_leg <- tabla_sexos_leg %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
-  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,2))
-
-### Cantidad de mujeres por cargo (incluye suplencias)
-m_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 0 ) %>%
-  group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
-  ungroup() %>%  select(-sexo)
-
-h_1 <- politicos %>% filter(partido %in%c('Partido Nacional', 'Frente Amplio', 'Partido Colorado',
-                                          'Cabildo Abierto', 'Partido Independiente') & sexo == 1) %>%
-  group_by(sexo, cargo) %>% distinct(id_politico, cargo) %>% count() %>% rename('Cantidad de hombres'=n) %>%
-  ungroup() %>% select(-sexo)
-
-tabla_sexos_cargos <- left_join(h_1,m_1,by =('cargo'))
-tabla_sexos_cargos <- tabla_sexos_cargos %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
-  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
-
-### Cantidad de mujeres por cargo (titulares del cargo)
-#### responde preguntas: en que cargos tiene la mujer menor disparidad respecto al hombre?
-
-m_2 <- politicos %>% filter(sexo == 0 & status == 'Titular') %>%
-  group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de mujeres'=n) %>%
-  ungroup() %>%  select(-sexo)
-
-h_2 <- politicos %>% filter(sexo == 1 & status == 'Titular') %>%
-  group_by(sexo, cargo) %>% distinct(id_politico) %>% count() %>% rename('Cantidad de hombres'=n) %>%
-  ungroup() %>% select(-sexo)
-
-tabla_sexos_cargos_2 <- left_join(h_2,m_2,by =('cargo'))
-
-tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>% mutate('Hombres por cada mujer' = `Cantidad de hombres`/`Cantidad de mujeres`)%>% 
-  mutate('Hombres por cada mujer' = round(`Hombres por cada mujer`,0))
-
-
-### Promedio general de edades por cargo ###
-tabla_edad  <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, legislaturas_agrupadas) %>% 
-  reframe('Edad promedio al asumir el cargo' = round(mean(edad_asumir),1),
-          'Desvío estándar de la edad' = round(sd(edad_asumir),1),
-          'Casos analizados' = n()) %>%
-  ungroup()
-
-### edades por partido por legislatura
-tabla_edad_legislatura <- politicos %>% filter(cargo %in%c("Senador", "Diputado") & !is.na(edad_asumir)) %>%
-  group_by(partido, cargo,legislatura) %>% reframe("Edad promedio" = round(mean(edad_asumir),1),
-                                                   'Casos analizados' = n()) %>% ungroup()
-
-## METRICAS INDIVIDUALES
-### politicos mas jovenes y mas viejos por cargo
-
-edad_max <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, fecha_inicio,partido, circunscripcion) %>%
-  summarise(edad_max = max(edad_asumir)) %>% arrange(desc(edad_max)) %>% group_by(cargo) %>%
-  slice_head(n = 1) %>% ungroup()
-
-edad_min <- politicos %>% filter(!is.na(edad_asumir)) %>% group_by(cargo, primer_apellido, primer_nombre, fecha_inicio,partido, circunscripcion) %>%
-  summarise(edad_min = min(edad_asumir)) %>% arrange((edad_min)) %>% group_by(cargo) %>%
-  slice_head(n = 1) %>% ungroup()
-
-### politicos mas exitosos
-
-tabla_politicos_exitosos <- politicos %>% group_by(primer_apellido, primer_nombre, partido, id_politico, cargo) %>% 
-                                   distinct(legislatura)%>% count() %>% rename(cantidad = n)  %>% arrange(desc(cantidad)) %>% 
-  filter(cantidad >= 6)
-
-
-## GRAFICOS
-### Distribucion por sexo de los legisladores
-
-s_1 <- politicos %>%
-  filter(cargo %in% c("Senador", "Diputado") & status == "Titular") %>%
-  select(id_politico, sexo, legislatura) %>%
-  mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>%
-  group_by(legislatura, sexo) %>%
-  distinct(id_politico) %>%  # cuenta cada político una sola vez por legislatura y sexo
-  summarise(cantidad = n(), .groups = "drop_last") %>%
-  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
-  ungroup() %>% mutate(status = 'Titular')
-
-s_2 <- politicos %>%
-  filter(cargo %in% c("Senador", "Diputado") & status == "Suplente") %>%
-  select(id_politico, sexo, legislatura) %>%
-  mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>%
-  group_by(legislatura, sexo) %>%
-  distinct(id_politico) %>%  # cuenta cada político una sola vez por legislatura y sexo
-  summarise(cantidad = n(), .groups = "drop_last") %>%
-  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
-  ungroup() %>% mutate(status = 'Suplente')
-
-grafico_sexo_leg <- rbind(s_1, s_2)
-
-## Distribucion del sexo por cargos
-
-grafico_sexo_cargos <- politicos %>% mutate(sexo = ifelse(sexo == 1, "Hombre", "Mujer")) %>% 
-  distinct(cargo, sexo, id_politico) %>% group_by(cargo, sexo) %>% summarise(cantidad = n(), .groups = "drop_last") %>%
-  mutate(porcentaje = round(cantidad / sum(cantidad) * 100, 2)) %>%
-  ungroup() %>% arrange(sexo, porcentaje)
-
-orden_cargos <- grafico_sexo_cargos %>%
-  filter(sexo == "Mujer") %>% 
-  select(cargo, porcentaje) %>%
-  rename(pct_mujeres = porcentaje)
-
-grafico_sexo_cargos_ordenado <- grafico_sexo_cargos %>%
-  left_join(orden_cargos, by = "cargo") %>%
-  arrange(desc(pct_mujeres)) %>%              # ordenar filas
-  mutate(cargo = factor(cargo, unique(cargo)))
-
-# cambio de nombres a cargo (para acortar)
-
-diccio <- grafico_sexo_cargos_ordenado %>% select(cargo)
-
-diccio <- diccio %>% 
-  distinct(cargo) %>% 
-  mutate(
-    desc = case_when(
-      cargo == "Ministro Desarrollo Social" ~ "MIDES",
-      cargo == "Secretario Corte Electoral" ~ "Secretario Corte Electoral",
-      cargo == "Ministro Vivienda, Ordenamiento Territorial y Medio Ambiente" ~ "MVOTMA",
-      cargo == "Concejal" ~ "Concejal",
-      cargo == "Alcalde" ~ "Alcalde",
-      cargo == "Candidato Vicepresidente" ~ "Candidato Vice",
-      cargo == "Ministro Corte Electoral" ~ "Ministro CE",
-      cargo == "Vicepresidente de la República" ~ "Vicepresidente",
-      cargo == "Candidato Vicepresidente" ~ "Candidato Vice",
-      cargo == "Diputado" ~ "Diputado",
-      cargo == "Ministro Turismo" ~ "Ministro Turismo",
-      cargo == "Senador" ~ "Senador",
-      cargo == "Ministro Salud Pública" ~ "MSP",
-      cargo == "Candidato Precandidato Presidente" ~ "CPP",
-      cargo == "Ministro Educación y Cultura" ~ "MEC",
-      cargo == "Intendente" ~ "Intendente",
-      cargo == "Candidato Presidente" ~ "CP",
-      cargo == "Ministro Economía y Finanzas" ~ "MEF",
-      cargo == "Candidato Consejo Nacional de Gobierno" ~ "CCNG",
-      cargo == "Ministro Trabajo y Seguridad Social" ~ "MTSS",
-      cargo == "Ministro Interior" ~ "MI",
-      cargo == "Concejal Departamental" ~ "Conc Departamental",
-      cargo == "Consejero Departamental" ~ "Cons Departamental",
-      cargo == "Intendente Interventor" ~ "II",
-      cargo == "Miembro del Consejo Nacional de Gobierno" ~ "MCNG",
-      cargo == "Ministro Ambiente" ~ "MA",
-      cargo == "Ministro Defensa Nacional" ~ "MDN",
-      cargo == "Ministro Ganadería, Agricultura y Pesca" ~ "MGAP",
-      cargo == "Ministro Gobierno" ~ "MG",
-      cargo == "Ministro Industria, Energía y Minería" ~ "MIEM",
-      cargo == "Ministro Protección a la infancia" ~ "MPI",
-      cargo == "Ministro Relaciones Exteriores" ~ "MRREE",
-      cargo == "Ministro Transporte y Obras Públicas" ~ "MTOP",
-      cargo == "Presidente Corte Electoral" ~ "PCE",
-      cargo == "Presidente de la República" ~ "Presidente",
-      cargo == "Presidente del Concejo Departamental" ~ "PCD",
-      cargo == "Presidente del Consejo Nacional de Gobierno" ~ "PCNG",
-      cargo == "Vicepresidente Corte Electoral" ~ "Vice Corte Electoral",
-      TRUE ~ NA_character_
-    )
-  )
-
-grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% mutate(etiqueta = cargo) %>% select(-cargo)
-grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% left_join(diccio, by=c('etiqueta'='cargo'))
-grafico_sexo_cargos_ordenado <- grafico_sexo_cargos_ordenado %>% rename(cargo = desc)
-
-## promedio de edad del legislador
-
-grafico_edad <- politicos %>% filter(cargo %in%c('Diputado', 'Senador') & !is.na(edad_asumir)) %>%
-  group_by(legislatura, cargo) %>% distinct(id_politico, legislatura, edad_asumir,cargo) %>% 
-  mutate(promedio_edad = mean(edad_asumir)) %>% distinct(legislatura, promedio_edad, cargo) %>% ungroup()
-
-## Calculos de renovacion de la legislatura, tasa de rotacion TITULARES
-
-leg_por_leg  <- politicos %>% filter(cargo %in%c('Senador', 'Diputado') & status=='Titular') %>% 
-  group_by(legislatura) %>%
-  summarise(lista = list(unique(id_politico)))
-
-leg_join <- leg_por_leg %>%
-  arrange(legislatura) %>%
-  mutate(lista_anterior = lag(lista))
-
-
-renovacion_titulares <- leg_join %>%
-  rowwise() %>%
-  mutate(
-    nuevos = if (is.null(lista_anterior)) NA else sum(!lista %in% lista_anterior),
-    total = length(lista),
-    tasa_de_rotacion = (nuevos / total) * 100
-  ) %>%
-  ungroup()
-
-df_plot <- renovacion_titulares %>%
-  mutate(custom = Map(c, total, nuevos))
-
-# diccionario 
-
-diccio_variables <- data.frame(
-  Variable = c(
-    "primer_apellido",
-    "segundo_apellido",
-    "primer_nombre",
-    "segundo_nombre",
-    "id_politico",
-    "partido",
-    "fecha_inicio",
-    "fecha_fin",
-    "status",
-    "circunscripcion",
-    "sexo",
-    "id_fuente",
-    "fecha_nac",
-    "fecha_inicio_l",
-    "fecha_fin_l",
-    "fecha_intermedia",
-    "ed_asumir",
-    "ed_asumir_1",
-    "edad_asumir",
-    "legislaturas_agrupadas",
-    "inicio",
-    "fin",
-    "cargo",
-    "cargo_vigente",
-    "legislatura"
-  ),
-  
-  Etiqueta = c(
-    "Primer apellido",
-    "Segundo apellido",
-    "Primer nombre",
-    "Segundo nombre",
-    "Id político",
-    "Partido",
-    "Inicio",
-    "Fin",
-    "Estatus",
-    "Circunscripción",
-    "Sexo",
-    "id_fuente",
-    "fecha_nac",
-    "fecha_inicio_l",
-    "fecha_fin_l",
-    "fecha_intermedia",
-    "ed_asumir",
-    "ed_asumir_1",
-    "edad_asumir",
-    "legislaturas_agrupadas",
-    "inicio",
-    "fin",
-    "Cargo",
-    "cargo_vigente",
-    "Legislatura"
-  ),
-  
-  Descripción = c(
-    "Primer apellido del político/a",
-    "Segundo apellido del político/a",
-    "Primer nombre del político/a",
-    "Segundo nombre del político/a",
-    "Identificador único del político",
-    "Partido político por el que el político asume o se postula a un cargo",
-    "Fecha (formato año-mes-día) en la que el político asume su cargo o postulación",
-    "Fecha (formato año-mes-día) en la que el político finaliza el ejercicio en su cargo",
-    "Titular o suplente en el cargo asumido",
-    "Circunscripción del cargo (en caso de que corresponda)",
-    "Sexo del político, 1 si es hombre y 0 si es mujer",
-    "Fuente del dato: 1 = paquete R puy, 2 = web del Parlamento",
-    "Fecha de nacimiento del político/a",
-    "Fecha de inicio de la Legislatura que actúa el político",
-    "Fecha de fin de la Legislatura que actúa el político",
-    "Fecha intermedia entre inicio y fin de la Legislatura",
-    "Edad al asumir el cargo (con fecha de inicio del cargo)",
-    "Edad al asumir cuando falta fecha de inicio (usando fecha intermedia)",
-    "Integración de ed_asumir y ed_asumir_1",
-    "Agrupa legislaturas en 3 períodos: 1902-1933, 1934-1973, 1985-2025",
-    "Año de inicio del cargo (obtenido de la web del Parlamento)",
-    "Año de fin del cargo (obtenido de la web del Parlamento)",
-    "Cargo o candidatura",
-    "SI si el cargo está vigente en la actualidad, NO si no lo está",
-    "Legislatura en que se asume el cargo o se postula la candidatura"
-  ),
-  stringsAsFactors = FALSE
-)
-
-# Etiquetas para la pagina
-
-library(labelled)
-
-politicos <- politicos %>%
-  set_variable_labels(
-    primer_apellido = "Primer apellido",
-    primer_nombre   = "Primer nombre",
-    id_politico     = "ID político",
-    partido         = "Partido político",
-    cargo           = "Cargo",
-    fecha_inicio    = "Inicio",
-    fecha_fin       = "Fin",
-    status          = "Estatus",
-    legislatura     = "Legislatura",
-    circunscripcion = "Circunscripción"
-  )
-
-politicos <- politicos %>% arrange(primer_apellido)
-
-tabla_sexos_cargos <- tabla_sexos_cargos %>%
-  set_variable_labels(
-    'Cantidad de hombres' = "Cantidad de hombres",
-    'Cantidad de mujeres' = "Cantidad de mujeres",
-    'Hombres por cada mujer' = "Hombres por cada mujer",
-     cargo = 'Cargo'
-  )
-
-tabla_sexos <- tabla_sexos %>%
-  set_variable_labels(
-    'Cantidad de hombres' = "Cantidad de hombres",
-    'Cantidad de mujeres' = "Cantidad de mujeres",
-    'Hombres por cada mujer' = "Hombres por cada mujer",
-     partido = 'Partido'
-  )
-
-tabla_sexos_leg <- tabla_sexos_leg %>%
-  set_variable_labels(
-    'Cantidad de hombres' = "Cantidad de hombres",
-    'Cantidad de mujeres' = "Cantidad de mujeres",
-    'Hombres por cada mujer' = "Hombres por cada mujer",
-    cargo = 'Cargo',
-    legislatura = 'Legislatura',
-    partido = 'Partido'
-  )
-
-tabla_sexos_cargos_2 <- tabla_sexos_cargos_2 %>%
-  set_variable_labels(
-    'Cantidad de hombres' = "Cantidad de hombres",
-    'Cantidad de mujeres' = "Cantidad de mujeres",
-    'Hombres por cada mujer' = "Hombres por cada mujer",
-    cargo = 'Cargo'
-  )
-
-tabla_edad  <- tabla_edad %>%
-  set_variable_labels(
-    'Edad promedio al asumir el cargo' = 'Edad promedio al asumir el cargo',
-    'Desvío estándar de la edad' = 'Desvío estándar de la edad',
-    'Casos analizados' = 'Casos analizados',
-    "cargo" = "Cargo",
-    "legislaturas_agrupadas" = "Legislaturas agrupadas")
-
-tabla_edad_legislatura <- tabla_edad_legislatura %>%
-  set_variable_labels(
-    'Edad promedio' = 'Edad promedio al asumir el cargo',
-    'cargo' = 'Cargo',
-    "partido" = "Partido",
-    "legislatura" = "Legislatura",
-    "Casos analizados" = "Casos analizados")
-
-edad_min <- edad_min %>%
-  set_variable_labels(
-    'edad_min' = 'Edad al asumir el cargo',
-    'cargo' = 'Cargo',
-    'fecha_inicio' = 'Fecha inicio',
-    'primer_apellido' = 'Primer apellido',
-    'primer_nombre' = 'Primer nombre',
-    'partido' = 'Partido',
-    'circunscripcion' = 'Circunscripción')
-    
-edad_max <- edad_max %>%
-  set_variable_labels(
-    'edad_max' = 'Edad al asumir el cargo',
-    'cargo' = 'Cargo',
-    'fecha_inicio' = 'Fecha inicio',
-    'primer_apellido' = 'Primer apellido',
-    'primer_nombre' = 'Primer nombre',
-    'partido' = 'Partido político',
-    'circunscripcion' = 'Circunscripción')
-
-grafico_sexo_leg <- grafico_sexo_leg %>%
-  set_variable_labels(
-    'sexo' = 'Sexo',
-    'cantidad' = 'Cantidad',
-    'porcentaje' = 'Porcentaje',
-    'status' = 'Status')
-
-grafico_edad <- grafico_edad %>%
-  set_variable_labels(
-    'cargo' = 'Cargo',
-    'legislatura' = 'Legislatura',
-    'promedio_edad' = 'Promedio de edad')
-
-grafico_sexo_cargos <- grafico_sexo_cargos %>%
-  set_variable_labels(
-    'cargo' = 'Cargo',
-    'sexo' = 'Sexo',
-    'cantidad' = 'Cantidad',
-    'porcentaje' = 'Porcentaje')
-
-  renovacion_titulares <- renovacion_titulares %>%
-  set_variable_labels(
-    'legislatura' = 'Legislatura',
-    'nuevos' = 'Nuevos legisladores',
-    'total' = 'Total de legisladores',
-    'tasa_de_rotacion' = 'Tasa de rotación')
-
-tabla_politicos_exitosos <- tabla_politicos_exitosos %>%
-  set_variable_labels(
-    'cantidad' = 'Veces que ocupó el cargo en diferentes legislaturas',
-    'primer_apellido' = 'Primer apellido',
-    'primer_nombre' = 'Primer nombre',
-    'partido' = 'Partido',
-    'id_politico' = 'Id político',
-    'cargo' = 'Cargo')
-
-aplicar_etiquetas <- function(df) {
-  names(df) <- var_label(df)
-  df
-}
-
-library(shiny)
-library(shinydashboard)
-library(DT)
-library(dplyr)
-
-### UI ###
-
 ui <- dashboardPage(
   dashboardHeader(
     title = span(
@@ -490,7 +6,6 @@ ui <- dashboardPage(
         height = "40px",
         style = "margin-right:10px;"
       ),
-      "Visualizador"
     )
   ),
   
@@ -542,20 +57,29 @@ ui <- dashboardPage(
     
     # --- Estilos para el título ---
     tags$head(
+      # Título del documento (lo que aparece en la pestaña del navegador)
+      tags$title("Visualizador de políticos y políticas del Uruguay"),
+      
+      # Por si algún fragmento de HTML estaba sobreescribiendo el title: refuerza con JS
+      tags$script(HTML("
+    document.title = 'Visualizador de políticos y políticas del Uruguay';
+  ")),
+      
+      # (Opcional) estilos globales para tu h2 si los quieres mantener en el head
       tags$style(HTML("
-      h2.dashboard-title {
-        text-align: center;
-        font-weight: bold;
-        font-size: 28px;
-        color: #2c3e50;
-        margin-bottom: 25px;
-        margin-top: 10px;
-      }
-    "))
+    h2.dashboard-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      margin-top: 10px;
+    }
+  "))
     ),
     
     # --- Título principal ---
-    h2("Visualizador de políticos y políticas del Uruguay (1902-2025)", 
+    h2("Visualizador interactivo de políticos y políticas del Uruguay (1902-2025)", 
        class = "dashboard-title"),
     
     
@@ -584,21 +108,24 @@ ui <- dashboardPage(
                     tabPanel("Filtro por Legislatura",
                              selectInput("legislatura", "Seleccionar Legislatura",
                                          choices = sort(unique(politicos$legislatura)),
-                                         selected = max(politicos$legislatura, na.rm = TRUE)),
+                                         selected = max(politicos$legislatura, na.rm = TRUE),
+                                         width = "180px"),
                              DTOutput("tabla_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_leg", "Descargar CSV"))),
                     
                     tabPanel("Filtro por Partido",
                              selectInput("partido", "Seleccionar Partido Político",
-                                         choices = sort(unique(politicos$partido))),
+                                         choices = sort(unique(politicos$partido)),
+                                         width = "180px"),
                              DTOutput("tabla_part"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_partido", "Descargar CSV"))),
                     
                     tabPanel("Filtro por Cargo",
                              selectInput("cargo", "Seleccionar cargo",
-                                         choices = sort(unique(politicos$cargo))),
+                                         choices = sort(unique(politicos$cargo)),
+                                         width = "200px"),
                              DTOutput("tabla_cargos"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_cargos", "Descargar CSV")))
@@ -621,7 +148,8 @@ ui <- dashboardPage(
                     
                     tabPanel("Cantidad de legisladores y legisladoras por partido",
                              selectInput("legislaturas", "Seleccionar Legislatura",
-                                         choices = sort(unique(tabla_sexos_leg$legislatura))),
+                                         choices = sort(unique(tabla_sexos_leg$legislatura)),
+                                         width = "180px"),
                              DTOutput("tabla_mujeres_partido_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_mujeres_1_1", "Descargar CSV"))),
@@ -655,7 +183,8 @@ ui <- dashboardPage(
                     tabPanel("Edad promedio de asunción por cargo",
                              selectInput("legislaturas_agrupadas",
                                          "Seleccionar Legislaturas agrupadas",
-                                         choices = sort(unique(tabla_edad$legislaturas_agrupadas))),
+                                         choices = sort(unique(tabla_edad$legislaturas_agrupadas)),
+                                         width = "180px"),
                              DTOutput("edades_cargo"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_edades", "Descargar CSV"))),
@@ -664,6 +193,7 @@ ui <- dashboardPage(
                              selectInput("legislatura_partido",
                                          "Seleccionar Legislatura",
                                          choices = sort(unique(tabla_edad_legislatura$legislatura)),
+                                         width = "180px",
                                          selected = max(tabla_edad_legislatura$legislatura, na.rm = TRUE)),
                              DTOutput("legislatura_part"),
                              div(style = "margin-top: 20px; text-align: center;",
@@ -696,6 +226,18 @@ ui <- dashboardPage(
                                  downloadButton("descargar_tabla_edad_maxima", "Descargar CSV"))),
                     
                     tabPanel("Los legisladores más exitosos",
+                             # Tooltip
+                             div(
+                               class = "tooltip-box",
+                               icon("circle-info"),
+                               div(
+                                 class = "tooltip-content",
+                                 HTML("
+                            <b>Nota:</b><br>
+                            Los legisladores exitosos son diputados o senadores electos en seis o más legislaturas diferentes.
+                          ")
+                               )
+                             ),
                              DTOutput("politicos_exitosos"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_tabla_pol_exitoso", "Descargar CSV")))
@@ -717,11 +259,79 @@ ui <- dashboardPage(
                   tabsetPanel(
                     
                     tabPanel("Distribución por sexo de los legisladores",
+                             # --- ESTILO PARA EL SELECT INPUT (GRISES) ---
+                             tags$head(
+                               tags$style(HTML("
+                               /* selectInput estándar */
+select {
+  background-color: #4A90E2 !important;    /* azul suave */
+  color: #ffffff !important;               /* texto blanco */
+  border: 1px solid #3b78ba !important;    /* borde ligeramente más oscuro */
+}
+
+option {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+/* Estilos para selectizeInput (Shiny por defecto) */
+.selectize-input {
+  background-color: #4A90E2 !important;    /* azul suave */
+  color: #ffffff !important;               /* texto blanco */
+  border: 1px solid #3b78ba !important;
+}
+
+.selectize-input input {
+  color: #ffffff !important;               /* texto blanco dentro del input */
+}
+
+.selectize-dropdown {
+  background-color: #f0f6ff !important;    /* azul muy claro para dropdown */
+  color: #333333 !important;
+  border: 1px solid #3b78ba !important;
+}
+
+.selectize-dropdown .option {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+.selectize-dropdown .active {
+  background-color: #4A90E2 !important;    /* mismo azul suave para hover */
+  color: #ffffff !important;
+}
+
+ 
+    "))
+                             ),
                              selectInput("leg_status",
                                          "Seleccionar status",
                                          choices = sort(unique(grafico_sexo_leg$status)),
+                                         width = "180px",
                                          selected = max(grafico_sexo_leg$status)),
                              plotlyOutput("grafico_sexo_leg_out"),
+                             div(style = "margin-top: 20px; text-align: center;",
+                                 downloadButton("descargar_grafico_sexo_leg", "Descargar CSV"))),
+                    
+                    tabPanel("Porcentaje de mujeres legisladoras por partido y legislatura",
+                             div(
+                               class = "tooltip-box",
+                               icon("circle-info"),
+                               div(
+                                 class = "tooltip-content",
+                                 HTML("
+                            <b>Nota:</b><br>
+                            Se decidió quitar a una senadora del Partido Comunista y a una diputada de la Unión Popular para una mejor visualización de los datos dado que distorsionaban el eje.
+                          ")
+                               )
+                             ),
+                             selectInput(
+                               "cargo",
+                               "Seleccionar cargo",
+                               choices = c("Senador", "Diputado"),
+                               selected = "Diputado",
+                               width = "180px"),
+                             plotlyOutput("grafico_porcent_mujeres_leg"),
                              div(style = "margin-top: 20px; text-align: center;",
                                  downloadButton("descargar_grafico_sexo_leg", "Descargar CSV"))),
                     
@@ -837,19 +447,19 @@ strong("Cada fila de la tabla alojada en la pestaña de búsqueda representa un 
                       tags$tr(tags$td("status"), tags$td("Estatus"), tags$td("Titular o suplente en el cargo asumido")),
                       tags$tr(tags$td("circunscripcion"), tags$td("Circunscripción"), tags$td("Circunscripción del cargo (en caso de que corresponda)")),
                       tags$tr(tags$td("sexo"), tags$td("Sexo"), tags$td("Sexo del político, 1 si es hombre y 0 si es mujer")),
-                      tags$tr(tags$td("id_fuente"), tags$td("id_fuente"), tags$td("Fuente de donde proviene el dato, 1 = paquete R puy ; 2 = web scraping de la biblioteca del parlamento")),
-                      tags$tr(tags$td("fecha_nac"), tags$td("fecha_nac"), tags$td("Fecha de nacimiento del político/a")),
-                      tags$tr(tags$td("fecha_inicio_l"), tags$td("fecha_inicio_l"), tags$td("Fecha de inicio de la Legislatura que actúa el político")),
-                      tags$tr(tags$td("fecha_fin_l"), tags$td("fecha_fin_l"), tags$td("Fecha de fin de la Legislatura que actúa el político")),
-                      tags$tr(tags$td("fecha_intermedia"), tags$td("fecha_intermedia"), tags$td("Fecha intermedia (en la mitad entre la fecha de fin y la fecha de inicio de la Legislatura)")),
-                      tags$tr(tags$td("ed_asumir"), tags$td("ed_asumir"), tags$td("Edad en la que asume el cargo el político calculada con la fecha de inicio del cargo")),
-                      tags$tr(tags$td("ed_asumir_1"), tags$td("ed_asumir_1"), tags$td("Edad en la que asume el cargo calculada con la fecha intermedia cuando la fecha de inicio del cargo está missing")),
-                      tags$tr(tags$td("edad_asumir"), tags$td("edad_asumir"), tags$td("Integración de ed_asumir con ed_asumir_1")),
-                      tags$tr(tags$td("legislaturas_agrupadas"), tags$td("legislaturas_agrupadas"), tags$td("Asume 3 valores que agrupan legislaturas: 1902-1933, 1934-1973 y 1985-2025")),
-                      tags$tr(tags$td("inicio"), tags$td("inicio"), tags$td("Año de inicio del cargo (datos obtenidos de la página del parlamento)")),
-                      tags$tr(tags$td("fin"), tags$td("fin"), tags$td("Año de fin del cargo (datos obtenidos de la página del parlamento)")),
+                      tags$tr(tags$td("id_fuente"), tags$td("Sin etiqueta"), tags$td("Fuente de donde proviene el dato, 1 = paquete R puy ; 2 = web scraping de la biblioteca del parlamento")),
+                      tags$tr(tags$td("fecha_nac"), tags$td("Sin etiqueta"), tags$td("Fecha de nacimiento del político/a")),
+                      tags$tr(tags$td("fecha_inicio_l"), tags$td("Sin etiqueta"), tags$td("Fecha de inicio de la Legislatura que actúa el político")),
+                      tags$tr(tags$td("fecha_fin_l"), tags$td("Sin etiqueta"), tags$td("Fecha de fin de la Legislatura que actúa el político")),
+                      tags$tr(tags$td("fecha_intermedia"), tags$td("Sin etiqueta"), tags$td("Fecha intermedia (en la mitad entre la fecha de fin y la fecha de inicio de la Legislatura)")),
+                      tags$tr(tags$td("ed_asumir"), tags$td("Sin etiqueta"), tags$td("Edad en la que asume el cargo el político calculada con la fecha de inicio del cargo")),
+                      tags$tr(tags$td("ed_asumir_1"), tags$td("Sin etiqueta"), tags$td("Edad en la que asume el cargo calculada con la fecha intermedia cuando la fecha de inicio del cargo está missing")),
+                      tags$tr(tags$td("edad_asumir"), tags$td("Sin etiqueta"), tags$td("Integración de ed_asumir con ed_asumir_1")),
+                      tags$tr(tags$td("legislaturas_agrupadas"), tags$td("Sin etiqueta"), tags$td("Asume 3 valores que agrupan legislaturas: 1902-1933, 1934-1973 y 1985-2025")),
+                      tags$tr(tags$td("inicio"), tags$td("Sin etiqueta"), tags$td("Año de inicio del cargo (datos obtenidos de la página del parlamento)")),
+                      tags$tr(tags$td("fin"), tags$td("Sin etiqueta"), tags$td("Año de fin del cargo (datos obtenidos de la página del parlamento)")),
                       tags$tr(tags$td("cargo"), tags$td("Cargo"), tags$td("Cargo o candidatura")),
-                      tags$tr(tags$td("cargo_vigente"), tags$td("cargo_vigente"), tags$td("Asume SI si el cargo está vigente en la actualidad y NO si el cargo no está vigente en la actualidad")),
+                      tags$tr(tags$td("cargo_vigente"), tags$td("Sin etiqueta"), tags$td("Asume SI si el cargo está vigente en la actualidad y NO si el cargo no está vigente en la actualidad")),
                       tags$tr(tags$td("legislatura"), tags$td("Legislatura"), tags$td("Legislatura en que se asume el cargo o se postula la candidatura"))
                     )
                   ),
@@ -975,6 +585,50 @@ server <- function(input, output, session) {
       mutate(sexo = factor(sexo, levels = c("Mujer", "Hombre")))
   })
   
+  grafico_porcent_mujeres <- reactive({
+    politicos %>% 
+      filter(cargo %in% c("Senador", "Diputado"),
+             status == "Titular") %>% 
+      group_by(partido, cargo, legislatura, sexo) %>% 
+      summarise(n = n(), .groups = "drop_last") %>% 
+      mutate(
+        total_partido = sum(n),
+        porcentaje = ifelse(sexo == 0, n / total_partido * 100, NA)
+      ) %>% 
+      filter(partido %in% c('Cabildo Abierto', 'Frente Amplio', 'Partido Colorado', 
+                            'Partido Nacional') &
+               !legislatura %in% c('1902-1905', '1905-1908', '1908-1911', '1911-1914', 
+                                   '1914-1917', '1917-1920', '1920-1923', '1923-1926', 
+                                   '1926-1929', '1929-1932', '1932-1933', '1934-1938',
+                                   '1938-1942')) %>% 
+      mutate(porcentaje = ifelse(is.na(porcentaje), 0, porcentaje)) %>% 
+      select(partido, legislatura, cargo, porcentaje, n, sexo) %>% 
+      mutate(n = ifelse(porcentaje == 0, 0, n)) %>% 
+      
+      # Paso 1: Identificar dónde hay mujeres con porcentaje > 0
+      group_by(partido, legislatura, cargo) %>%
+      mutate(
+        # Verificar si existe fila de mujeres (sexo == 0) con porcentaje > 0
+        hay_mujeres_con_porcentaje = any(sexo == 0 & porcentaje > 0)
+      ) %>%
+      ungroup() %>%
+      
+      # Paso 2: Filtrar - mantener mujeres siempre, hombres solo si no hay mujeres con porcentaje > 0
+      filter(
+        # Mantener todas las filas de mujeres
+        sexo == 0 |
+          # Mantener hombres solo si NO hay mujeres con porcentaje > 0
+          (sexo == 1 & !hay_mujeres_con_porcentaje)
+      ) %>%
+      select(-hay_mujeres_con_porcentaje) %>% mutate(sexo = 0)
+  })
+  
+  df_plot_2 <- reactive({
+    req(input$cargo)
+    grafico_porcent_mujeres() %>% 
+      filter(cargo == input$cargo)
+  })
+  
   # --- 3. Render de tablas ---
   output$tabla_leg <- renderDT({
     datatable(aplicar_etiquetas(df_leg()), filter = "top", rownames = FALSE)
@@ -1045,6 +699,53 @@ server <- function(input, output, session) {
         yaxis = list(title = "Porcentaje")
       )
   })
+  
+  # Porcentaje de mujeres legisladoras titualres
+  output$grafico_porcent_mujeres_leg <- renderPlotly({
+    
+    df <- df_plot_2()
+    
+    partidos_presentes <- unique(df$partido)
+    
+    colores_usados <- colores_partidos[
+      names(colores_partidos) %in% partidos_presentes
+    ]
+    plot_ly(
+      data = df,
+      x = ~legislatura,
+      y = ~porcentaje,
+      split = ~partido,
+      color = ~partido,
+      colors = colores_usados,
+      type = "scatter",
+      mode = "lines+markers",                
+      marker = list(
+        opacity = 0.5,                      
+        size = 8
+      ),
+      line = list(
+        width = 1,                           
+        shape = "linear"                    
+      ),
+      text = ~paste0(
+        "Partido: ", partido,
+        "<br>Legislatura: ", legislatura,
+        "<br>Porcentaje: ", round(porcentaje, 1), "%",
+        "<br>Cantidad (n): ", n
+      ),
+      hoverinfo = "text"
+    ) %>%
+      layout(
+        title = "Porcentaje de mujeres legisladoras titulares sobre el total de \
+legisladores por partido y legislatura",
+        xaxis = list(
+          title = "Legislatura",
+          tickangle = 90
+        ),
+        yaxis = list(title = "% de mujeres sobre el total")
+      )
+  })
+  
   # edad legisladores
   output$grafico_edad_leg <- renderPlotly({
     
