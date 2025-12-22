@@ -21,7 +21,7 @@ La primera decisión a tomar fue la de que corte temporal elegir para el visuali
 
 |**partido**  |
 |-------------|
-|Frente Amplio|
+|Frente Ampilio|
 |Frente Amplio|
 
 Otros casos eran de correcciones más puntuales y que se fueron dando a medida que entendía mejor la base y los datos allí expuestos. Un ejemplo de ello es el siguiente caso en que las fechas de inicio no coinciden con el número legislatura:
