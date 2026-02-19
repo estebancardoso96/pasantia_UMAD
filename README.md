@@ -79,3 +79,16 @@ Modelado de los datos
 
 Es importante contar que todo este proceso que implicó la estandarización, la corrección pero también la agregación e integración de tablas está organizado y modelado en SQL, lo que permitió una mejor organización de los datos y una forma eficiente de realizar consultas. Este modelado, a su vez, está pensado para futuras actualizaciones de datos, tanto de siguientes legislaturas como agregados retroactivos. Se pensó en un modelado “estrella”, con una tabla de hechos principal y varias tablas pequeñas que la rodean.
 
+### Tercera etapa: Ingesta de nuevos datos y corrección retroactiva
+
+Asignación del id político:
+La actualización e ingesta de nuevos datos se realiza utilizando al hub políticos en diferentes pegados para la asignación del id de político.
+
+![Proceso de ingesta](ingesta_nuevos_datos.png)
+
+En este caso al agregar nuevos datos de una legislatura, lo primero que se realiza es ver si el político o política que estamos ingresando ya está en el hub, con su primer nombre, primer apellido y fecha de nacimiento. Como para muchos políticos no se cuenta con la fecha de nacimiento, se realiza una segunda verificación con la tabla de trayectorias, utilizando el primer nombre, el primer apellido y el partido político. Luego a los políticos no encontrados en el hub por esas variables, se les asigna un id y se los guarda en el hub para finalmente ingresarlos al fact trayectorias.
+
+
+
+
+
