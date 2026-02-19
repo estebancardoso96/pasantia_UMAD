@@ -73,7 +73,9 @@ La tercera pestaña Métricas también da cuenta de otro objetivo del visualizad
 La cuarta pestaña despliega datos curiosos como los políticos de menor y mayor edad en asumir cada cargo y también, en una aproximación del análisis de trayectorias, muestra los legisladores más exitosos, es decir, aquellos que ocuparon el cargo (tanto de Senador como de Diputado) más veces en legislaturas diferentes.
 Por último, la quinta pestaña intenta mostrar los mismos datos de las anteriores pestañas pero gráficamente y de forma interactiva, para que el usuario pueda aplicar los filtros que quiera y realizar clicks para sobre las barras o puntos para obtener información absoluta y relativa del fenómeno graficado.
 El visualizador ofrece un plus al usuario, ya que le permite descargar varias de las tablas mostradas en formato csv e incluso la posibilidad de descargar la base completa con todos los microdatos.
+
 Modelado de los datos
+![Modelado estrella](modelado_estrella.png)
 
 Es importante contar que todo este proceso que implicó la estandarización, la corrección pero también la agregación e integración de tablas está organizado y modelado en SQL, lo que permitió una mejor organización de los datos y una forma eficiente de realizar consultas. Este modelado, a su vez, está pensado para futuras actualizaciones de datos, tanto de siguientes legislaturas como agregados retroactivos. Se pensó en un modelado “estrella”, con una tabla de hechos principal y varias tablas pequeñas que la rodean.
 
